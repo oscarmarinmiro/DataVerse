@@ -1,0 +1,17 @@
+.idea
+.DS_STORE
+build
+bower_components
+node_modules
+*.zip
+*.pyc
+venv
+venv/*
+env/*
+.project
+.cache-main
+.cache-tests
+.classpath
+.settings
+.pydevproject
+npm-debug.log

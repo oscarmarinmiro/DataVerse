@@ -1,0 +1,11 @@
+{
+  "name": "DataVerses",
+  "author": "@oscarmarinmiro / Knight Foundation",
+  "dependencies": {
+    "jquery": "~1.8",
+    "d3": "~3.3.9",
+    "moment": "latest",
+    "aframe": "latest"
+  },
+  "devDependencies": {}
+}
