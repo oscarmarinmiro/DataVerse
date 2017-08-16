@@ -38,6 +38,11 @@ DATAVERSE.main = function(options) {
             }
             else {
                 console.log("EN EL ELSE DEL MAIN");
+
+                console.log(self.state.state.scenes);
+
+                console.log(self.state.state.links);
+
             }
         })
     });
@@ -46,5 +51,13 @@ DATAVERSE.main = function(options) {
 
 DATAVERSE.main.prototype = {
 
+    // Outputs errors (TODO: Show in VR or in a more sophisticated way)
+
+    'croak': function(message){
+
+        console.log("CROAK");
+        console.log(message);
+
+    }
 };
 
