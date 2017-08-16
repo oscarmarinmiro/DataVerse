@@ -6,7 +6,8 @@
     "d3": "~3.3.9",
     "moment": "latest",
     "aframe": "latest",
-    "tabletop": "latest"
+    "tabletop": "latest",
+    "Dataverse_vizs": "http://github.com/oscarmarinmiro/Dataverse_vizs.git"
   },
   "devDependencies": {}
 }

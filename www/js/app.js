@@ -17,6 +17,10 @@ DATAVERSE.main = function(options) {
 
         self.urls = new DATAVERSE.urls({}, self);
 
+        // Instantiate renderer
+
+        self.renderer = new DATAVERSE.renderer({}, self);
+
         // Instantiate state
 
         self.state = new DATAVERSE.state({}, self, function() {
@@ -42,6 +46,14 @@ DATAVERSE.main = function(options) {
                 console.log(self.state.state.scenes);
 
                 console.log(self.state.state.links);
+
+                // Init scenes
+
+                self.renderer.init_scenes();
+
+                // Go to first scene
+
+                self.renderer.render_scene();
 
             }
         })

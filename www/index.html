@@ -13,6 +13,10 @@
         <script src="bower_components/d3/d3.min.js"></script>
         <script src="bower_components/tabletop/src/tabletop.min.js"></script>
 
+
+        <script src="bower_components/Dataverse_vizs/www/js/network-viz.js"></script>
+
+        <script src="js/renderer.js"></script>
         <script src="js/app.js"></script>
         <script src="js/constants.js"></script>
         <script src="js/state.js"></script>
@@ -23,7 +27,7 @@
     <body>
 
         <script>
-            var main = new DATAVERSE.main({'source': "https://docs.google.com/spreadsheets/d/1Bm0u5FeHbVaAAzZtqVmG4B8benAVptsFvQnKPub3OJE/pubhtml"});
+            var main = new DATAVERSE.main({'debug': true, 'source': "https://docs.google.com/spreadsheets/d/1Bm0u5FeHbVaAAzZtqVmG4B8benAVptsFvQnKPub3OJE/pubhtml"});
         </script>
 
     </body>

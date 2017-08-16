@@ -10,7 +10,7 @@ DATAVERSE.state = function(options, parent, callback){
 
     self.options = options;
 
-    self.state = {};
+    self.state = {'actual_scene': 0};
 
     self.load_app_data(callback);
 
@@ -44,7 +44,7 @@ DATAVERSE.state.prototype = {
 
     // Load data from spreadsheet
 
-    'load_app_data': function(callback){
+    'load_app_data': function(callback) {
 
         var self = this;
 
@@ -52,11 +52,11 @@ DATAVERSE.state.prototype = {
 
         console.log("LOS PARAMS SON", params);
 
-        if('source' in self.main.options){
+        if ('source' in self.main.options) {
             params.source = self.main.options.source;
         }
 
-        if(!('source' in params)){
+        if (!('source' in params)) {
             self.main.croak("No source file detected in URL");
         }
         else {
@@ -95,14 +95,6 @@ DATAVERSE.state.prototype = {
         }
 
 
-    },
-
-    // Renders a scene
-
-    'render_scene': function(){
-
-        var self = this;
-
-     }
+    }
 
 };
