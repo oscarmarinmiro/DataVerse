@@ -34,6 +34,18 @@ DATAVERSE.renderer.prototype = {
 
         self.scene.appendChild(self.assets);
 
+        self.camera = document.createElement("a-camera");
+        self.cursor = document.createElement("a-cursor");
+
+        self.cursor.setAttribute("color", "grey");
+
+        self.camera.appendChild(self.cursor);
+
+        self.scene.appendChild(self.camera);
+
+        self.sky = document.createElement("a-sky");
+
+        self.scene.appendChild(self.sky);
 
 
     },
@@ -49,17 +61,18 @@ DATAVERSE.renderer.prototype = {
 
         console.log("REMOVING SCENE ELEMENTS", self.scene);
 
-        // Removing last scene children, if any
+        // Removing last scene assets
 
-        while (self.scene.firstChild) {
-               self.scene.removeChild(self.scene.firstChild);
+        while (self.assets.firstChild) {
+               self.assets.removeChild(self.assets.firstChild);
         }
 
-        self.assets = document.createElement("a-assets");
+        // Remove last component
 
-        self.scene.appendChild(self.assets);
+        if (self.actual_scene_component){
+            self.scene.removeChild(self.actual_scene_component);
+        }
 
-        // Removing last scene assets, if any
 
         // Insert scene component
 
@@ -101,19 +114,14 @@ DATAVERSE.renderer.prototype = {
 
                 self.assets.appendChild(self.sky_img);
 
-                self.sky = document.createElement("a-sky");
                 self.sky.setAttribute("src", "#sky_img");
-
-                self.scene.appendChild(self.sky);
 
 
             }
             else {
 
-                self.sky = document.createElement("a-sky");
                 self.sky.setAttribute("color", self.actual_scene_data.background);
 
-                self.scene.appendChild(self.sky);
             }
 
             // TODO: audio and scene sky (color or 360 background);
