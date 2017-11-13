@@ -10,7 +10,7 @@ DATAVERSE.state = function(options, parent, callback){
 
     self.options = options;
 
-    self.state = {'actual_scene': 0};
+    self.state = {'actual_scene': self.main.urls.get_params().scene ? self.main.urls.get_params().scene: 0};
 
     self.load_app_data(callback);
 
@@ -85,6 +85,20 @@ DATAVERSE.state.prototype = {
 
                     self.state.scenes = tabletop.sheets("scenes").elements;
                     self.state.links = tabletop.sheets("links").elements;
+
+                    var indexed_scenes = {};
+
+                    self.state.scenes.forEach(function(d,i){
+
+                        console.log("SCENE NUMBER ", d,i);
+
+                        indexed_scenes[d.number] = d;
+
+                    });
+
+                    self.state.scenes = indexed_scenes;
+
+                    console.log("SCENES QUEDA", self.state.scenes);
 
                     callback();
                 }

@@ -20,8 +20,6 @@ DATAVERSE.renderer.prototype = {
 
         var self = this;
 
-        console.log("INIT SCENES");
-
         self.scene = document.createElement("a-scene");
 
         if(self.main.options.debug) {
@@ -127,6 +125,19 @@ DATAVERSE.renderer.prototype = {
             // TODO: audio and scene sky (color or 360 background);
 
             console.log("my params", my_params);
+
+            // Set position and rotation from params, and delete from entity-specific params
+
+            if("position" in my_params){
+                self.actual_scene_component.setAttribute("position", my_params.position);
+                delete(my_params.position);
+            }
+
+            if("rotation" in my_params){
+                self.actual_scene_component.setAttribute("rotation", my_params.rotation);
+                delete(my_params.rotation);
+            }
+
 
             self.actual_scene_component.setAttribute(self.actual_scene_data.type, my_params);
 
