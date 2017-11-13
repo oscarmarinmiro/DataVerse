@@ -63,6 +63,8 @@ DATAVERSE.state.prototype = {
 
             // Catch network / access errors to spreadsheet. TODO: DOES NOT WORK!!!
 
+            // BEWARE ALSO: https://gist.github.com/jsvine/3295633
+
             try {
                 Tabletop.init({ key: params.source,
                     callback: parse_sheets,
