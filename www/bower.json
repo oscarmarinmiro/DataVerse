@@ -8,7 +8,8 @@
     "aframe": "latest",
     "tabletop": "latest",
     "Dataverse_vizs": "http://github.com/oscarmarinmiro/Dataverse_vizs.git",
-    "aframe-stereo-component": "http://github.com/oscarmarinmiro/aframe-stereo-component.git"
+    "aframe-stereo-component": "http://github.com/oscarmarinmiro/aframe-stereo-component.git",
+    "font-awesome-svg-png": "latest"
   },
   "devDependencies": {}
 }

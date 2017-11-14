@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+
+        <title>
+        </title>
+
+        <link rel="stylesheet" href="css/main.css"/>
+        <script src="bower_components/d3/d3.min.js"></script>
+        <script src="bower_components/aframe/dist/aframe.min.js"></script>
+        <script src="bower_components/aframe-stereo-component/dist/aframe-stereo-component.js"></script>
+
+        <script src="js/ui/constants.js"></script>
+        <script src="js/ui/button.js"></script>
+        <script src="js/ui/thumbnail.js"></script>
+        <script src="js/ui/thumbgrid.js"></script>
+        <script src="js/ui/infolabel.js"></script>
+        <script src="js/ui/textbutton.js"></script>
+        <script src="js/ui/menu.js"></script>
+        <script src="js/ui/mediacontrols.js"></script>
+
+
+    </head>
+    <body>
+
+    <a-scene>
+
+        <!--<a-link href="index.html" title="My Homepage" position="0 2.0 -5.0" highlighted="true" visualAspectEnabled="false" on="none"></a-link>-->
+        <a-camera><a-cursor color="white"></a-cursor></a-camera>
+    </a-scene>
+
+    </body>
+
+    <script>
+
+//        var my_link = document.querySelector("a-link");
+//
+//        my_link.addEventListener("mouseenter", function(event){
+//
+//            event.stopImmediatePropagation();
+//            event.stopPropagation();
+//
+//            event.cancelBubble = true;
+//            event.bubbles = false;
+//            event.defaultPrevented = true;
+//
+//            console.log("CLICKED!!", event);
+//
+//
+//            return false;
+//        }, false);
+
+        var scene = d3.select("a-scene");
+
+        self.CONSTANTS = {
+            'MENU_PITCH': -90,
+            'MENU_BEGIN_PITCH': -20,
+            'CURSOR_ON_COLOR': "white",
+            'CURSOR_OFF_COLOR': "yellow",
+            'CURSOR_ON_SCALE': 1.0,
+            'CURSOR_OFF_SCALE': 0.5,
+            'THUMBNAIL_SHAPE': "circle",
+            'THUMBNAIL_RADIUS': 0.5,
+            'DEBUG': true
+        };
+
+
+
+        var thumbnail = scene.append("a-entity").attr("uipack-thumbnail", {
+            src: "media/photos/riells.jpg",
+            yaw: 90,
+            elevation: 2.0,
+            distance: 3.0,
+            shape: self.CONSTANTS.THUMBNAIL_SHAPE,
+            radius: self.CONSTANTS.THUMBNAIL_RADIUS,
+            opacity: 0.85,
+            text: "hola como estamos eh",
+            destination: 1
+        }).classed("thumbnail", true);
+//
+        thumbnail.node().addEventListener("clicked", function(e){
+
+            console.log("clickado");
+
+            console.log(e.detail);
+
+//            var destination = e.detail.name;
+//
+//            self.clear_scene();
+//
+//            self.last_scene = self.scene_name;
+//
+//            self.land_scene(destination);
+
+        });
+
+    </script>
+
+    <footer class="footer">
+
+    </footer>
+
+</html>
