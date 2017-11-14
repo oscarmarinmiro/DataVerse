@@ -80,13 +80,12 @@ DATAVERSE.state.prototype = {
 
                 if (('links' in data) && ('scenes' in data)) {
 
-//                self.state.scenes = data.scenes.elements;
-//                self.state.links = data.links.elements;
-
                     self.state.scenes = tabletop.sheets("scenes").elements;
                     self.state.links = tabletop.sheets("links").elements;
 
                     var indexed_scenes = {};
+
+                    var indexed_links = {};
 
                     self.state.scenes.forEach(function(d,i){
 
@@ -96,9 +95,23 @@ DATAVERSE.state.prototype = {
 
                     });
 
+                    self.state.links.forEach(function(d,i){
+
+                        console.log("LINK NUMBER ", d,i);
+
+                        if(!(d.source in indexed_links)){
+                            indexed_links[d.source] = [];
+                        }
+
+                        indexed_links[d.source].push(d);
+
+                    });
+
                     self.state.scenes = indexed_scenes;
+                    self.state.links = indexed_links;
 
                     console.log("SCENES QUEDA", self.state.scenes);
+                    console.log("LINKS QUEDA", self.state.links);
 
                     callback();
                 }

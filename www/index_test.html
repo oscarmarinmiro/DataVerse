@@ -11,6 +11,8 @@
         <script src="bower_components/aframe/dist/aframe.min.js"></script>
         <script src="bower_components/aframe-stereo-component/dist/aframe-stereo-component.js"></script>
 
+        <script src="js/constants.js"></script>
+
         <script src="js/ui/constants.js"></script>
         <script src="js/ui/button.js"></script>
         <script src="js/ui/thumbnail.js"></script>
@@ -51,35 +53,26 @@
 //            return false;
 //        }, false);
 
-        var scene = d3.select("a-scene");
+        var scene = document.querySelector("a-scene");
 
-        self.CONSTANTS = {
-            'MENU_PITCH': -90,
-            'MENU_BEGIN_PITCH': -20,
-            'CURSOR_ON_COLOR': "white",
-            'CURSOR_OFF_COLOR': "yellow",
-            'CURSOR_ON_SCALE': 1.0,
-            'CURSOR_OFF_SCALE': 0.5,
-            'THUMBNAIL_SHAPE': "circle",
-            'THUMBNAIL_RADIUS': 0.5,
-            'DEBUG': true
-        };
+        var thumbnail = document.createElement("a-entity");
 
-
-
-        var thumbnail = scene.append("a-entity").attr("uipack-thumbnail", {
+        thumbnail.setAttribute("uipack-thumbnail", {
             src: "media/photos/riells.jpg",
             yaw: 90,
             elevation: 2.0,
             distance: 3.0,
-            shape: self.CONSTANTS.THUMBNAIL_SHAPE,
-            radius: self.CONSTANTS.THUMBNAIL_RADIUS,
+            shape: DATAVERSES.constants.THUMBNAIL_SHAPE,
+            radius: DATAVERSES.constants.THUMBNAIL_RADIUS,
             opacity: 0.85,
             text: "hola como estamos eh",
             destination: 1
-        }).classed("thumbnail", true);
+        });
+
+        scene.appendChild(thumbnail);
+
 //
-        thumbnail.node().addEventListener("clicked", function(e){
+        thumbnail.addEventListener("clicked", function(e){
 
             console.log("clickado");
 

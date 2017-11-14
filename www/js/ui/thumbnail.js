@@ -23,6 +23,10 @@ AFRAME.registerComponent('uipack-thumbnail', {
 
     var self = this;
 
+    // Class the element
+
+    this.el.setAttribute("class", "uipack uipack-thumbnail");
+
     // Circle or plane?
 
 

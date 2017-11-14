@@ -48,6 +48,66 @@ DATAVERSE.renderer.prototype = {
 
     },
 
+    // Renders all hotspot links
+
+    'render_links': function(){
+
+        var self = this;
+
+        var scene_name = self.main.state.state.actual_scene;
+
+        if(scene_name in self.main.state.state.links){
+
+            console.log("RENDERIZANDO LOS LINKS", self.main.state.state.links[scene_name]);
+
+            var links = self.main.state.state.links[scene_name];
+
+            links.forEach(function(d,i){
+
+                console.log("RENDERIZANDO LINK ", d);
+
+                // Create ui thumbnail
+
+                var thumbnail = document.createElement("a-entity");
+
+                thumbnail.setAttribute("uipack-thumbnail", {
+                    src: d.thumbnail,
+                    yaw: d.yaw,
+                    elevation: d.elevation,
+                    distance: d.distance,
+                    shape: DATAVERSES.constants.THUMBNAIL_SHAPE,
+                    radius: DATAVERSES.constants.THUMBNAIL_RADIUS,
+                    opacity: 0.85,
+                    text: d.text,
+                    destination: d.target
+                });
+
+                self.scene.appendChild(thumbnail);
+
+                // Attach event
+
+                thumbnail.addEventListener("clicked", function(e){
+
+                    console.log("clickado");
+
+                    console.log(e.detail);
+
+                    // Change actual scene to destination
+
+                    self.main.state.state.actual_scene = e.detail.destination;
+
+                    self.render_scene();
+
+
+                });
+
+
+            });
+
+        }
+
+    },
+
     // Renders a scene
 
     'render_scene': function(){
@@ -67,10 +127,21 @@ DATAVERSE.renderer.prototype = {
 
         // Remove last component
 
-        if (self.actual_scene_component){
+        if (self.actual_scene_component) {
             self.scene.removeChild(self.actual_scene_component);
         }
 
+        // Remove all UI elements
+
+        document.querySelectorAll(".uipack").forEach(function(d,i){
+
+            d.parentNode.removeChild(d);
+
+        });
+
+        // Render links
+
+        self.render_links();
 
         // Insert scene component
 

@@ -26,6 +26,10 @@ AFRAME.registerComponent('uipack-button', {
 
     this.el.appendChild(self.button);
 
+    // Class the element
+
+    this.el.setAttribute("class", "uipack uipack-button");
+
     // Hover flag and events...
 
     self.first_hover = true;
