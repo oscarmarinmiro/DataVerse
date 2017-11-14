@@ -98,6 +98,10 @@ DATAVERSE.renderer.prototype = {
             my_params.title = self.actual_scene_data.title;
             my_params.explain = self.actual_scene_data.explain;
 
+            // Propagate spreadsheet 'subtype' column to component 'type' param
+
+            if(self.actual_scene_data.subtype.length > 1) my_params.type = self.actual_scene_data.subtype;
+
 //            // Set sky
 //
 //            // color ?
