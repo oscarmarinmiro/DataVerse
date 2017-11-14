@@ -1,7 +1,7 @@
-var DATAVERSES = DATAVERSES || {};
+var DATAVERSE = DATAVERSE || {};
 
 
-DATAVERSES.constants = {
+DATAVERSE.constants = {
             "GOOGLE_UA": "UA-XXXXX-X",
             'MENU_PITCH': -90,
             'MENU_BEGIN_PITCH': -20,

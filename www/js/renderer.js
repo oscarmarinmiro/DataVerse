@@ -75,8 +75,8 @@ DATAVERSE.renderer.prototype = {
                     yaw: d.yaw,
                     elevation: d.elevation,
                     distance: d.distance,
-                    shape: DATAVERSES.constants.THUMBNAIL_SHAPE,
-                    radius: DATAVERSES.constants.THUMBNAIL_RADIUS,
+                    shape: DATAVERSE.constants.THUMBNAIL_SHAPE,
+                    radius: DATAVERSE.constants.THUMBNAIL_RADIUS,
                     opacity: 0.85,
                     text: d.text,
                     destination: d.target
@@ -217,6 +217,15 @@ DATAVERSE.renderer.prototype = {
             self.actual_scene_component.setAttribute(self.actual_scene_data.type, my_params);
 
             self.scene.appendChild(self.actual_scene_component);
+
+            // Set scene
+
+            self.main.urls.set_params({scene: self.main.state.state.actual_scene});
+
+             var obj = { Title: "", Url: window.location.href};
+             history.pushState(obj, obj.Title, obj.Url);
+
+//            history.pushState({}, "", window.location.href);
         }
 
      }
