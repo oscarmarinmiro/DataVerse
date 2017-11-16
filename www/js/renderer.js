@@ -48,6 +48,40 @@ DATAVERSE.renderer.prototype = {
 
     },
 
+    // Renders all labels
+
+    'render_labels': function() {
+
+        var self = this;
+
+        var scene_name = self.main.state.state.actual_scene;
+
+        var labels = self.main.state.state.labels[scene_name];
+
+        if(scene_name in self.main.state.state.labels) {
+
+            labels.forEach(function (d, i) {
+
+                var label = document.createElement("a-entity");
+
+                label.setAttribute("uipack-infolabel", {
+                    yaw: d.yaw,
+                    elevation: d.elevation,
+                    distance: d.distance,
+                    title: d.title,
+                    color: d.color,
+                    background: d.background,
+                    width: d.width,
+                    text: d.text.length > 2 ? d.text : ""
+                });
+
+                self.scene.appendChild(label);
+
+            });
+        }
+
+    },
+
     // Renders all hotspot links
 
     'render_links': function(){
@@ -142,6 +176,10 @@ DATAVERSE.renderer.prototype = {
         // Render links
 
         self.render_links();
+
+        // Render labels
+
+        self.render_labels();
 
         // Insert scene component
 

@@ -18,6 +18,10 @@ AFRAME.registerComponent('uipack-infolabel', {
 
     var self = this;
 
+    // Class the element
+
+    this.el.setAttribute("class", "uipack uipack-thumbnail");
+
     self.title = document.createElement("a-entity");
 
     self.title.setAttribute("text", {
@@ -147,6 +151,9 @@ AFRAME.registerComponent('uipack-infolabel', {
     self.x_position = self.data.distance * Math.cos(this.data.yaw * Math.PI/180.0);
     self.y_position = self.data.elevation;
     self.z_position = -self.data.distance * Math.sin(this.data.yaw * Math.PI/180.0);
+
+    self.el.setAttribute("rotation", {x: 0, y: this.data.yaw - 90, z: 0});
+
 
     // Rotate!!
 
