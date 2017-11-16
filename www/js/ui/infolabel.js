@@ -1,156 +1,103 @@
 
-if (typeof AFRAME === 'undefined') {
-  throw new Error('Component attempted to register before AFRAME was available.');
-}
-
-var UIPACK_CALLBACKS = UIPACK_CALLBACKS || {};
-
-var UIPACK_CONSTANTS = UIPACK_CONSTANTS || {};
-
-UIPACK_CONSTANTS.label_distance = 3.1;
-UIPACK_CONSTANTS.label_front_gap = 0.1;
-
-// FROM aframe-bmfont-text-component scaling
-UIPACK_CONSTANTS.font_scaling = 0.005;
-
-
-/**
- ** UI-thumbnail
- */
-
-
 AFRAME.registerComponent('uipack-infolabel', {
     schema: {
-        pitch: { type: 'number', default: 0.0},
-        width: { type: 'number', default: 2.0},
         yaw: { type: 'number', default: 0.0},
+        elevation: { type: 'number', default: UIPACK_CONSTANTS.label_elevation},
+        distance: {type: 'number', default: UIPACK_CONSTANTS.label_distance},
+        width: {type: 'number', default: UIPACK_CONSTANTS.label_width},
         title: { type: 'string', default:""},
         title_scale: { type: 'number', default: 1.0},
-        title_color: { type: 'string', default: "#FFF"},
-        title_background: { type: 'string', default: "#000"},
         text: { type: 'string', default:""},
         text_scale: { type: 'number', default: 0.5},
-        text_color: { type: 'string', default: "#FFF"},
-        text_background: { type: 'string', default: "#000"}
-
+        color: { type: 'string', default: "#FFF"},
+        background: { type: 'string', default: "#000"}
     },
-
-  /**
-   * Called once when component is attached. Generally for initial setup.
-   */
 
   init: function () {
 
 
     var self = this;
 
-
-    // Create label
-
     self.title = document.createElement("a-entity");
 
-    self.title.setAttribute("bmfont-text", AFRAME.utils.styleParser.stringify({text: self.data.title, color: self.data.title_color, align: "left", mode: "nowrap", width:0}));
-    self.title.setAttribute("position", "0 0 " + UIPACK_CONSTANTS.label_front_gap);
-    self.title.setAttribute("scale", [this.data.title_scale, this.data.title_scale, this.data.title_scale].join(" "));
+    self.title.setAttribute("text", {
+                   'align': 'center',
+                   'width': self.data.width,
+                   'value': "\n" + self.data.title + "\n\n"
+                });
 
+    self.title.setAttribute("geometry", {
+        'primitive': 'plane',
+        'height': 'auto',
+        'width': 'auto'
+    });
 
-    self.title.addEventListener("font-loaded", function(){
-
-        var font_factor = UIPACK_CONSTANTS.font_scaling * self.data.title_scale;
-
-        // On font loaded, recalculate widths and heights of rects
-
-        var width = self.title.object3D.children[0].geometry.layout._width;
-        var height = self.title.object3D.children[0].geometry.layout._height;
-
-        self.title.setAttribute("position", -width*(font_factor/2) + " " +  (height*font_factor * 0.8) + " " + UIPACK_CONSTANTS.label_front_gap);
-
-        // If width > self.data.width, arrange new width (higher) for text_rect
-
-        var rect_width = width*font_factor > self.data.width ? width*font_factor * 1.2 : self.data.width;
-
-        self.title_rect.setAttribute("width", rect_width);
-        self.title_rect.setAttribute("height", height*font_factor*1.2);
-
-        self.title_rect.setAttribute("position", "0 " + (height*font_factor*1.2)+ " 0");
-
-        if (self.data.text != "") {
-            self.icon.setAttribute("position", "0 " + "0" + " 0.2");
-        }
-
-        // Once dimensions are clear, make title rect visible
-
-        self.title_rect.setAttribute("visible", true);
-
+    self.title.setAttribute("material", {
+        'color': self.data.background
     });
 
 
-    // Create label_rect
 
-    self.title_rect = document.createElement("a-plane");
-
-
-    // Until dimensions are not clear, make title rect not visible
-
-    self.title_rect.setAttribute("visible", false);
-
-
-    // Append both
 
     self.el.appendChild(self.title);
-    self.el.appendChild(self.title_rect);
 
 
     // If text exists, draw it + background rect
 
     if (self.data.text != ""){
 
-        // Create both, hide and append
+          // Create text, hide and append
 
-        self.text = document.createElement("a-entity");
-        self.text_rect = document.createElement("a-plane");
+          self.text = document.createElement("a-entity");
 
-        self.text.setAttribute("bmfont-text", AFRAME.utils.styleParser.stringify({text: self.data.text, color: self.data.text_color, align: "left", width: self.data.width/(UIPACK_CONSTANTS.font_scaling*self.data.text_scale)*0.9}));
-        self.text.setAttribute("position", "0 0 " + UIPACK_CONSTANTS.label_front_gap);
-        self.text.setAttribute("scale", [this.data.text_scale, this.data.text_scale, this.data.text_scale].join(" "));
+          self.text.setAttribute("text", {
+                       'align': 'center',
+                       'width': self.data.width,
+                       'value': "\n" + self.data.text + "\n\n"
+          });
 
+          self.text.setAttribute("geometry", {
+                'primitive': 'plane',
+                'height': 'auto',
+                'width': 'auto'
+          });
+
+          self.text.setAttribute("material", {
+                'color': self.data.background
+          });
+
+
+          self.text.addEventListener("textfontset", function(){
+
+              console.log(self.title.getAttribute("geometry"));
+
+              if(self.title.getAttribute("geometry").height !== undefined){
+                  self.text.setAttribute("position", {x:0, y: - (self.title.getAttribute("geometry").height + self.text.getAttribute("geometry").height/2), z: 0})
+                  self.icon.setAttribute("position", {x:0, y: -self.title.getAttribute("geometry").height/2, z:0});
+
+              }
+              else {
+                  self.title.addEventListener("textfontset", function(){
+                    self.text.setAttribute("position", {x:0, y: - (self.title.getAttribute("geometry").height + self.text.getAttribute("geometry").height/2), z: 0})
+                    self.icon.setAttribute("position", {x:0, y: -self.title.getAttribute("geometry").height/2, z:0});
+                  })
+              }
+          });
 
         self.text.setAttribute("visible", "false");
-        self.text_rect.setAttribute("visible", "false");
 
         self.open = false;
 
         self.el.appendChild(self.text);
-        self.el.appendChild(self.text_rect);
+
 
         // Only with data.text, we draw a button to show/hide it
 
         self.icon = document.createElement("a-entity");
 
-        self.icon.setAttribute("uipack-button", AFRAME.utils.styleParser.stringify({icon_name: "flat/info", "pitch": 0, "yaw": 0}));
+        self.icon.setAttribute("uipack-button", {icon_name: "info.png", "pitch": 0, "yaw": 0});
 
         this.el.appendChild(self.icon);
-
-
-        // On font-loaded
-
-        self.text.addEventListener("font-loaded", function(){
-
-              var font_factor = UIPACK_CONSTANTS.font_scaling * self.data.text_scale;
-
-              var height = self.text.object3D.children[0].geometry.layout._height;
-
-              self.text.setAttribute("position", -(self.data.width*0.9/2) + " " +  (-height*font_factor - UIPACK_CONSTANTS.button_radius*2 ) + " " + UIPACK_CONSTANTS.label_front_gap);
-
-              var rect_height = height*font_factor*1.2;
-
-              self.text_rect.setAttribute("width", self.data.width);
-              self.text_rect.setAttribute("height", rect_height);
-
-              self.text_rect.setAttribute("position", 0 + " " + (-(rect_height/2) - UIPACK_CONSTANTS.button_radius*2) +" 0");
-
-        });
-
 
         // On icon clicked
 
@@ -159,11 +106,10 @@ AFRAME.registerComponent('uipack-infolabel', {
                         if(!self.open) {
 
                             self.text.setAttribute("visible", "true");
-                            self.text_rect.setAttribute("visible", "true");
 
                             // Change icon to 'close' icon and flag it
 
-                            AFRAME.utils.entity.setComponentProperty(self.icon, "uipack-button.icon_name", "flat/cancel-1");
+                            self.icon.setAttribute("uipack-button", {icon_name: "close.png"});
 
                             self.open = true;
 
@@ -171,18 +117,16 @@ AFRAME.registerComponent('uipack-infolabel', {
                         else {
 
                             self.text.setAttribute("visible", "false");
-                            self.text_rect.setAttribute("visible", "false");
 
                             // Change icon to 'close'
 
-                            AFRAME.utils.entity.setComponentProperty(self.icon, "uipack-button.icon_name", "flat/info");
+                            self.icon.setAttribute("uipack-button", {icon_name: "info.png"});
 
                             self.open = false;
 
                         }
 
                     }, false);
-
 
     }
 
@@ -200,57 +144,63 @@ AFRAME.registerComponent('uipack-infolabel', {
 
     // Position element
 
-    self.y_position = UIPACK_CONSTANTS.label_distance * Math.sin(this.data.pitch * Math.PI/180.0);
-    self.x_position = UIPACK_CONSTANTS.label_distance * Math.cos(this.data.pitch * Math.PI/180.0) * Math.cos(this.data.yaw * Math.PI/180.0);
-    self.z_position = -UIPACK_CONSTANTS.label_distance * Math.cos(this.data.pitch * Math.PI/180.0)* Math.sin(this.data.yaw * Math.PI/180.0);
+    self.x_position = self.data.distance * Math.cos(this.data.yaw * Math.PI/180.0);
+    self.y_position = self.data.elevation;
+    self.z_position = -self.data.distance * Math.sin(this.data.yaw * Math.PI/180.0);
+
+    // Rotate!!
+
+    this.el.setAttribute("position", {x: self.x_position, y: self.y_position, z: self.z_position});
+
+
+    // Change texts, colors and widths
+
+    self.title.setAttribute("text", {
+                   'color': self.data.color,
+                   'width': self.data.width,
+                   'value': "\n" + self.data.title + "\n\n"
+
+    }, false);
+
+    self.title.setAttribute("material", {
+        'color': self.data.background
+    }, false);
+
+    // Offset a little texts to not fight for 'z' with button
+
+    self.title.setAttribute("position", {x:0, y:0, z: -UIPACK_CONSTANTS.button_offset});
+
 
     // Change background colors
 
     if (self.data.text != "") {
-        self.text_rect.setAttribute("color", self.data.text_background);
+        self.text.setAttribute("text", {
+                       'color': self.data.color,
+                       'width': self.data.width,
+                       'value': "\n" + self.data.text + "\n\n"
+
+        }, false);
+
+        self.text.setAttribute("material", {
+            'color': self.data.background
+        }, false);
+
+        // Offset a little texts to not fight for 'z' with button
+
+        self.text.setAttribute("position", {x:0, y:0, z: -UIPACK_CONSTANTS.button_offset});
+
     }
 
-    self.title_rect.setAttribute("color", self.data.title_background);
 
-    // BMFONT texts updates are NOT YET IMPLEMENTED in update
-
-    // Update position
-
-    this.el.setAttribute("position", [self.x_position, self.y_position, self.z_position].join(" "));
-
-    this.el.object3D.lookAt(new THREE.Vector3( 0, 0, 0));
 
   },
-//
-//  /**
-//   * Called when a component is removed (e.g., via removeAttribute).
-//   * Generally undoes all modifications to the entity.
-//   */
-//  remove: function () { },
-//
-//  /**
-//   * Called on each scene tick.
-//   */
   tick: function (t) {
 
-//    // Rotate towards camera
-//
-//    if(this.el.sceneEl.camera) {
-//        this.el.object3D.lookAt(new THREE.Vector3(0,0,0));
-//    }
-
   },
 
-  /**
-   * Called when entity pauses.
-   * Use to stop or remove any dynamic or background behavior such as events.
-   */
   pause: function () { },
 
-  /**
-   * Called when entity resumes.
-   * Use to continue or add any dynamic or background behavior such as events.
-   */
   play: function () { }
+
 });
 

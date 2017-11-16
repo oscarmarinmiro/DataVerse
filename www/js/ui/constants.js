@@ -8,5 +8,9 @@ var UIPACK_CONSTANTS = {
     arc_color: "red",
     thumbnail_distance:3.1,
     thumbnail_elevation: 1.8,
-    thumbnail_icon: "arrow-up.png"
+    thumbnail_icon: "arrow-up.png",
+    label_distance: 3.1,
+    label_elevation: 1.8,
+    label_front_gap : 0.1,
+    label_width: 3.0
 };

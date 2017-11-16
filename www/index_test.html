@@ -16,7 +16,6 @@
         <script src="js/ui/constants.js"></script>
         <script src="js/ui/button.js"></script>
         <script src="js/ui/thumbnail.js"></script>
-        <script src="js/ui/thumbgrid.js"></script>
         <script src="js/ui/infolabel.js"></script>
         <script src="js/ui/textbutton.js"></script>
         <script src="js/ui/menu.js"></script>
@@ -53,40 +52,57 @@
 //            return false;
 //        }, false);
 
+//        var scene = document.querySelector("a-scene");
+//
+//        var thumbnail = document.createElement("a-entity");
+//
+//        thumbnail.setAttribute("uipack-thumbnail", {
+//            src: "media/photos/riells.jpg",
+//            yaw: 90,
+//            elevation: 2.0,
+//            distance: 3.0,
+//            shape: DATAVERSES.constants.THUMBNAIL_SHAPE,
+//            radius: DATAVERSES.constants.THUMBNAIL_RADIUS,
+//            opacity: 0.85,
+//            text: "hola como estamos eh",
+//            destination: 1
+//        });
+//
+//        scene.appendChild(thumbnail);
+//
+////
+//        thumbnail.addEventListener("clicked", function(e){
+//
+//            console.log("clickado");
+//
+//            console.log(e.detail);
+//
+////            var destination = e.detail.name;
+////
+////            self.clear_scene();
+////
+////            self.last_scene = self.scene_name;
+////
+////            self.land_scene(destination);
+//
+//        });
+
         var scene = document.querySelector("a-scene");
 
         var thumbnail = document.createElement("a-entity");
 
-        thumbnail.setAttribute("uipack-thumbnail", {
-            src: "media/photos/riells.jpg",
+        thumbnail.setAttribute("uipack-infolabel", {
             yaw: 90,
             elevation: 2.0,
             distance: 3.0,
-            shape: DATAVERSES.constants.THUMBNAIL_SHAPE,
-            radius: DATAVERSES.constants.THUMBNAIL_RADIUS,
-            opacity: 0.85,
-            text: "hola como estamos eh",
-            destination: 1
+            title: "example title",
+            color: "white",
+            background: "black",
+            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         });
 
         scene.appendChild(thumbnail);
 
-//
-        thumbnail.addEventListener("clicked", function(e){
-
-            console.log("clickado");
-
-            console.log(e.detail);
-
-//            var destination = e.detail.name;
-//
-//            self.clear_scene();
-//
-//            self.last_scene = self.scene_name;
-//
-//            self.land_scene(destination);
-
-        });
 
     </script>
 
