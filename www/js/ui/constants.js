@@ -1,5 +1,15 @@
 
 var UIPACK_CONSTANTS = {
+    menu_pitch: -90,
+    menu_begin_pitch: -20,
+    menu_distance : 3.0,
+    menu_tick_check: 25,
+    offset_player : 1.5,
+    offset_buttons : 0.9,
+    offset_icons : 0.3,
+    icon_spacing : 0.1,
+    button_spacing : 0.1,
+    menu_button_width : 3.0,
     icon_path :  "bower_components/font-awesome-svg-png/white/png/128/",
     button_radius : 0.1,
     button_distance : 2.9,

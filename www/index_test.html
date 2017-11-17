@@ -26,6 +26,7 @@
     <body>
 
     <a-scene>
+        <a-sky color="blue"></a-sky>
 
         <!--<a-link href="index.html" title="My Homepage" position="0 2.0 -5.0" highlighted="true" visualAspectEnabled="false" on="none"></a-link>-->
         <a-camera><a-cursor color="white"></a-cursor></a-camera>
@@ -103,28 +104,51 @@
 //
 //        scene.appendChild(thumbnail);
 
+//        var scene = document.querySelector("a-scene");
+//
+//        var thumbnail = document.createElement("a-entity");
+//
+//        thumbnail.setAttribute("uipack-textbutton", {
+//            yaw: 90,
+//            elevation: 2.0,
+//            distance: 1.0,
+//            width: 3.0,
+//            color: "white",
+//            background: "blue",
+//            text: "Button test"
+//        });
+//
+//        scene.appendChild(thumbnail);
+//
+//        thumbnail.addEventListener("clicked", function(e){
+//
+//            console.log("thumbnail clickado");
+//
+//        });
+
+        console.log("HELLO");
+
         var scene = document.querySelector("a-scene");
 
-        var thumbnail = document.createElement("a-entity");
+        var menu = document.createElement("a-entity");
 
-        thumbnail.setAttribute("uipack-textbutton", {
-            yaw: 90,
-            elevation: 2.0,
-            distance: 1.0,
-            width: 3.0,
-            color: "white",
-            background: "blue",
-            text: "Button test"
+        menu.setAttribute("uipack-menu", {
+            icons: ["arrow-left.png", "home.png"],
+            buttons: ["Ver lugares", "Ver videos"]
         });
 
-        scene.appendChild(thumbnail);
 
-        thumbnail.addEventListener("clicked", function(e){
+        menu.addEventListener("clicked", function(e, data){
 
-            console.log("thumbnail clickado");
+            console.log("CLICKADO");
+
+            console.log(e,data);
 
         });
 
+
+
+        scene.appendChild(menu);
 
 
     </script>

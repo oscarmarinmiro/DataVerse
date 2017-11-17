@@ -20,10 +20,13 @@ AFRAME.registerComponent('uipack-textbutton', {
 
             var self = this;
 
-
             // Create label
 
             self.text = document.createElement("a-entity");
+
+            // Class the element
+
+            this.el.setAttribute("class", "uipack uipack-textbutton");
 
 
             self.text.setAttribute("text", {

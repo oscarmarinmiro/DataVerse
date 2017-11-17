@@ -1,32 +1,4 @@
 
-if (typeof AFRAME === 'undefined') {
-  throw new Error('Component attempted to register before AFRAME was available.');
-}
-
-var UIPACK_CALLBACKS = UIPACK_CALLBACKS || {};
-
-var UIPACK_CONSTANTS = UIPACK_CONSTANTS || {};
-
-UIPACK_CONSTANTS.menu_distance = 3.0;
-
-UIPACK_CONSTANTS.offset_player = 1.5;
-
-UIPACK_CONSTANTS.offset_buttons = 0.9;
-
-UIPACK_CONSTANTS.offset_icons = 0.3;
-
-UIPACK_CONSTANTS.icon_spacing = 0.1;
-
-UIPACK_CONSTANTS.button_spacing = 0.1;
-
-UIPACK_CONSTANTS.menu_button_width = 1.3;
-
-
-/**
- ** UI-thumbnail
- */
-
-
 AFRAME.registerComponent('uipack-menu', {
     schema: {
         icons: {type: 'array'},
@@ -38,18 +10,21 @@ AFRAME.registerComponent('uipack-menu', {
 
     },
 
-  /**
-   * Called once when component is attached. Generally for initial setup.
-   */
   init: function () {
 
     var self = this;
+
+    console.log("INIT MENU");
 
     // Opening / (closing?) icon
 
     self.open_icon = document.createElement("a-entity");
 
-    self.open_icon.setAttribute("uipack-button", AFRAME.utils.styleParser.stringify({icon_name: "flat/menu"}));
+    // Class the element
+
+    self.open_icon.setAttribute("class", "uipack uipack-menu");
+
+    self.open_icon.setAttribute("uipack-button", {icon_name: "bars.png"});
 
     self.el.appendChild(self.open_icon);
 
@@ -106,7 +81,7 @@ AFRAME.registerComponent('uipack-menu', {
 
     self.menu_group.appendChild(self.button_parent);
 
-    for(var i=0; i < self.data.buttons.length; i++){
+    for(i=0; i < self.data.buttons.length; i++){
 
         var my_button = document.createElement("a-entity");
 
@@ -143,7 +118,7 @@ AFRAME.registerComponent('uipack-menu', {
 
             // Close icon should be now a menu icon
 
-            self.open_icon.setAttribute("uipack-button", "icon_name", "flat/menu");
+            self.open_icon.setAttribute("uipack-button", "icon_name", "bars.png");
 
             // Mark menu as closed
 
@@ -160,7 +135,7 @@ AFRAME.registerComponent('uipack-menu', {
 
             // Open icon should be now a 'close'
 
-            self.open_icon.setAttribute("uipack-button", "icon_name", "flat/cancel-1");
+            self.open_icon.setAttribute("uipack-button", "icon_name", "close.png");
 
             // Mark menu as open
 
@@ -200,10 +175,10 @@ AFRAME.registerComponent('uipack-menu', {
 
     var button_row_half_width = ((self.button_row.length-1)*(UIPACK_CONSTANTS.menu_button_width) + (self.button_row.length - 1) * UIPACK_CONSTANTS.button_spacing)/2.0;
 
-    for(var i=0; i< self.icon_row.length; i++){
+    for(i=0; i< self.icon_row.length; i++){
       //          <!--<a-entity uipack-button="icon_name: interface/airplane; pitch:30.0; yaw:270.0" id="b"></a-entity>-->
 
-      self.button_row[i].setAttribute("uipack-textbutton", {text: self.data.buttons[i], width: UIPACK_CONSTANTS.menu_button_width, text_scale: 1.0, text_color: "#FFF", text_background: "#000"});
+      self.button_row[i].setAttribute("uipack-textbutton", {text: self.data.buttons[i], width: UIPACK_CONSTANTS.menu_button_width, color: "#FFF", background: "#000"});
 
       self.button_row[i].setAttribute("position", (i*(UIPACK_CONSTANTS.menu_button_width + UIPACK_CONSTANTS.button_spacing )) - button_row_half_width + " " +  UIPACK_CONSTANTS.offset_buttons +" 0");
     }
@@ -213,9 +188,9 @@ AFRAME.registerComponent('uipack-menu', {
 
     if(self.data.media_id != "") {
 
-        self.media_controls.setAttribute("uipack-mediacontrols", {'src': "#" + self.data.media_id});
-
-        self.media_controls.setAttribute("position", "0 " + UIPACK_CONSTANTS.offset_player + " 0");
+//        self.media_controls.setAttribute("uipack-mediacontrols", {'src': "#" + self.data.media_id});
+//
+//        self.media_controls.setAttribute("position", "0 " + UIPACK_CONSTANTS.offset_player + " 0");
     }
 
     // Lookat camera
@@ -240,7 +215,7 @@ AFRAME.registerComponent('uipack-menu', {
 
       self.frame_count++;
 
-      if(self.frame_count % 25 == 0){
+      if(self.frame_count % UIPACK_CONSTANTS.menu_tick_check == 0){
 
         // Get camera pitch and yaw
 
@@ -285,12 +260,6 @@ AFRAME.registerComponent('uipack-menu', {
         }
 
       }
-
-//    // Rotate towards camera
-//
-//    if(this.el.sceneEl.camera) {
-//        this.el.object3D.lookAt(new THREE.Vector3(0,0,0));
-//    }
 
   },
 
