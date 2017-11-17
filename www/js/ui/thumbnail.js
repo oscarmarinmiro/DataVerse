@@ -137,7 +137,7 @@ AFRAME.registerComponent('uipack-thumbnail', {
 
         self.icon.setAttribute("uipack-button",{icon_name: UIPACK_CONSTANTS.thumbnail_icon, "elevation": 0, "yaw": 0});
 
-        self.icon.setAttribute("position", "0 " + "0" + " 0.2");
+        self.icon.setAttribute("position", "0 " + "0" + " " + UIPACK_CONSTANTS.label_front_gap);
 
         if(self.text) self.text.setAttribute("position", {x: 0, y: this.data.height, z:0});
 
@@ -162,7 +162,7 @@ AFRAME.registerComponent('uipack-thumbnail', {
 
         self.icon.setAttribute("uipack-button", {icon_name: UIPACK_CONSTANTS.thumbnail_icon, "elevation": 0, "yaw": 0});
 
-        self.icon.setAttribute("position", "0 " + "0" + " 0.2");
+        self.icon.setAttribute("position", "0 " + "0" + " " + UIPACK_CONSTANTS.label_front_gap);
 
         if(self.text) self.text.setAttribute("position", {x: 0, y: this.data.radius*2.0, z:0});
 
