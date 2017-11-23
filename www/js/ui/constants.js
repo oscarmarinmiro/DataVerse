@@ -3,7 +3,7 @@ var UIPACK_CONSTANTS = {
     menu_pitch: -90,
     menu_begin_pitch: -20,
     menu_distance : 3.0,
-    menu_tick_check: 25,
+    menu_tick_check: 1,
     offset_player : 1.5,
     offset_buttons : 0.9,
     offset_icons : 0.3,

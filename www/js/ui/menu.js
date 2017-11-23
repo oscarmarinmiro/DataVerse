@@ -2,7 +2,7 @@
 AFRAME.registerComponent('uipack-menu', {
     schema: {
         icons: {type: 'array'},
-        buttons: {type: 'array'},
+        buttons: {type: 'array', default: []},
         media_id: {type: 'string', default: ""},
         pitch: { type: 'number', default: -70},
         pitch_max: { type: 'number', default: -50},
@@ -16,17 +16,27 @@ AFRAME.registerComponent('uipack-menu', {
 
     console.log("INIT MENU");
 
+    // Annotate pointer to camera on scene 'mounted'
+
+    self.el.sceneEl.addEventListener("loaded", function(e){
+        self.camera = self.el.sceneEl.camera;
+    });
+
+    // Class the element
+
+    self.el.setAttribute("class", "uipack uipack-menu");
+
+    self.container = document.createElement("a-entity");
+
+    self.el.appendChild(self.container);
+
     // Opening / (closing?) icon
 
     self.open_icon = document.createElement("a-entity");
 
-    // Class the element
-
-    self.open_icon.setAttribute("class", "uipack uipack-menu");
-
     self.open_icon.setAttribute("uipack-button", {icon_name: "bars.png"});
 
-    self.el.appendChild(self.open_icon);
+    self.container.appendChild(self.open_icon);
 
     // For keeping track of frame count in .tick()
 
@@ -48,7 +58,7 @@ AFRAME.registerComponent('uipack-menu', {
 
     self.menu_group.setAttribute("visible", false);
 
-    self.el.appendChild(self.menu_group);
+    self.container.appendChild(self.menu_group);
 
     // Arrays to store icon + button references
 
@@ -95,6 +105,8 @@ AFRAME.registerComponent('uipack-menu', {
 
         self.button_parent.appendChild(my_button);
     }
+
+    console.log("BUTTON ROW", self.button_row);
 
     // Create player (if needed)
 
@@ -175,7 +187,7 @@ AFRAME.registerComponent('uipack-menu', {
 
     var button_row_half_width = ((self.button_row.length-1)*(UIPACK_CONSTANTS.menu_button_width) + (self.button_row.length - 1) * UIPACK_CONSTANTS.button_spacing)/2.0;
 
-    for(i=0; i< self.icon_row.length; i++){
+    for(i=0; i< self.button_row.length; i++){
       //          <!--<a-entity uipack-button="icon_name: interface/airplane; pitch:30.0; yaw:270.0" id="b"></a-entity>-->
 
       self.button_row[i].setAttribute("uipack-textbutton", {text: self.data.buttons[i], width: UIPACK_CONSTANTS.menu_button_width, color: "#FFF", background: "#000"});
@@ -192,10 +204,6 @@ AFRAME.registerComponent('uipack-menu', {
 //
 //        self.media_controls.setAttribute("position", "0 " + UIPACK_CONSTANTS.offset_player + " 0");
     }
-
-    // Lookat camera
-
-    this.el.object3D.lookAt(new THREE.Vector3( 0, 0, 0));
 
 
   },
@@ -230,19 +238,21 @@ AFRAME.registerComponent('uipack-menu', {
         if(camera_pitch <  self.data.pitch_max && camera_pitch > self.data.pitch_min){
 
                 self.hidden = false;
+                console.log("SHOWING MENU");
         }
         else {
 
             if(!(self.open_menu)) {
 
                 self.hidden = true;
+                console.log("HIDING MENU");
             }
         }
 
         self.el.setAttribute("visible", !self.hidden);
 
 
-        // Only reposition following use look is menu is closed
+        // If menu closed but visible: synch rotation and position with camera
 
         if(!(self.open_menu) && !(self.hidden)) {
 
@@ -252,11 +262,37 @@ AFRAME.registerComponent('uipack-menu', {
             self.x_position = UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.cos(camera_yaw * Math.PI / 180.0);
             self.z_position = -UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.sin(camera_yaw * Math.PI / 180.0);
 
-            this.el.setAttribute("position", [self.x_position, self.y_position, self.z_position].join(" "));
+            this.container.setAttribute("position", [self.x_position, self.y_position, self.z_position].join(" "));
 
-            // And again, face to camera
+            // And again, face camera and pos
 
-            this.el.object3D.lookAt(new THREE.Vector3(0, 0, 0));
+            if(self.camera) {
+
+                var cam_position = self.camera.el.getAttribute("position");
+
+                self.el.setAttribute("position",{x: cam_position.x, y: cam_position.y, z: cam_position.z});
+                self.container.setAttribute("rotation",{x: camera_rotation.x, y: camera_rotation.y, z: 0});
+
+            }
+
+        }
+        else {
+
+            // If menu open, just synch camera position
+
+            if(self.open_menu && (!self.hidden)){
+
+                if(self.camera) {
+
+                    var cam_position = self.camera.el.getAttribute("position");
+
+
+                    self.el.setAttribute("position",{x: cam_position.x, y: cam_position.y, z: cam_position.z});
+
+                }
+
+
+            }
         }
 
       }

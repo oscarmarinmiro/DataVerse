@@ -142,6 +142,79 @@ DATAVERSE.renderer.prototype = {
 
     },
 
+    'render_menu': function(media_id){
+
+        var self = this;
+
+        // Add menu
+
+        self.menu = document.createElement("a-entity");
+
+        if(media_id!= null) {
+
+            self.menu.setAttribute("uipack-menu", {
+
+                icons: ["arrow-left.png", "home.png"], buttons: [], media_id: media_id
+
+            });
+
+        }
+        else {
+
+            self.menu.setAttribute("uipack-menu", {
+
+                icons: ["arrow-left.png", "home.png"],  buttons: []
+
+            });
+
+        }
+
+        self.scene.appendChild(self.menu);
+
+
+        // Events...
+
+        self.menu.addEventListener("clicked", function(e){
+
+            // Home
+
+            if(e.detail.type === "icon" && e.detail.index == 1){
+
+                console.log("CLICKADO HOME");
+
+
+//                console.log("SELF VIDEO EN ICON");
+//                console.log(self.video);
+
+//                if(self.video){
+//                    self.video.node().pause();
+//                }
+
+//                self.clear_scene();
+//
+//                self.last_scene = self.scene_name;
+//
+//                self.land_scene(self.config.landing);
+
+            }
+
+            // TODO: real history stack of last_scene for 'back'. now after one back it's a loop
+
+            if(e.detail.type === "icon" && e.detail.index == 0){
+
+                console.log("CLICKADO BACK");
+
+//                self.clear_scene();
+//
+//                self.land_scene(self.last_scene);
+
+            }
+
+        });
+
+    },
+
+
     // Renders a scene
 
     'render_scene': function(){
@@ -180,6 +253,10 @@ DATAVERSE.renderer.prototype = {
         // Render labels
 
         self.render_labels();
+
+        // Render menu
+
+        self.render_menu();
 
         // Insert scene component
 
