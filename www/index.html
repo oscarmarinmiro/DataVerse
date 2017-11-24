@@ -44,6 +44,15 @@
     <!--</a-scene>-->
 
         <script>
+
+            // This is to force reload on 'artificially inserted' history entries...
+
+            window.onpopstate = function(event) {
+                if(event && event.state) {
+                    location.reload();
+                }
+            };
+
             var main = new DATAVERSE.main({'debug': false, 'source': "https://docs.google.com/spreadsheets/d/1Bm0u5FeHbVaAAzZtqVmG4B8benAVptsFvQnKPub3OJE/pubhtml"});
         </script>
 

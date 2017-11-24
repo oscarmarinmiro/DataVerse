@@ -130,6 +130,10 @@ DATAVERSE.renderer.prototype = {
 
                     self.main.state.state.scene_history.push(self.main.state.state.actual_scene);
 
+                     var obj = { Title: "", Url: window.location.origin + window.location.pathname + "?scene=" + self.main.state.state.actual_scene};
+                     history.pushState(obj, obj.Title, obj.Url);
+
+
                     self.main.state.state.actual_scene = e.detail.destination;
 
                     self.render_scene();
@@ -189,6 +193,10 @@ DATAVERSE.renderer.prototype = {
                 // Push scene in history, and point to home scene
 
                 self.main.state.state.scene_history.push(self.main.state.state.actual_scene);
+
+                var obj = { Title: "", Url: window.location.origin + window.location.pathname + "?scene=" + self.main.state.state.actual_scene};
+                history.pushState(obj, obj.Title, obj.Url);
+
 
                 self.main.state.state.actual_scene = self.main.state.state.home_scene;
 
@@ -372,9 +380,6 @@ DATAVERSE.renderer.prototype = {
             // Set scene
 
             self.main.urls.set_params({scene: self.main.state.state.actual_scene});
-
-             var obj = { Title: "", Url: window.location.href};
-             history.pushState(obj, obj.Title, obj.Url);
 
 //            history.pushState({}, "", window.location.href);
         }
