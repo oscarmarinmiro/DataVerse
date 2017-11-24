@@ -41,7 +41,7 @@ DATAVERSE.main = function(options) {
 
             }
             else {
-                console.log("EN EL ELSE DEL MAIN");
+                console.log("EN EL ELSE DEL MAIN", self.state);
 
                 console.log(self.state.state.scenes);
 
@@ -51,7 +51,7 @@ DATAVERSE.main = function(options) {
 
                 self.renderer.init_scenes();
 
-                // Go to first scene
+                // Go to first scene with false flag (change of scene not coming from the 'back' button)
 
                 self.renderer.render_scene();
 

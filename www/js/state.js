@@ -10,7 +10,7 @@ DATAVERSE.state = function(options, parent, callback){
 
     self.options = options;
 
-    self.state = {'actual_scene': self.main.urls.get_params().scene ? self.main.urls.get_params().scene: 0};
+    self.state = {'actual_scene': self.main.urls.get_params().scene ? parseInt(self.main.urls.get_params().scene, 10): 0, 'scene_history': [] };
 
     self.load_app_data(callback);
 
@@ -90,6 +90,10 @@ DATAVERSE.state.prototype = {
                     var indexed_links = {};
 
                     var indexed_labels = {};
+
+                    // Store home scene for menu interaction
+
+                    self.state.home_scene = self.state.scenes[0].number;
 
                     self.state.scenes.forEach(function(d,i){
 

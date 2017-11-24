@@ -126,12 +126,13 @@ DATAVERSE.renderer.prototype = {
 
                     console.log(e.detail);
 
-                    // Change actual scene to destination
+                    // Push scene in history and change actual scene to destination
+
+                    self.main.state.state.scene_history.push(self.main.state.state.actual_scene);
 
                     self.main.state.state.actual_scene = e.detail.destination;
 
                     self.render_scene();
-
 
                 });
 
@@ -150,11 +151,14 @@ DATAVERSE.renderer.prototype = {
 
         self.menu = document.createElement("a-entity");
 
+        var icons = self.main.state.state.scene_history.length == 0 ? {'icons': ["home.png"], 'names': ["home"]}: {'icons': ["arrow-left.png","home.png"], 'names': ["back","home"]};
+
+
         if(media_id!= null) {
 
             self.menu.setAttribute("uipack-menu", {
 
-                icons: ["arrow-left.png", "home.png"], buttons: [], media_id: media_id
+                icons: icons.icons, buttons: [], media_id: media_id
 
             });
 
@@ -163,7 +167,7 @@ DATAVERSE.renderer.prototype = {
 
             self.menu.setAttribute("uipack-menu", {
 
-                icons: ["arrow-left.png", "home.png"],  buttons: []
+                icons: icons.icons,  buttons: []
 
             });
 
@@ -178,9 +182,18 @@ DATAVERSE.renderer.prototype = {
 
             // Home
 
-            if(e.detail.type === "icon" && e.detail.index == 1){
+            if(e.detail.type === "icon" && icons.names[e.detail.index] === "home"){
 
                 console.log("CLICKADO HOME");
+
+                // Push scene in history, and point to home scene
+
+                self.main.state.state.scene_history.push(self.main.state.state.actual_scene);
+
+                self.main.state.state.actual_scene = self.main.state.state.home_scene;
+
+                self.render_scene();
+
 
 
 //                console.log("SELF VIDEO EN ICON");
@@ -200,9 +213,20 @@ DATAVERSE.renderer.prototype = {
 
             // TODO: real history stack of last_scene for 'back'. now after one back it's a loop
 
-            if(e.detail.type === "icon" && e.detail.index == 0){
+            if(e.detail.type === "icon" && icons.names[e.detail.index] === "back"){
 
                 console.log("CLICKADO BACK");
+                console.log(self.main.state.state.scene_history);
+
+                if(self.main.state.state.scene_history.length > 0) {
+
+                    var back_scene = self.main.state.state.scene_history.pop();
+
+                    self.main.state.state.actual_scene = back_scene;
+
+                    self.render_scene();
+                }
+
 
 //                self.clear_scene();
 //
@@ -226,6 +250,8 @@ DATAVERSE.renderer.prototype = {
 
         console.log("REMOVING SCENE ELEMENTS", self.scene);
 
+        console.log("HISTORY", self.main.state.state.scene_history);
+
         // Removing last scene assets
 
         while (self.assets.firstChild) {
@@ -246,6 +272,20 @@ DATAVERSE.renderer.prototype = {
 
         });
 
+        // Insert scene component
+
+        self.actual_scene_data = self.main.state.state.scenes[self.main.state.state.actual_scene];
+
+//        // Update history
+//
+//        if(back_button){
+//
+//            self.main.state.state.scene_history.pop();
+//        }
+//        else {
+//            self.main.state.state.scene_history.push(self.main.state.state.actual_scene);
+//        }
+
         // Render links
 
         self.render_links();
@@ -257,10 +297,6 @@ DATAVERSE.renderer.prototype = {
         // Render menu
 
         self.render_menu();
-
-        // Insert scene component
-
-        self.actual_scene_data = self.main.state.state.scenes[self.main.state.state.actual_scene];
 
         console.log("ASD", self.actual_scene_data);
 

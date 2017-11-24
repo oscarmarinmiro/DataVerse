@@ -16,11 +16,17 @@ AFRAME.registerComponent('uipack-menu', {
 
     console.log("INIT MENU");
 
-    // Annotate pointer to camera on scene 'mounted'
+    // Annotate pointer to camera on scene 'mounted' or on the fly it camera exists
 
-    self.el.sceneEl.addEventListener("loaded", function(e){
+    if(!('camera' in self.el.sceneEl)) {
+
+        self.el.sceneEl.addEventListener("loaded", function (e) {
+            self.camera = self.el.sceneEl.camera;
+        });
+    }
+    else {
         self.camera = self.el.sceneEl.camera;
-    });
+    }
 
     // Class the element
 
@@ -238,14 +244,12 @@ AFRAME.registerComponent('uipack-menu', {
         if(camera_pitch <  self.data.pitch_max && camera_pitch > self.data.pitch_min){
 
                 self.hidden = false;
-                console.log("SHOWING MENU");
         }
         else {
 
             if(!(self.open_menu)) {
 
                 self.hidden = true;
-                console.log("HIDING MENU");
             }
         }
 
