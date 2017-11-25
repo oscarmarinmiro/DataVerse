@@ -36,6 +36,7 @@ DATAVERSE.renderer.prototype = {
         self.cursor = document.createElement("a-cursor");
 
         self.cursor.setAttribute("color", "grey");
+        self.cursor.setAttribute("fuse", true);
 
         self.camera.appendChild(self.cursor);
 
@@ -302,9 +303,9 @@ DATAVERSE.renderer.prototype = {
 
         self.render_labels();
 
-        // Render menu
-
-        self.render_menu();
+//        // Render menu
+//
+//        self.render_menu();
 
         console.log("ASD", self.actual_scene_data);
 
@@ -377,11 +378,53 @@ DATAVERSE.renderer.prototype = {
 
             self.scene.appendChild(self.actual_scene_component);
 
+            // Now launch menu: directly if no audio/video
+
+            console.log("SCENE DATA", self.actual_scene_data);
+
+            if(self.actual_scene_data.type === "video-viz"){
+
+                // wait until video asset id is inserted, and then launch
+
+                self.actual_scene_component.addEventListener("asset_added", function(e){
+
+                        // Render menu with video_id
+
+                        self.render_menu(e.detail.id);
+
+                });
+
+
+            }
+            else {
+
+                if(self.actual_scene_data.audio.length > 2) {
+
+                    self.audio = document.createElement("audio");
+
+                    self.audio.setAttribute("src", self.actual_scene_data.audio);
+                    self.audio.setAttribute("id", "audio");
+                    self.audio.setAttribute("autoplay", true);
+
+                    self.assets.appendChild(self.audio);
+
+                    self.render_menu("audio");
+                }
+                else {
+                    // directly add menu
+
+                    // Render menu
+
+                    self.render_menu();
+
+                }
+
+            }
+
             // Set scene
 
             self.main.urls.set_params({scene: self.main.state.state.actual_scene});
 
-//            history.pushState({}, "", window.location.href);
         }
 
      }

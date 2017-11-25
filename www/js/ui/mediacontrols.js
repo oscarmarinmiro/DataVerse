@@ -1,12 +1,5 @@
-if (typeof AFRAME === 'undefined') {
-  throw new Error('Component attempted to register before AFRAME was available.');
-}
-
-var DEFAULT_INFO_TEXT_BOTTOM = 'Double-click outside player to hide or show it.';
-var DEFAULT_INFO_TEXT_TOP = 'Look+click on play or bar. Space bar and arrows also work.';
-
 /**
- ** Video control component for A-Frame.
+ ** Media control component for A-Frame.
  */
 
 AFRAME.registerComponent('uipack-mediacontrols', {
@@ -40,6 +33,10 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     var self = this;
 
+    // Class the element
+
+    self.el.setAttribute("class", "uipack uipack-mediacontrols");
+
     // Next two vars used to control transport bar with keyboard arrows
 
     this.bar_steps = 10.0;
@@ -59,23 +56,23 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     self.icon = document.createElement("a-entity");
 
-    self.icon.setAttribute("uipack-button", {"icon_name": "flat/play-button", "radius": 0.2});
+    self.icon.setAttribute("uipack-button", {icon_name : UIPACK_CONSTANTS.play_icon, radius: 0.2});
 
     this.el.appendChild(self.icon);
 
     // Create icon image (play/pause), different image whether video is playing.
 
     if (this.video_el.paused) {
-      self.icon.setAttribute("uipack-button", "icon_name", "flat/play-button");
+      self.icon.setAttribute("uipack-button", "icon_name", UIPACK_CONSTANTS.play_icon);
     } else {
-      self.icon.setAttribute("uipack-button", "icon_name", "flat/pause");
+      self.icon.setAttribute("uipack-button", "icon_name", UIPACK_CONSTANTS.pause_icon);
     }
 
     // Change icon to 'play' on end
 
     this.video_el.addEventListener("ended", function(e){
 
-        self.icon.setAttribute("uipack-button", "icon_name", "flat/play-button");
+        self.icon.setAttribute("uipack-button", "icon_name", UIPACK_CONSTANTS.play_icon);
 
     });
 
@@ -86,7 +83,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
         console.log(e);
         console.log("ME LLEGA PAUSE");
 
-        self.icon.setAttribute("uipack-button", "icon_name", "flat/play-button");
+        self.icon.setAttribute("uipack-button", "icon_name", UIPACK_CONSTANTS.play_icon);
 
     });
 
@@ -97,7 +94,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
         console.log(e);
         console.log("ME LLEGA PLAY");
 
-        self.icon.setAttribute("uipack-button", "icon_name", "flat/pause");
+        self.icon.setAttribute("uipack-button", "icon_name", UIPACK_CONSTANTS.pause_icon);
     });
 
     this.bar_canvas = document.createElement("canvas");
@@ -118,14 +115,14 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
             self.video_el.pause();
 
-            self.icon.setAttribute("uipack-button", "icon_name", "flat/play-button");
+            self.icon.setAttribute("uipack-button", "icon_name", UIPACK_CONSTANTS.play_icon);
 
         }
         else {
 
             self.video_el.play();
 
-            self.icon.setAttribute("uipack-button", "icon_name", "flat/pause");
+            self.icon.setAttribute("uipack-button", "icon_name", UIPACK_CONSTANTS.pause_icon);
 
         }
 

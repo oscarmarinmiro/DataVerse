@@ -206,9 +206,9 @@ AFRAME.registerComponent('uipack-menu', {
 
     if(self.data.media_id != "") {
 
-//        self.media_controls.setAttribute("uipack-mediacontrols", {'src': "#" + self.data.media_id});
-//
-//        self.media_controls.setAttribute("position", "0 " + UIPACK_CONSTANTS.offset_player + " 0");
+        self.media_controls.setAttribute("uipack-mediacontrols", {'src': "#" + self.data.media_id});
+
+        self.media_controls.setAttribute("position", "0 " + UIPACK_CONSTANTS.offset_player + " 0");
     }
 
 
