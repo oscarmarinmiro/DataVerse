@@ -112,7 +112,7 @@ DATAVERSE.renderer.prototype = {
                     distance: d.distance,
                     shape: DATAVERSE.constants.THUMBNAIL_SHAPE,
                     radius: DATAVERSE.constants.THUMBNAIL_RADIUS,
-                    opacity: 0.85,
+                    opacity: 1.0,
                     text: d.text,
                     destination: d.target
                 });

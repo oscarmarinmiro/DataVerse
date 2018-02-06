@@ -8,6 +8,7 @@ AFRAME.registerComponent('uipack-thumbnail', {
         elevation: { type: 'number', default: UIPACK_CONSTANTS.thumbnail_elevation},
         distance: { type: 'number', default: UIPACK_CONSTANTS.thumbnail_distance},
         text: { type: 'string', default: ""},
+        color: { type: 'string', default: "white"},
         src: { type: 'string', default: ""},
         width: {type: 'number', default: 1.0},
         height: {type: 'number', default: 0.5},
@@ -59,6 +60,8 @@ AFRAME.registerComponent('uipack-thumbnail', {
         self.text = document.createElement("a-text");
 
         self.text.setAttribute("value", self.data.text);
+
+        self.text.setAttribute("color", self.data.color);
 
         self.text.setAttribute('align', "center");
 
