@@ -59,6 +59,13 @@ DATAVERSE.renderer.prototype = {
 
         self.scene.appendChild(self.assets);
 
+        // Vive controls
+
+      // <!--<a-entity vive-controls="hand: left"></a-entity>-->
+      // <!--<!--<a-entity vive-controls="hand: right" controller-cursor raycaster="objects: #sphere"></a-entity>-->
+      //
+      // <!--<a-entity vive-controls="hand: right" teleport-controls></a-entity>-->
+
         // Removing last scene assets, if any
 
         // Insert scene component
