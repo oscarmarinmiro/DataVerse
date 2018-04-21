@@ -45,8 +45,6 @@ DATAVERSE.main = function(options) {
 
                 console.log(self.state.state.scenes);
 
-                console.log(self.state.state.links);
-
                 // Init scenes
 
                 self.renderer.init_scenes();

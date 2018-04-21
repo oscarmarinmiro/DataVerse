@@ -1,44 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8"/>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
 
-        <title>
-        </title>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/aframe/dist/aframe-master.min.js"></script>
+    <script src="bower_components/moment/min/moment-with-locales.min.js"></script>
+    <script src="bower_components/howler/dist/howler.min.js"></script>
+    <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="bower_components/leaflet-providers/leaflet-providers.js"></script>
+    <script src="bower_components/html2canvas/build/html2canvas.min.js"></script>
+    <script src="bower_components/leaflet-image/leaflet-image.js"></script>
 
-        <link rel="stylesheet" href="css/main.css"/>
-        <script src="bower_components/moment/moment.js"></script>
-        <script src="bower_components/jquery/jquery.min.js"></script>
-        <script src="bower_components/aframe/dist/aframe-v0.6.1.js"></script>
-        <script src="bower_components/d3/d3.min.js"></script>
-        <script src="bower_components/tabletop/src/tabletop.min.js"></script>
+    <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
+
+    <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+
+    <script src="bower_components/d3/d3.min.js"></script>
+
+    <script src="bower_components/tabletop/src/tabletop.min.js"></script>
+    <script src="js/aframe-stereo-component-mod.js"></script>
+
+    <script src="bower_components/Dataverse_vizs/www/js/ui/constants.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/slider.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/button.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/infolabel.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/mediacontrols.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/menu.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/textbutton.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/thumbnail.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/mediapanel.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/common.js"></script>
+
+    <script src="bower_components/Dataverse_vizs/www/js/isotypes-radial-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/geo-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/tilemap-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/timeline-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/photogrid-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/joyplot-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/photo-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/video-viz.js"></script>
+
+    <script src="js/renderer.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/tests.js"></script>
+    <script src="js/urls.js"></script>
 
 
-        <script src="bower_components/Dataverse_vizs/www/js/network-viz.js"></script>
+  </head>
 
-        <script src="js/renderer.js"></script>
-        <script src="js/app.js"></script>
-        <script src="js/constants.js"></script>
-        <script src="js/state.js"></script>
-        <script src="js/tests.js"></script>
-        <script src="js/urls.js"></script>
+  <body style="background-color: black">
+      <a-scene>
 
-        <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
-
-
-    </head>
-    <body>
+      </a-scene>
 
         <script>
-            var main = new DATAVERSE.main({'debug': true, 'source': "https://docs.google.com/spreadsheets/d/1Bm0u5FeHbVaAAzZtqVmG4B8benAVptsFvQnKPub3OJE/pubhtml"});
+
+            // This is to force reload on 'artificially inserted' history entries...
+
+            window.onpopstate = function(event) {
+                if(event && event.state) {
+                    location.reload();
+                }
+            };
+
+            var main = new DATAVERSE.main({'debug': false, 'source': "https://docs.google.com/spreadsheets/d/1z2WYbw5ANUJxGVaXQ0POs24Kr5baYmH3sv3TRkm2BEY/edit?usp=sharing"});
+
         </script>
-
-    </body>
-
-
-
-    <footer class="footer">
-
-    </footer>
+  </body>
 
 </html>

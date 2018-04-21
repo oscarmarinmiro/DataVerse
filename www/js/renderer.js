@@ -22,13 +22,11 @@ DATAVERSE.renderer.prototype = {
 
         console.log("INIT SCENES");
 
-        self.scene = document.createElement("a-scene");
+        self.scene = document.querySelector("a-scene");
 
         if(self.main.options.debug) {
             self.scene.setAttribute("stats", "");
         }
-
-        document.body.appendChild(self.scene);
 
         self.assets = document.createElement("a-assets");
 
@@ -37,6 +35,46 @@ DATAVERSE.renderer.prototype = {
 
 
     },
+
+    // Renders auxiliary elements: lights, themes, floor, audio, etc..
+
+    'render_aux_assets': function(){
+
+        var self = this;
+
+        // TODO: THEMES module
+
+        self.ambient_light = document.createElement("a-entity");
+        self.ambient_light.setAttribute("light", {type:"ambient", color: "#AAA"});
+
+        self.directional_light = document.createElement("a-entity");
+        self.directional_light.setAttribute("light", {type:"directional", color: "#EEE", intensity: 0.5});
+        self.directional_light.setAttribute("position", {x:1, y:10, z:-1});
+
+        self.vive_controls = document.createElement("a-entity");
+
+        self.vive_controls.setAttribute("vive-controls", {hand: "right"});
+        self.vive_controls.setAttribute("teleport_controls", true);
+
+        self.camera = document.createElement("a-camera");
+
+        self.cursor = document.createElement("a-cursor");
+        self.cursor.setAttribute("color", "yellow");
+        self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+        self.cursor.setAttribute("fuse", true);
+        self.cursor.setAttribute("fuse-timeout", 1000);
+
+
+        self.camera.appendChild(self.cursor);
+
+        self.scene.appendChild(self.camera);
+        self.scene.appendChild(self.vive_controls);
+        self.scene.appendChild(self.directional_light);
+        self.scene.appendChild(self.ambient_light);
+
+
+    },
+
 
     // Renders a scene
 
@@ -51,28 +89,30 @@ DATAVERSE.renderer.prototype = {
 
         // Removing last scene children, if any
 
-        while (self.scene.firstChild) {
-               self.scene.removeChild(self.scene.firstChild);
+        console.log("CHILDREN", self.scene.children);
+
+        var to_delete = [];
+
+        for(var i=0; i < self.scene.children.length; i++){
+
+            var child = self.scene.children[i];
+
+                if (!((child.hasAttribute("data-aframe-canvas")=== true)|| (child.hasAttribute("aframe-injected")=== true))){
+                    to_delete.push(child);
+                }
         }
+
+        to_delete.forEach(function(child){
+            self.scene.removeChild(child);
+        });
 
         self.assets = document.createElement("a-assets");
 
         self.scene.appendChild(self.assets);
 
-        // Vive controls
-
-      // <!--<a-entity vive-controls="hand: left"></a-entity>-->
-      // <!--<!--<a-entity vive-controls="hand: right" controller-cursor raycaster="objects: #sphere"></a-entity>-->
-      //
-      // <!--<a-entity vive-controls="hand: right" teleport-controls></a-entity>-->
-
-        // Removing last scene assets, if any
-
         // Insert scene component
 
         self.actual_scene_data = self.main.state.state.scenes[self.main.state.state.actual_scene];
-
-        console.log("ASD", self.actual_scene_data);
 
         console.log("COMPONENTS");
 
@@ -86,18 +126,26 @@ DATAVERSE.renderer.prototype = {
 
         }
         else {
+
+            console.log("CREATING SCENE");
+
+            self.render_aux_assets();
             self.actual_scene_component = document.createElement("a-entity");
 
             var my_params = AFRAME.utils.styleParser.parse(self.actual_scene_data.params);
 
-            my_params.source = self.actual_scene_data.source;
             my_params.title = self.actual_scene_data.title;
             my_params.explain = self.actual_scene_data.explain;
+            my_params.source = self.main.state.state.scenes_data_source;
+            my_params.tab = self.actual_scene_data.tab;
 
-//            // Set sky
-//
-//            // color ?
-//
+            // console.log("LE ENCHUFO SOURCE", )
+
+
+           // Set sky
+
+           // color ?
+
             // Assume an image if background contains a dot
 
             if(self.actual_scene_data.background.indexOf('.')!=-1){
@@ -117,10 +165,13 @@ DATAVERSE.renderer.prototype = {
             }
             else {
 
-                self.sky = document.createElement("a-sky");
-                self.sky.setAttribute("color", self.actual_scene_data.background);
+                if(self.actual_scene_data.background) {
 
-                self.scene.appendChild(self.sky);
+                    self.sky = document.createElement("a-sky");
+                    self.sky.setAttribute("color", self.actual_scene_data.background);
+
+                    self.scene.appendChild(self.sky);
+                }
             }
 
             // TODO: audio and scene sky (color or 360 background);
