@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+
+        <title>
+        </title>
+
+        <link rel="stylesheet" href="css/main.css"/>
+        <script src="bower_components/d3/d3.min.js"></script>
+        <script src="bower_components/aframe/dist/aframe.min.js"></script>
+        <script src="bower_components/aframe-stereo-component/dist/aframe-stereo-component.js"></script>
+
+        <script src="js/constants.js"></script>
+
+        <script src="js/ui/constants.js"></script>
+        <script src="js/ui/button.js"></script>
+        <script src="js/ui/thumbnail.js"></script>
+        <script src="js/ui/infolabel.js"></script>
+        <script src="js/ui/textbutton.js"></script>
+        <script src="js/ui/menu.js"></script>
+        <script src="js/ui/mediacontrols.js"></script>
+
+
+    </head>
+    <body>
+
+    <a-scene>
+        <a-sky color="blue"></a-sky>
+
+        <!--<a-link href="index.html" title="My Homepage" position="0 2.0 -5.0" highlighted="true" visualAspectEnabled="false" on="none"></a-link>-->
+        <a-camera><a-cursor color="white"></a-cursor></a-camera>
+    </a-scene>
+
+    </body>
+
+    <script>
+
+//        var my_link = document.querySelector("a-link");
+//
+//        my_link.addEventListener("mouseenter", function(event){
+//
+//            event.stopImmediatePropagation();
+//            event.stopPropagation();
+//
+//            event.cancelBubble = true;
+//            event.bubbles = false;
+//            event.defaultPrevented = true;
+//
+//            console.log("CLICKED!!", event);
+//
+//
+//            return false;
+//        }, false);
+
+//        var scene = document.querySelector("a-scene");
+//
+//        var thumbnail = document.createElement("a-entity");
+//
+//        thumbnail.setAttribute("uipack-thumbnail", {
+//            src: "media/photos/riells.jpg",
+//            yaw: 90,
+//            elevation: 2.0,
+//            distance: 3.0,
+//            shape: DATAVERSES.constants.THUMBNAIL_SHAPE,
+//            radius: DATAVERSES.constants.THUMBNAIL_RADIUS,
+//            opacity: 0.85,
+//            text: "hola como estamos eh",
+//            destination: 1
+//        });
+//
+//        scene.appendChild(thumbnail);
+//
+////
+//        thumbnail.addEventListener("clicked", function(e){
+//
+//            console.log("clickado");
+//
+//            console.log(e.detail);
+//
+////            var destination = e.detail.name;
+////
+////            self.clear_scene();
+////
+////            self.last_scene = self.scene_name;
+////
+////            self.land_scene(destination);
+//
+//        });
+
+//        var scene = document.querySelector("a-scene");
+//
+//        var thumbnail = document.createElement("a-entity");
+//
+//        thumbnail.setAttribute("uipack-infolabel", {
+//            yaw: 90,
+//            elevation: 2.0,
+//            distance: 3.0,
+//            title: "Example Title",
+//            color: "white",
+//            background: "black",
+//            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+//        });
+//
+//        scene.appendChild(thumbnail);
+
+//        var scene = document.querySelector("a-scene");
+//
+//        var thumbnail = document.createElement("a-entity");
+//
+//        thumbnail.setAttribute("uipack-textbutton", {
+//            yaw: 90,
+//            elevation: 2.0,
+//            distance: 1.0,
+//            width: 3.0,
+//            color: "white",
+//            background: "blue",
+//            text: "Button test"
+//        });
+//
+//        scene.appendChild(thumbnail);
+//
+//        thumbnail.addEventListener("clicked", function(e){
+//
+//            console.log("thumbnail clickado");
+//
+//        });
+
+        console.log("HELLO");
+
+        var scene = document.querySelector("a-scene");
+
+        var menu = document.createElement("a-entity");
+
+        menu.setAttribute("uipack-menu", {
+            icons: ["arrow-left.png", "home.png"],
+            buttons: ["Ver lugares", "Ver videos"]
+        });
+
+
+        menu.addEventListener("clicked", function(e, data){
+
+            console.log("CLICKADO");
+
+            console.log(e,data);
+
+        });
+
+
+
+        scene.appendChild(menu);
+
+
+    </script>
+
+    <footer class="footer">
+
+    </footer>
+
+</html>

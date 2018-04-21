@@ -116,6 +116,8 @@ DATAVERSE.urls.prototype = {
 
     'get_params': function(){
         return $.deparam(location.search.substring(1));
+    },
+    'set_params': function(params){
+        window.history.replaceState( {} , document.title, window.location.origin + window.location.pathname + "?" + $.param(params));
     }
-
 };
