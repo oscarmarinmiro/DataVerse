@@ -24,15 +24,13 @@ DATAVERSE.renderer.prototype = {
 
         self.scene = document.querySelector("a-scene");
 
-        if(self.main.options.debug) {
-            self.scene.setAttribute("stats", "");
-        }
+        self.camera = document.querySelector("a-camera");
 
-        self.assets = document.createElement("a-assets");
+        self.cursor = document.querySelector("a-cursor");
 
-        self.scene.appendChild(self.assets);
-
-
+        // if(self.main.options.debug) {
+        //     self.scene.setAttribute("stats", "");
+        // }
 
     },
 
@@ -46,28 +44,42 @@ DATAVERSE.renderer.prototype = {
 
         self.ambient_light = document.createElement("a-entity");
         self.ambient_light.setAttribute("light", {type:"ambient", color: "#AAA"});
+        self.ambient_light.classList.add("dataverse-added");
 
         self.directional_light = document.createElement("a-entity");
         self.directional_light.setAttribute("light", {type:"directional", color: "#EEE", intensity: 0.5});
         self.directional_light.setAttribute("position", {x:1, y:10, z:-1});
+        self.directional_light.classList.add("dataverse-added");
 
         self.vive_controls = document.createElement("a-entity");
 
         self.vive_controls.setAttribute("vive-controls", {hand: "right"});
         self.vive_controls.setAttribute("teleport_controls", true);
 
-        self.camera = document.createElement("a-camera");
+        self.vive_controls.classList.add("dataverse-added");
 
-        self.cursor = document.createElement("a-cursor");
+        // Tweek cursor, fuse and raycaster
+
         self.cursor.setAttribute("color", "yellow");
-        self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
-        self.cursor.setAttribute("fuse", true);
         self.cursor.setAttribute("fuse-timeout", 1000);
+        self.cursor.setAttribute("fuse", true);
+        self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
 
+//
+// color="yellow" raycaster="near: 0.0; objects: .clickable" fuse="true" fuse-timeout="1000"
 
-        self.camera.appendChild(self.cursor);
+        // self.camera = document.createElement("a-camera");
+        //
+        // self.cursor = document.createElement("a-cursor");
+        // self.cursor.setAttribute("color", "yellow");
+        // self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+        // self.cursor.setAttribute("fuse", true);
+        // self.cursor.setAttribute("fuse-timeout", 1000);
+        //
+        //
+        // self.camera.appendChild(self.cursor);
 
-        self.scene.appendChild(self.camera);
+        // self.scene.appendChild(self.camera);
         self.scene.appendChild(self.vive_controls);
         self.scene.appendChild(self.directional_light);
         self.scene.appendChild(self.ambient_light);
@@ -82,6 +94,7 @@ DATAVERSE.renderer.prototype = {
         // Add menu
 
         self.menu = document.createElement("a-entity");
+        self.menu.classList.add("dataverse-added");
 
         var icons = self.main.state.state.scene_history.length === 0 ? {'icons': ["home.png"], 'names': ["home"]}: {'icons': ["arrow-left.png","home.png"], 'names': ["back","home"]};
 
@@ -155,6 +168,23 @@ DATAVERSE.renderer.prototype = {
 
     },
 
+    'follow_link': function(destination){
+
+        var self = this;
+
+           // Push scene in history and change actual scene to destination
+
+        self.main.state.state.scene_history.push(self.main.state.state.actual_scene);
+
+         var obj = { Title: "", Url: window.location.origin + window.location.pathname + "?scene=" + self.main.state.state.actual_scene};
+         history.pushState(obj, obj.Title, obj.Url);
+
+        self.main.state.state.actual_scene = destination;
+
+        self.render_scene();
+
+    },
+
     // Renders a scene
 
     'render_scene': function(){
@@ -170,13 +200,28 @@ DATAVERSE.renderer.prototype = {
 
         console.log("CHILDREN", self.scene.children);
 
+        // var to_delete = [];
+        //
+        // var candidates = document.getElementsByClassName("dataverse-added");
+        //
+        // for(var i=0; i < candidates.length; i++) {
+        //
+        //     to_delete.push(candidates[i]);
+        // }
+        //
+        // to_delete.forEach(function(child){
+        //     var parent = child.parentElement;
+        //
+        //     parent.removeChild(child);
+        // });
+
         var to_delete = [];
 
         for(var i=0; i < self.scene.children.length; i++){
 
             var child = self.scene.children[i];
 
-                if (!((child.hasAttribute("data-aframe-canvas")=== true)|| (child.hasAttribute("aframe-injected")=== true))){
+                if (!((child.hasAttribute("data-aframe-canvas")=== true)|| (child.hasAttribute("aframe-injected")=== true) || (child.hasAttribute("dataverse-added")))){
                     to_delete.push(child);
                 }
         }
@@ -186,6 +231,7 @@ DATAVERSE.renderer.prototype = {
         });
 
         self.assets = document.createElement("a-assets");
+        self.assets.classList.add("dataverse-added");
 
         self.scene.appendChild(self.assets);
 
@@ -210,6 +256,7 @@ DATAVERSE.renderer.prototype = {
 
             self.render_aux_assets();
             self.actual_scene_component = document.createElement("a-entity");
+            self.actual_scene_component.classList.add("dataverse-added");
 
             var my_params = AFRAME.utils.styleParser.parse(self.actual_scene_data.params);
 
@@ -217,6 +264,13 @@ DATAVERSE.renderer.prototype = {
             my_params.explain = self.actual_scene_data.explain;
             my_params.source = self.main.state.state.scenes_data_source;
             my_params.tab = self.actual_scene_data.tab;
+
+            if(self.actual_scene_data.media_source){
+
+                my_params.media_source = self.actual_scene_data.media_source;
+            }
+
+            console.log("LLAMANDO CON PARAMS", my_params, self.actual_scene_data);
 
             // console.log("LE ENCHUFO SOURCE", )
 
@@ -230,6 +284,7 @@ DATAVERSE.renderer.prototype = {
             if(self.actual_scene_data.background.indexOf('.')!=-1){
 
                 self.sky_img = document.createElement("img");
+                self.sky_img.classList.add("dataverse-added");
                 self.sky_img.setAttribute("src", self.actual_scene_data.background);
                 self.sky_img.setAttribute("id", "sky_img");
 
@@ -237,6 +292,7 @@ DATAVERSE.renderer.prototype = {
 
                 self.sky = document.createElement("a-sky");
                 self.sky.setAttribute("src", "#sky_img");
+                self.sky.classList.add("dataverse-added");
 
                 self.scene.appendChild(self.sky);
 
@@ -248,6 +304,7 @@ DATAVERSE.renderer.prototype = {
 
                     self.sky = document.createElement("a-sky");
                     self.sky.setAttribute("color", self.actual_scene_data.background);
+                    self.sky.classList.add("dataverse-added");
 
                     self.scene.appendChild(self.sky);
                 }
@@ -260,15 +317,15 @@ DATAVERSE.renderer.prototype = {
 
             // Set position and rotation from params, and delete from entity-specific params
 
-            if("position" in my_params){
-                self.actual_scene_component.setAttribute("position", my_params.position);
-                delete(my_params.position);
-            }
-
-            if("rotation" in my_params){
-                self.actual_scene_component.setAttribute("rotation", my_params.rotation);
-                delete(my_params.rotation);
-            }
+            // if("position" in my_params){
+            //     self.actual_scene_component.setAttribute("position", my_params.position);
+            //     delete(my_params.position);
+            // }
+            //
+            // if("rotation" in my_params){
+            //     self.actual_scene_component.setAttribute("rotation", my_params.rotation);
+            //     delete(my_params.rotation);
+            // }
 
 
             self.actual_scene_component.setAttribute(self.actual_scene_data.type, my_params);
@@ -300,6 +357,7 @@ DATAVERSE.renderer.prototype = {
                 if((self.actual_scene_data.audio.length > 2) && !(self.actual_scene_data.type === "video-viz")) {
 
                     self.audio = document.createElement("audio");
+                    self.audio.classList.add("dataverse-added");
 
                     self.audio.setAttribute("src", self.actual_scene_data.audio);
                     self.audio.setAttribute("id", "audio");
@@ -322,11 +380,15 @@ DATAVERSE.renderer.prototype = {
 
             // Set scene
 
-            self.actual_scene_component.setAttribute(self.actual_scene_data.type, my_params);
+            self.main.urls.set_params({scene: self.main.state.state.actual_scene});
 
-            self.scene.appendChild(self.actual_scene_component);
+            // React on 'link'
 
-            self.main.urls.set_params({scene: self.main.state.state.actual_scene})
+            self.actual_scene_component.addEventListener("link", function(evt){
+                console.log("LINK PRESSED: ", evt.detail.link);
+
+                self.follow_link(evt.detail.link);
+            });
         }
 
      }
