@@ -75,6 +75,85 @@ DATAVERSE.renderer.prototype = {
 
     },
 
+    'render_menu': function(media_id){
+
+        var self = this;
+
+        // Add menu
+
+        self.menu = document.createElement("a-entity");
+
+        var icons = self.main.state.state.scene_history.length === 0 ? {'icons': ["home.png"], 'names': ["home"]}: {'icons': ["arrow-left.png","home.png"], 'names': ["back","home"]};
+
+
+        if(media_id!== null) {
+
+            self.menu.setAttribute("uipack-menu", {
+
+                icons: icons.icons, buttons: [], media_id: media_id
+
+            });
+
+        }
+        else {
+
+            self.menu.setAttribute("uipack-menu", {
+
+                icons: icons.icons,  buttons: []
+
+            });
+
+        }
+
+        self.scene.appendChild(self.menu);
+
+
+        // Events...
+
+        self.menu.addEventListener("clicked", function(e){
+
+            // Home
+
+            if(e.detail.type === "icon" && icons.names[e.detail.index] === "home"){
+
+                console.log("CLICKADO HOME");
+
+                // Push scene in history, and point to home scene
+
+                self.main.state.state.scene_history.push(self.main.state.state.actual_scene);
+
+                var obj = { Title: "", Url: window.location.origin + window.location.pathname + "?scene=" + self.main.state.state.actual_scene};
+                history.pushState(obj, obj.Title, obj.Url);
+
+
+                self.main.state.state.actual_scene = self.main.state.state.home_scene;
+
+                self.render_scene();
+
+            }
+
+            // TODO: real history stack of last_scene for 'back'. now after one back it's a loop
+
+            if(e.detail.type === "icon" && icons.names[e.detail.index] === "back"){
+
+                console.log("CLICKADO BACK");
+                console.log(self.main.state.state.scene_history);
+
+                if(self.main.state.state.scene_history.length > 0) {
+
+                    var back_scene = self.main.state.state.scene_history.pop();
+
+                    self.main.state.state.actual_scene = back_scene;
+
+                    self.render_scene();
+                }
+
+
+            }
+
+        });
+
+    },
 
     // Renders a scene
 
@@ -178,9 +257,76 @@ DATAVERSE.renderer.prototype = {
 
             console.log("my params", my_params);
 
+
+            // Set position and rotation from params, and delete from entity-specific params
+
+            if("position" in my_params){
+                self.actual_scene_component.setAttribute("position", my_params.position);
+                delete(my_params.position);
+            }
+
+            if("rotation" in my_params){
+                self.actual_scene_component.setAttribute("rotation", my_params.rotation);
+                delete(my_params.rotation);
+            }
+
+
             self.actual_scene_component.setAttribute(self.actual_scene_data.type, my_params);
 
             self.scene.appendChild(self.actual_scene_component);
+
+            // Now launch menu: directly if no audio/video
+
+            console.log("SCENE DATA", self.actual_scene_data);
+
+            if(self.actual_scene_data.type === "video-viz"){
+
+                // wait until video asset id is inserted, and then launch
+
+                self.actual_scene_component.addEventListener("asset_added", function(e){
+
+                        // Render menu with video_id
+
+                        self.render_menu(e.detail.id);
+
+                });
+
+
+            }
+            else {
+
+                // Only launch audio if exists and it's not a video-viz
+
+                if((self.actual_scene_data.audio.length > 2) && !(self.actual_scene_data.type === "video-viz")) {
+
+                    self.audio = document.createElement("audio");
+
+                    self.audio.setAttribute("src", self.actual_scene_data.audio);
+                    self.audio.setAttribute("id", "audio");
+                    self.audio.setAttribute("autoplay", true);
+
+                    self.assets.appendChild(self.audio);
+
+                    self.render_menu("audio");
+                }
+                else {
+                    // directly add menu
+
+                    // Render menu
+
+                    self.render_menu();
+
+                }
+
+            }
+
+            // Set scene
+
+            self.actual_scene_component.setAttribute(self.actual_scene_data.type, my_params);
+
+            self.scene.appendChild(self.actual_scene_component);
+
+            self.main.urls.set_params({scene: self.main.state.state.actual_scene})
         }
 
      }

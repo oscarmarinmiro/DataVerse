@@ -17,13 +17,19 @@ DATAVERSE.main = function(options) {
 
         self.urls = new DATAVERSE.urls({}, self);
 
+        console.log('URLS READY');
+
         // Instantiate renderer
 
         self.renderer = new DATAVERSE.renderer({}, self);
 
+        console.log('RENDERER READY');
+
         // Instantiate state
 
         self.state = new DATAVERSE.state({}, self, function() {
+
+            console.log('STATE READY');
 
             console.log("ENTRANDO DENTRO DEL MAIN");
 
