@@ -200,6 +200,8 @@ DATAVERSE.renderer.prototype = {
 
         console.log("CHILDREN", self.scene.children);
 
+        console.log("CACHE", DATAVERSE.cache);
+
         // var to_delete = [];
         //
         // var candidates = document.getElementsByClassName("dataverse-added");
@@ -270,6 +272,12 @@ DATAVERSE.renderer.prototype = {
                 my_params.media_source = self.actual_scene_data.media_source;
             }
 
+            if(self.actual_scene_data.subtype){
+
+                my_params.type = self.actual_scene_data.subtype;
+            }
+
+
             console.log("LLAMANDO CON PARAMS", my_params, self.actual_scene_data);
 
             // console.log("LE ENCHUFO SOURCE", )
@@ -317,15 +325,15 @@ DATAVERSE.renderer.prototype = {
 
             // Set position and rotation from params, and delete from entity-specific params
 
-            // if("position" in my_params){
-            //     self.actual_scene_component.setAttribute("position", my_params.position);
-            //     delete(my_params.position);
-            // }
-            //
-            // if("rotation" in my_params){
-            //     self.actual_scene_component.setAttribute("rotation", my_params.rotation);
-            //     delete(my_params.rotation);
-            // }
+            if("position" in my_params){
+                self.actual_scene_component.setAttribute("position", my_params.position);
+                delete(my_params.position);
+            }
+
+            if("rotation" in my_params){
+                self.actual_scene_component.setAttribute("rotation", my_params.rotation);
+                delete(my_params.rotation);
+            }
 
 
             self.actual_scene_component.setAttribute(self.actual_scene_data.type, my_params);

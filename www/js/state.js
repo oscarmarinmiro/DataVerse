@@ -59,6 +59,10 @@ DATAVERSE.state.prototype = {
 
                 if ('scenes' in data) {
 
+                    // Insert in DATAVERSE cache
+
+                    DATAVERSE.cache[self.main.options.source] = data;
+
                     self.state.scenes = tabletop.sheets("scenes").elements;
                     // self.state.links = tabletop.sheets("links").elements;
                     // self.state.labels = tabletop.sheets("labels").elements;
