@@ -282,6 +282,47 @@ DATAVERSE.renderer.prototype = {
 
             // console.log("LE ENCHUFO SOURCE", )
 
+            // Set floor
+
+            if(self.actual_scene_data.floor.indexOf('.')!==-1){
+
+                self.floor_img = document.createElement("img");
+                self.floor_img.classList.add("dataverse-added");
+                self.floor_img.setAttribute("src", self.actual_scene_data.floor);
+                self.floor_img.setAttribute("id", "floor_img");
+
+                self.assets.appendChild(self.floor_img);
+
+                self.floor = document.createElement("a-plane");
+                self.floor.setAttribute("src", "#floor_img");
+                self.floor.setAttribute("width", 100);
+                self.floor.setAttribute("height", 100);
+                self.floor.setAttribute("repeat", "100 100");
+                self.floor.setAttribute("rotation", {x:-90, y: 0, z:0});
+
+                self.floor.classList.add("dataverse-added");
+
+                self.scene.appendChild(self.floor);
+
+
+            }
+            else {
+
+                if(self.actual_scene_data.floor) {
+
+                    self.floor = document.createElement("a-plane");
+                    self.floor.setAttribute("color", self.actual_scene_data.floor);
+                    self.floor.setAttribute("width", 100);
+                    self.floor.setAttribute("height", 100);
+                    self.floor.setAttribute("repeat", "100 100");
+                    self.floor.setAttribute("rotation", {x:-90, y: 0, z:0});
+                    self.floor.classList.add("dataverse-added");
+
+                    self.scene.appendChild(self.floor);
+
+                }
+            }
+
 
            // Set sky
 
@@ -289,7 +330,7 @@ DATAVERSE.renderer.prototype = {
 
             // Assume an image if background contains a dot
 
-            if(self.actual_scene_data.background.indexOf('.')!=-1){
+            if(self.actual_scene_data.background.indexOf('.')!==-1){
 
                 self.sky_img = document.createElement("img");
                 self.sky_img.classList.add("dataverse-added");
