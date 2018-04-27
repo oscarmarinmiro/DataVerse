@@ -37,6 +37,7 @@
     <script src="bower_components/Dataverse_vizs/www/js/geo-viz.js"></script>
     <script src="bower_components/Dataverse_vizs/www/js/tilemap-viz.js"></script>
     <script src="bower_components/Dataverse_vizs/www/js/timeline-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/treemap-viz.js"></script>
     <script src="bower_components/Dataverse_vizs/www/js/photogrid-viz.js"></script>
     <script src="bower_components/Dataverse_vizs/www/js/joyplot-viz.js"></script>
     <script src="bower_components/Dataverse_vizs/www/js/photo-viz.js"></script>
@@ -53,6 +54,7 @@
   </head>
 
   <body style="background-color: black">
+
       <a-scene>
 
           <a-camera dataverse-added>
@@ -72,7 +74,10 @@
                 }
             };
 
+//            UIPACK_CONSTANTS.icon_path = "http://www.pedro.com";
+
             var main = new DATAVERSE.main({'debug': false, 'source': "https://docs.google.com/spreadsheets/d/13QLqRWDrg5EC2q-zWZW4svLlb5RzvzTqRnVOdbytu5c/edit?usp=sharing"});
+//            var main = new DATAVERSE.main({'debug': false, 'source': "https://docs.google.com/spreadsheets/d/1z2WYbw5ANUJxGVaXQ0POs24Kr5baYmH3sv3TRkm2BEY/edit?usp=sharing"});
 
         </script>
   </body>
