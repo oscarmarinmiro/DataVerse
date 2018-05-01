@@ -267,6 +267,12 @@ DATAVERSE.renderer.prototype = {
             my_params.source = self.main.state.state.scenes_data_source;
             my_params.tab = self.actual_scene_data.tab;
 
+            // If theme exists, fill it in params
+
+            if(self.actual_scene_data.theme !== "") {
+                my_params.theme = self.actual_scene_data.theme;
+            }
+
             if(self.actual_scene_data.media_source){
 
                 my_params.media_source = self.actual_scene_data.media_source;
