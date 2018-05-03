@@ -202,6 +202,12 @@ DATAVERSE.renderer.prototype = {
 
         console.log("CACHE", DATAVERSE.cache);
 
+        // var cam_rotation = self.camera.el.getAttribute("rotation").y;
+
+        console.log("LANDING WITH CAMERA ROTATION ", self.scene.camera.el.getAttribute("rotation").y);
+
+        var counter_cam_rotation = (self.scene.camera.el.getAttribute("rotation").y);
+
         // var to_delete = [];
         //
         // var candidates = document.getElementsByClassName("dataverse-added");
@@ -261,6 +267,8 @@ DATAVERSE.renderer.prototype = {
             self.actual_scene_component.classList.add("dataverse-added");
 
             var my_params = AFRAME.utils.styleParser.parse(self.actual_scene_data.params);
+
+            console.log("DECODED PARAMS ", my_params);
 
             my_params.title = self.actual_scene_data.title;
             my_params.explain = self.actual_scene_data.explain;
@@ -377,10 +385,22 @@ DATAVERSE.renderer.prototype = {
                 delete(my_params.position);
             }
 
+            // if("rotation" in my_params){
+            //     self.actual_scene_component.setAttribute("rotation", my_params.rotation);
+            //     delete(my_params.rotation);
+            // }
+
+
+            // Set rotation if specified and/or correct for user head yaw landing (based on camera)
+
             if("rotation" in my_params){
-                self.actual_scene_component.setAttribute("rotation", my_params.rotation);
+                self.actual_scene_component.setAttribute("rotation", {x: my_params.rotation.split(" ")[0], y:parseFloat(my_params.rotation.split(" ")[1]) + counter_cam_rotation, z: my_params.rotation.split(" ")[2]}) ;
                 delete(my_params.rotation);
             }
+            else {
+                self.actual_scene_component.setAttribute("rotation", {x: 0, y: counter_cam_rotation, z: 0}) ;
+            }
+
 
 
             self.actual_scene_component.setAttribute(self.actual_scene_data.type, my_params);

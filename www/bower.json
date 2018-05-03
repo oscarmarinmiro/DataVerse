@@ -12,6 +12,7 @@
     "leaflet-providers": "latest",
     "html2canvas": "latest",
     "aframe-stereo-component": "http://github.com/oscarmarinmiro/aframe-stereo-component.git",
+    "Dataverse_vizs": "http://github.com/oscarmarinmiro/Dataverse_vizs.git",
     "font-awesome-svg-png": "latest",
     "leaflet-image": "latest"
 
