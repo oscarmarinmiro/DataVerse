@@ -312,7 +312,8 @@ DATAVERSE.renderer.prototype = {
                 self.floor.setAttribute("width", 100);
                 self.floor.setAttribute("height", 100);
                 self.floor.setAttribute("repeat", "100 100");
-                self.floor.setAttribute("rotation", {x:-90, y: 0, z:0});
+
+                self.floor.setAttribute("rotation", {x:-90, y: counter_cam_rotation, z:0});
 
                 self.floor.classList.add("dataverse-added");
 
@@ -329,7 +330,7 @@ DATAVERSE.renderer.prototype = {
                     self.floor.setAttribute("width", 100);
                     self.floor.setAttribute("height", 100);
                     self.floor.setAttribute("repeat", "100 100");
-                    self.floor.setAttribute("rotation", {x:-90, y: 0, z:0});
+                    self.floor.setAttribute("rotation", {x:-90, y: counter_cam_rotation, z:0});
                     self.floor.classList.add("dataverse-added");
 
                     self.scene.appendChild(self.floor);
@@ -357,6 +358,9 @@ DATAVERSE.renderer.prototype = {
                 self.sky.setAttribute("src", "#sky_img");
                 self.sky.classList.add("dataverse-added");
 
+                self.sky.setAttribute("rotation", {x:0, y: counter_cam_rotation, z:0});
+
+
                 self.scene.appendChild(self.sky);
 
 
@@ -369,11 +373,11 @@ DATAVERSE.renderer.prototype = {
                     self.sky.setAttribute("color", self.actual_scene_data.background);
                     self.sky.classList.add("dataverse-added");
 
+                    self.sky.setAttribute("rotation", {x:0, y: counter_cam_rotation, z:0});
+
                     self.scene.appendChild(self.sky);
                 }
             }
-
-            // TODO: audio and scene sky (color or 360 background);
 
             console.log("my params", my_params);
 
@@ -394,11 +398,11 @@ DATAVERSE.renderer.prototype = {
             // Set rotation if specified and/or correct for user head yaw landing (based on camera)
 
             if("rotation" in my_params){
-                self.actual_scene_component.setAttribute("rotation", {x: my_params.rotation.split(" ")[0], y:parseFloat(my_params.rotation.split(" ")[1]) + counter_cam_rotation, z: my_params.rotation.split(" ")[2]}) ;
+                self.actual_scene_component.setAttribute("rotation", {x: my_params.rotation.split(" ")[0], y:(parseFloat(my_params.rotation.split(" ")[1]) + counter_cam_rotation) % 360, z: my_params.rotation.split(" ")[2]}) ;
                 delete(my_params.rotation);
             }
             else {
-                self.actual_scene_component.setAttribute("rotation", {x: 0, y: counter_cam_rotation, z: 0}) ;
+                self.actual_scene_component.setAttribute("rotation", {x: 0, y: (counter_cam_rotation % 360), z: 0}) ;
             }
 
 
