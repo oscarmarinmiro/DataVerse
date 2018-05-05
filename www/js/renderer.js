@@ -60,7 +60,7 @@ DATAVERSE.renderer.prototype = {
 
         // Tweek cursor, fuse and raycaster
 
-        self.cursor.setAttribute("color", "yellow");
+        self.cursor.setAttribute("color", self.theme_data.cursor_color);
         self.cursor.setAttribute("fuse-timeout", 1000);
         self.cursor.setAttribute("fuse", true);
         self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
@@ -262,6 +262,11 @@ DATAVERSE.renderer.prototype = {
 
             console.log("CREATING SCENE");
 
+
+            self.theme = (self.actual_scene_data.theme !== "") ? self.theme = self.actual_scene_data.theme : DATAVERSE_VIZ_AUX.default_theme;
+
+            self.theme_data = DATAVERSE.themes[self.theme];
+
             self.render_aux_assets();
             self.actual_scene_component = document.createElement("a-entity");
             self.actual_scene_component.classList.add("dataverse-added");
@@ -277,9 +282,7 @@ DATAVERSE.renderer.prototype = {
 
             // If theme exists, fill it in params
 
-            if(self.actual_scene_data.theme !== "") {
-                my_params.theme = self.actual_scene_data.theme;
-            }
+            my_params.theme = self.theme;
 
             if(self.actual_scene_data.media_source){
 
@@ -296,7 +299,7 @@ DATAVERSE.renderer.prototype = {
 
             // console.log("LE ENCHUFO SOURCE", )
 
-            // Set floor
+            // Set floor: its an image
 
             if(self.actual_scene_data.floor.indexOf('.')!==-1){
 
@@ -334,6 +337,59 @@ DATAVERSE.renderer.prototype = {
                     self.floor.classList.add("dataverse-added");
 
                     self.scene.appendChild(self.floor);
+
+                }
+
+                // If no specific floor, see if viz is on list of vizs with themed floor
+
+                else {
+
+                    console.log("BEFORE PUTTING FLOOR ", DATAVERSE.floor_vizs, self.actual_scene_data.type);
+
+                    if(DATAVERSE.floor_vizs.indexOf(self.actual_scene_data.type.toLowerCase())!== -1){
+
+                        var my_floor = self.theme_data.floor;
+
+                        if(my_floor.indexOf(".") !== -1) {
+
+                            console.log("PUTTING FLOOR IMG");
+
+                            self.floor_img = document.createElement("img");
+                            self.floor_img.classList.add("dataverse-added");
+                            self.floor_img.setAttribute("src", my_floor);
+                            self.floor_img.setAttribute("id", "floor_img");
+
+                            self.assets.appendChild(self.floor_img);
+
+                            self.floor = document.createElement("a-plane");
+                            self.floor.setAttribute("src", "#floor_img");
+                            self.floor.setAttribute("width", 100);
+                            self.floor.setAttribute("height", 100);
+                            self.floor.setAttribute("repeat", "100 100");
+
+                            self.floor.setAttribute("rotation", {x: -90, y: counter_cam_rotation, z: 0});
+
+                            self.floor.classList.add("dataverse-added");
+
+                            self.scene.appendChild(self.floor);
+                        }
+                        else {
+
+                            console.log("PUTTING FLOOR FLAT");
+
+                            self.floor = document.createElement("a-plane");
+                            self.floor.setAttribute("color", my_floor);
+                            self.floor.setAttribute("width", 100);
+                            self.floor.setAttribute("height", 100);
+                            self.floor.setAttribute("repeat", "100 100");
+                            self.floor.setAttribute("rotation", {x: -90, y: counter_cam_rotation, z: 0});
+                            self.floor.classList.add("dataverse-added");
+
+                            self.scene.appendChild(self.floor);
+                        }
+
+
+                    }
 
                 }
             }
@@ -376,6 +432,46 @@ DATAVERSE.renderer.prototype = {
                     self.sky.setAttribute("rotation", {x:0, y: counter_cam_rotation, z:0});
 
                     self.scene.appendChild(self.sky);
+                }
+                else {
+
+                    if(DATAVERSE.sky_vizs.indexOf(self.actual_scene_data.type.toLowerCase())!== -1){
+
+                        var my_sky = self.theme_data.sky;
+
+                        if(my_sky.indexOf(".") !== -1) {
+
+                            self.sky_img = document.createElement("img");
+                            self.sky_img.classList.add("dataverse-added");
+                            self.sky_img.setAttribute("src", my_sky);
+                            self.sky_img.setAttribute("id", "sky_img");
+
+                            self.assets.appendChild(self.sky_img);
+
+                            self.sky = document.createElement("a-sky");
+                            self.sky.setAttribute("src", "#sky_img");
+                            self.sky.classList.add("dataverse-added");
+
+                            self.sky.setAttribute("rotation", {x:0, y: counter_cam_rotation, z:0});
+
+
+                            self.scene.appendChild(self.sky);
+
+                        }
+                        else {
+
+                            self.sky = document.createElement("a-sky");
+                            self.sky.setAttribute("color", my_sky);
+                            self.sky.classList.add("dataverse-added");
+
+                            self.sky.setAttribute("rotation", {x:0, y: counter_cam_rotation, z:0});
+
+                            self.scene.appendChild(self.sky);
+
+
+                        }
+
+                    }
                 }
             }
 
