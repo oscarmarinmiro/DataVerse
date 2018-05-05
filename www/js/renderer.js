@@ -263,9 +263,13 @@ DATAVERSE.renderer.prototype = {
             console.log("CREATING SCENE");
 
 
-            self.theme = (self.actual_scene_data.theme !== "") ? self.theme = self.actual_scene_data.theme : DATAVERSE_VIZ_AUX.default_theme;
+            self.theme = (self.actual_scene_data.theme !== "") ? self.theme = self.actual_scene_data.theme : DATAVERSE.constants.default_theme;
 
             self.theme_data = DATAVERSE.themes[self.theme];
+
+            // Redefine icon path
+
+            UIPACK_CONSTANTS.icon_path = self.theme_data.icon_path;
 
             self.render_aux_assets();
             self.actual_scene_component = document.createElement("a-entity");
