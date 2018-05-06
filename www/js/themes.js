@@ -6,7 +6,11 @@ DATAVERSE.themes =
         'cursor_color': 'red',
         'floor': 'yellow',
         'sky': 'examples/world100/media/sky_one.jpg',
-        'icon_path': 'themes/dark/icons'
+        'icon_path': 'themes/dark/icons',
+        'text_color': 'white',
+        'text_background': 'black',
+//https://aframe.io/docs/0.8.0/components/text.html
+        'text_font': 'roboto'
     },
     'light': {
         'color_scale': 'category10',
@@ -14,7 +18,11 @@ DATAVERSE.themes =
         'cursor_color': 'purple',
         'floor': '#AAA',
         'sky': 'green',
-        'icon_path': 'themes/light/icons'
+        'icon_path': 'themes/light/icons',
+        'text_color': 'black',
+        'text_background': 'white',
+        'text_font': 'mozillavr'
+
     }
 };
 
