@@ -2,7 +2,7 @@ DATAVERSE.themes =
 {
     'dark': {
         'color_scale': 'category20b',
-        'default_color': 'grey',
+        'default_color': 'blue',
         'cursor_color': 'red',
         'floor': 'yellow',
         'sky': 'examples/world100/media/sky_one.jpg',
@@ -10,13 +10,14 @@ DATAVERSE.themes =
         'text_color': 'yellow',
         'text_background': 'green',
 //https://aframe.io/docs/0.8.0/components/text.html
-        'text_font': 'monoid',
+        'text_font': 'exo2bold',
         'map_provider': 'CartoDB.DarkMatter',
         'earth_texture': 'themes/dark/textures/8081-earthmap10k.jpg',
         'timeline_color': '#000',
         'panel_color': "white",
         'panel_aux_color': "black",
         'panel_font': "roboto",
+        'panel_title_font': "exo2bold",
         'panel_background': "black",
         'panel_backpanel': "white"
 
@@ -37,6 +38,7 @@ DATAVERSE.themes =
         'panel_color': "black",
         'panel_aux_color': "white",
         'panel_font': "dejavu",
+        'panel_title_font': "dejavu",
         'panel_background': "white",
         'panel_backpanel': "black"
 
