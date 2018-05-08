@@ -15,7 +15,7 @@ DATAVERSE.themes =
         'earth_texture': 'themes/dark/textures/8081-earthmap10k.jpg',
         'timeline_color': '#000',
         'panel_color': "white",
-        'panel_aux_color': "black",
+        'panel_aux_color': "white",
         'panel_font': "roboto",
         'panel_title_font': "exo2bold",
         'panel_background': "black",
