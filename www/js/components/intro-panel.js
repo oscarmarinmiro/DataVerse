@@ -1,7 +1,7 @@
 
 AFRAME.registerComponent('intro-panel', {
     schema: {
-        'distance': {type: 'number', default: 3.0},
+        'distance': {type: 'number', default: 1.5},
         'theme': {type: 'string', default: ""},
         'yaw': { type: 'number', default: 0.0},
         'pitch': { type: 'number', default: 0.0},
@@ -220,6 +220,8 @@ AFRAME.registerComponent('intro-panel', {
         var component = self.el;
 
         close.addEventListener("clicked", function(){
+
+            component.emit("closed", null, false);
 
             component.parentNode.removeChild(component);
 

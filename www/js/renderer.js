@@ -65,6 +65,50 @@ DATAVERSE.renderer.prototype = {
         self.cursor.setAttribute("fuse", true);
         self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
 
+        // REMOVE COMMENTS
+        // Insert intro panel
+
+//        self.intro_panel = document.createElement("a-entity");
+//        self.intro_panel.setAttribute("intro-panel", {
+//            theme: self.theme,
+//            credits: self.actual_scene_data.credits ? self.actual_scene_data.credits: "",
+//            title: self.actual_scene_data.title,
+//            text: self.actual_scene_data.explain,
+//            yaw: self.counter_cam_rotation
+//        });
+//
+//        self.intro_panel.addEventListener("closed", function(){
+//            // Set sky opacity
+//
+//            // Set floor opacity
+//
+//            // Set component visibility
+//
+//            self.actual_scene_component.setAttribute("visible", true);
+//
+//            var floor_animation = document.createElement("a-animation");
+//
+//            floor_animation.setAttribute("attribute", "opacity");
+//            floor_animation.setAttribute("dur", 1000);
+//            floor_animation.setAttribute("to", 1.0);
+//
+//            self.floor.appendChild(floor_animation);
+//
+//            var sky_animation = document.createElement("a-animation");
+//
+//            sky_animation.setAttribute("attribute", "opacity");
+//            sky_animation.setAttribute("dur", 1000);
+//            sky_animation.setAttribute("to", 1.0);
+//
+//            self.sky.appendChild(sky_animation);
+//
+//
+//
+//        });
+//
+//        self.intro_panel.classList.add("dataverse-added");
+
+
 //
 // color="yellow" raycaster="near: 0.0; objects: .clickable" fuse="true" fuse-timeout="1000"
 
@@ -83,6 +127,7 @@ DATAVERSE.renderer.prototype = {
         self.scene.appendChild(self.vive_controls);
         self.scene.appendChild(self.directional_light);
         self.scene.appendChild(self.ambient_light);
+//        self.scene.appendChild(self.intro_panel);
 
 
     },
@@ -206,7 +251,7 @@ DATAVERSE.renderer.prototype = {
 
         console.log("LANDING WITH CAMERA ROTATION ", self.scene.camera.el.getAttribute("rotation").y);
 
-        var counter_cam_rotation = (self.scene.camera.el.getAttribute("rotation").y);
+        self.counter_cam_rotation = (self.scene.camera.el.getAttribute("rotation").y);
 
         // var to_delete = [];
         //
@@ -274,6 +319,7 @@ DATAVERSE.renderer.prototype = {
             self.render_aux_assets();
             self.actual_scene_component = document.createElement("a-entity");
             self.actual_scene_component.classList.add("dataverse-added");
+//            self.actual_scene_component.setAttribute("visible", false);
 
             var my_params = AFRAME.utils.styleParser.parse(self.actual_scene_data.params);
 
@@ -301,6 +347,7 @@ DATAVERSE.renderer.prototype = {
 
             console.log("LLAMANDO CON PARAMS", my_params, self.actual_scene_data);
 
+
             // console.log("LE ENCHUFO SOURCE", )
 
             // Set floor: its an image
@@ -320,9 +367,11 @@ DATAVERSE.renderer.prototype = {
                 self.floor.setAttribute("height", 100);
                 self.floor.setAttribute("repeat", "100 100");
 
-                self.floor.setAttribute("rotation", {x:-90, y: counter_cam_rotation, z:0});
+                self.floor.setAttribute("rotation", {x:-90, y: self.counter_cam_rotation, z:0});
 
                 self.floor.classList.add("dataverse-added");
+
+//                self.floor.setAttribute("opacity", 0.0);
 
                 self.scene.appendChild(self.floor);
 
@@ -337,8 +386,10 @@ DATAVERSE.renderer.prototype = {
                     self.floor.setAttribute("width", 100);
                     self.floor.setAttribute("height", 100);
                     self.floor.setAttribute("repeat", "100 100");
-                    self.floor.setAttribute("rotation", {x:-90, y: counter_cam_rotation, z:0});
+                    self.floor.setAttribute("rotation", {x:-90, y: self.counter_cam_rotation, z:0});
                     self.floor.classList.add("dataverse-added");
+
+//                    self.floor.setAttribute("opacity", 0.0);
 
                     self.scene.appendChild(self.floor);
 
@@ -371,9 +422,11 @@ DATAVERSE.renderer.prototype = {
                             self.floor.setAttribute("height", 100);
                             self.floor.setAttribute("repeat", "100 100");
 
-                            self.floor.setAttribute("rotation", {x: -90, y: counter_cam_rotation, z: 0});
+                            self.floor.setAttribute("rotation", {x: -90, y: self.counter_cam_rotation, z: 0});
 
                             self.floor.classList.add("dataverse-added");
+
+//                            self.floor.setAttribute("opacity", 0.0);
 
                             self.scene.appendChild(self.floor);
                         }
@@ -386,8 +439,10 @@ DATAVERSE.renderer.prototype = {
                             self.floor.setAttribute("width", 100);
                             self.floor.setAttribute("height", 100);
                             self.floor.setAttribute("repeat", "100 100");
-                            self.floor.setAttribute("rotation", {x: -90, y: counter_cam_rotation, z: 0});
+                            self.floor.setAttribute("rotation", {x: -90, y: self.counter_cam_rotation, z: 0});
                             self.floor.classList.add("dataverse-added");
+
+//                            self.floor.setAttribute("opacity", 0.0);
 
                             self.scene.appendChild(self.floor);
                         }
@@ -418,7 +473,10 @@ DATAVERSE.renderer.prototype = {
                 self.sky.setAttribute("src", "#sky_img");
                 self.sky.classList.add("dataverse-added");
 
-                self.sky.setAttribute("rotation", {x:0, y: counter_cam_rotation, z:0});
+//                self.sky.setAttribute("opacity", 0.0);
+
+
+                self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
 
                 self.scene.appendChild(self.sky);
@@ -433,7 +491,9 @@ DATAVERSE.renderer.prototype = {
                     self.sky.setAttribute("color", self.actual_scene_data.background);
                     self.sky.classList.add("dataverse-added");
 
-                    self.sky.setAttribute("rotation", {x:0, y: counter_cam_rotation, z:0});
+                    self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
+
+//                    self.sky.setAttribute("opacity", 0.0);
 
                     self.scene.appendChild(self.sky);
                 }
@@ -456,7 +516,9 @@ DATAVERSE.renderer.prototype = {
                             self.sky.setAttribute("src", "#sky_img");
                             self.sky.classList.add("dataverse-added");
 
-                            self.sky.setAttribute("rotation", {x:0, y: counter_cam_rotation, z:0});
+                            self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
+
+//                            self.sky.setAttribute("opacity", 0.0);
 
 
                             self.scene.appendChild(self.sky);
@@ -468,7 +530,10 @@ DATAVERSE.renderer.prototype = {
                             self.sky.setAttribute("color", my_sky);
                             self.sky.classList.add("dataverse-added");
 
-                            self.sky.setAttribute("rotation", {x:0, y: counter_cam_rotation, z:0});
+                            self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
+
+//                            self.sky.setAttribute("opacity", 0.0);
+
 
                             self.scene.appendChild(self.sky);
 
@@ -498,11 +563,11 @@ DATAVERSE.renderer.prototype = {
             // Set rotation if specified and/or correct for user head yaw landing (based on camera)
 
             if("rotation" in my_params){
-                self.actual_scene_component.setAttribute("rotation", {x: my_params.rotation.split(" ")[0], y:(parseFloat(my_params.rotation.split(" ")[1]) + counter_cam_rotation) % 360, z: my_params.rotation.split(" ")[2]}) ;
+                self.actual_scene_component.setAttribute("rotation", {x: my_params.rotation.split(" ")[0], y:(parseFloat(my_params.rotation.split(" ")[1]) + self.counter_cam_rotation) % 360, z: my_params.rotation.split(" ")[2]}) ;
                 delete(my_params.rotation);
             }
             else {
-                self.actual_scene_component.setAttribute("rotation", {x: 0, y: (counter_cam_rotation % 360), z: 0}) ;
+                self.actual_scene_component.setAttribute("rotation", {x: 0, y: (self.counter_cam_rotation % 360), z: 0}) ;
             }
 
 
