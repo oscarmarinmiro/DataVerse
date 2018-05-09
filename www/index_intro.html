@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/aframe/dist/aframe-master.min.js"></script>
+    <script src="bower_components/moment/min/moment-with-locales.min.js"></script>
+    <script src="bower_components/howler/dist/howler.min.js"></script>
+    <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="bower_components/leaflet-providers/leaflet-providers.js"></script>
+    <script src="bower_components/html2canvas/build/html2canvas.min.js"></script>
+    <script src="bower_components/leaflet-image/leaflet-image.js"></script>
+
+    <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
+
+    <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+
+    <script src="bower_components/d3/d3.min.js"></script>
+
+    <script src="bower_components/tabletop/src/tabletop.min.js"></script>
+
+    <script src="bower_components/Dataverse_vizs/www/js/ui/constants.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/slider.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/button.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/infolabel.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/mediacontrols.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/menu.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/textbutton.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/thumbnail.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/ui/mediapanel.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/common.js"></script>
+
+    <script src="bower_components/Dataverse_vizs/www/js/isotypes-radial-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/geo-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/tilemap-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/timeline-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/treemap-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/photogrid-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/photo-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/video-viz.js"></script>
+    <script src="bower_components/Dataverse_vizs/www/js/GSVPano.js"></script>
+
+    <script src="js/renderer.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/tests.js"></script>
+    <script src="js/urls.js"></script>
+    <script src="js/themes.js"></script>
+    <script src="js/components/aframe-stereo-component-mod.js"></script>
+    <script src="js/components/intro-panel.js"></script>
+
+
+    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+
+  </head>
+
+  <body style="background-color: black">
+
+      <a-scene>
+          <a-sky color="white"></a-sky>
+
+          <a-camera dataverse-added>
+              <a-cursor></a-cursor>
+              <!--<a-cursor dataverse-added color="yellow" raycaster="near: 0.0; objects: .clickable" fuse="true" fuse-timeout="1000"></a-cursor>-->
+          </a-camera>
+
+
+      </a-scene>
+
+        <script>
+
+            // This is to force reload on 'artificially inserted' history entries...
+
+            window.onpopstate = function(event) {
+                if(event && event.state) {
+                    location.reload();
+                }
+            };
+
+            UIPACK_CONSTANTS.icon_path = "themes/dark/icons/";
+
+
+            var intro = document.createElement("a-entity");
+
+            intro.setAttribute("intro-panel", {credits: "Story: djhdjhd, mandanga: ueieueieuieue, design: jkdjekdjed, developer: jdkdjkdj", title: "If the world were 100 people", theme: "dark",text: "Lorem ipsum dolor sit amet consectetur adipiscing elit donec dictum augue magna cubilia, urna risus morbi mollis viverra mattis facilisi imperdiet suspendisse blandit habitant."});
+
+            var scene = document.querySelector("a-scene");
+
+            scene.appendChild(intro);
+
+
+            console.log("COMPONENTS", intro.components['intro-panel']);
+
+            setTimeout(function(){ console.log("PUTTING LOADED MESSAGE"); intro.components['intro-panel'].loaded(); }, 10000);
+
+
+
+
+
+//            UIPACK_CONSTANTS.icon_path = "http://www.pedro.com";
+
+            // World 100
+
+//            var main = new DATAVERSE.main({'debug': false, 'source': "https://docs.google.com/spreadsheets/d/13QLqRWDrg5EC2q-zWZW4svLlb5RzvzTqRnVOdbytu5c/edit?usp=sharing"});
+
+            // All vizs example
+
+//            var main = new DATAVERSE.main({'debug': false, 'source': "https://docs.google.com/spreadsheets/d/1z2WYbw5ANUJxGVaXQ0POs24Kr5baYmH3sv3TRkm2BEY/edit?usp=sharing"});
+
+        </script>
+  </body>
+
+</html>
