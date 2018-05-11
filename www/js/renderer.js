@@ -86,21 +86,65 @@ DATAVERSE.renderer.prototype = {
 
             self.actual_scene_component.setAttribute("visible", true);
 
-            var floor_animation = document.createElement("a-animation");
 
-            floor_animation.setAttribute("attribute", "opacity");
-            floor_animation.setAttribute("dur", 1000);
-            floor_animation.setAttribute("to", 1.0);
+            // Iterate through skyspheres
 
-            self.floor.appendChild(floor_animation);
+            var myNodeList = document.querySelectorAll('.skyspheres');
 
-            var sky_animation = document.createElement("a-animation");
+            [].forEach.call(myNodeList, function (item) {
+              // :) hooray `item` can be used here
 
-            sky_animation.setAttribute("attribute", "opacity");
-            sky_animation.setAttribute("dur", 1000);
-            sky_animation.setAttribute("to", 1.0);
+                var element_animation = document.createElement("a-animation");
 
-            self.sky.appendChild(sky_animation);
+                element_animation.setAttribute("attribute", "opacity");
+                element_animation.setAttribute("dur", 3000);
+                element_animation.setAttribute("to", 1.0);
+
+                item.appendChild(element_animation);
+
+            });
+
+            // Manual floors and skies
+
+            if(self.floor) {
+
+                var floor_animation = document.createElement("a-animation");
+
+                floor_animation.setAttribute("attribute", "opacity");
+                floor_animation.setAttribute("dur", 3000);
+                floor_animation.setAttribute("to", 1.0);
+
+                self.floor.appendChild(floor_animation);
+            }
+
+            if(self.sky) {
+
+                var sky_animation = document.createElement("a-animation");
+
+                sky_animation.setAttribute("attribute", "opacity");
+                sky_animation.setAttribute("dur", 3000);
+                sky_animation.setAttribute("to", 1.0);
+
+                self.sky.appendChild(sky_animation);
+            }
+            // Else: photosphere sky
+            else {
+
+                var my_sky = document.querySelector("a-sky");
+
+                if(my_sky) {
+
+                    var sky_animation = document.createElement("a-animation");
+
+                    sky_animation.setAttribute("attribute", "opacity");
+                    sky_animation.setAttribute("dur", 3000);
+                    sky_animation.setAttribute("to", 1.0);
+
+                    my_sky.appendChild(sky_animation);
+                }
+
+
+            }
 
 
 
@@ -520,7 +564,6 @@ DATAVERSE.renderer.prototype = {
 
                             self.sky.setAttribute("opacity", 0.0);
 
-
                             self.scene.appendChild(self.sky);
 
                         }
@@ -533,7 +576,6 @@ DATAVERSE.renderer.prototype = {
                             self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
                             self.sky.setAttribute("opacity", 0.0);
-
 
                             self.scene.appendChild(self.sky);
 
@@ -637,8 +679,6 @@ DATAVERSE.renderer.prototype = {
             self.actual_scene_component.addEventListener("dv_loaded", function(evt){
 
                 console.log("EL COMPONENTE HA ACABADO DE CARGARSE ", self.intro_panel.components);
-
-                self.intro_panel.emit("closed", null, false);
 
                 self.intro_panel.components['intro-panel'].loaded();
 
