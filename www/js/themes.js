@@ -19,7 +19,8 @@ DATAVERSE.themes =
         'panel_font': "roboto",
         'panel_title_font': "exo2bold",
         'panel_background': "#FFFFFF",
-        'panel_backpanel': "#E5E8F2"
+        'panel_backpanel': "#E5E8F2",
+        'loading_gif': 'themes/dark/textures/loading.gif'
 
     },
     'light': {
@@ -40,8 +41,8 @@ DATAVERSE.themes =
         'panel_font': "roboto",
         'panel_title_font': "exo2bold",
         'panel_background': "#000000",
-        'panel_backpanel': "#313037"
-
+        'panel_backpanel': "#313037",
+        'loading_gif': 'themes/light/textures/loading.gif'
     }
 };
 

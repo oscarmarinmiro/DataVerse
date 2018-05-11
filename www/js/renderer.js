@@ -68,45 +68,45 @@ DATAVERSE.renderer.prototype = {
         // REMOVE COMMENTS
         // Insert intro panel
 
-//        self.intro_panel = document.createElement("a-entity");
-//        self.intro_panel.setAttribute("intro-panel", {
-//            theme: self.theme,
-//            credits: self.actual_scene_data.credits ? self.actual_scene_data.credits: "",
-//            title: self.actual_scene_data.title,
-//            text: self.actual_scene_data.explain,
-//            yaw: self.counter_cam_rotation
-//        });
-//
-//        self.intro_panel.addEventListener("closed", function(){
-//            // Set sky opacity
-//
-//            // Set floor opacity
-//
-//            // Set component visibility
-//
-//            self.actual_scene_component.setAttribute("visible", true);
-//
-//            var floor_animation = document.createElement("a-animation");
-//
-//            floor_animation.setAttribute("attribute", "opacity");
-//            floor_animation.setAttribute("dur", 1000);
-//            floor_animation.setAttribute("to", 1.0);
-//
-//            self.floor.appendChild(floor_animation);
-//
-//            var sky_animation = document.createElement("a-animation");
-//
-//            sky_animation.setAttribute("attribute", "opacity");
-//            sky_animation.setAttribute("dur", 1000);
-//            sky_animation.setAttribute("to", 1.0);
-//
-//            self.sky.appendChild(sky_animation);
-//
-//
-//
-//        });
-//
-//        self.intro_panel.classList.add("dataverse-added");
+        self.intro_panel = document.createElement("a-entity");
+        self.intro_panel.setAttribute("intro-panel", {
+            theme: self.theme,
+            credits: self.actual_scene_data.credits ? self.actual_scene_data.credits: "",
+            title: self.actual_scene_data.title,
+            text: self.actual_scene_data.explain,
+            yaw: self.counter_cam_rotation
+        });
+
+        self.intro_panel.addEventListener("closed", function(){
+            // Set sky opacity
+
+            // Set floor opacity
+
+            // Set component visibility
+
+            self.actual_scene_component.setAttribute("visible", true);
+
+            var floor_animation = document.createElement("a-animation");
+
+            floor_animation.setAttribute("attribute", "opacity");
+            floor_animation.setAttribute("dur", 1000);
+            floor_animation.setAttribute("to", 1.0);
+
+            self.floor.appendChild(floor_animation);
+
+            var sky_animation = document.createElement("a-animation");
+
+            sky_animation.setAttribute("attribute", "opacity");
+            sky_animation.setAttribute("dur", 1000);
+            sky_animation.setAttribute("to", 1.0);
+
+            self.sky.appendChild(sky_animation);
+
+
+
+        });
+
+        self.intro_panel.classList.add("dataverse-added");
 
 
 //
@@ -127,7 +127,7 @@ DATAVERSE.renderer.prototype = {
         self.scene.appendChild(self.vive_controls);
         self.scene.appendChild(self.directional_light);
         self.scene.appendChild(self.ambient_light);
-//        self.scene.appendChild(self.intro_panel);
+        self.scene.appendChild(self.intro_panel);
 
 
     },
@@ -319,7 +319,7 @@ DATAVERSE.renderer.prototype = {
             self.render_aux_assets();
             self.actual_scene_component = document.createElement("a-entity");
             self.actual_scene_component.classList.add("dataverse-added");
-//            self.actual_scene_component.setAttribute("visible", false);
+            self.actual_scene_component.setAttribute("visible", false);
 
             var my_params = AFRAME.utils.styleParser.parse(self.actual_scene_data.params);
 
@@ -371,7 +371,7 @@ DATAVERSE.renderer.prototype = {
 
                 self.floor.classList.add("dataverse-added");
 
-//                self.floor.setAttribute("opacity", 0.0);
+                self.floor.setAttribute("opacity", 0.0);
 
                 self.scene.appendChild(self.floor);
 
@@ -389,7 +389,7 @@ DATAVERSE.renderer.prototype = {
                     self.floor.setAttribute("rotation", {x:-90, y: self.counter_cam_rotation, z:0});
                     self.floor.classList.add("dataverse-added");
 
-//                    self.floor.setAttribute("opacity", 0.0);
+                    self.floor.setAttribute("opacity", 0.0);
 
                     self.scene.appendChild(self.floor);
 
@@ -426,7 +426,7 @@ DATAVERSE.renderer.prototype = {
 
                             self.floor.classList.add("dataverse-added");
 
-//                            self.floor.setAttribute("opacity", 0.0);
+                            self.floor.setAttribute("opacity", 0.0);
 
                             self.scene.appendChild(self.floor);
                         }
@@ -442,7 +442,7 @@ DATAVERSE.renderer.prototype = {
                             self.floor.setAttribute("rotation", {x: -90, y: self.counter_cam_rotation, z: 0});
                             self.floor.classList.add("dataverse-added");
 
-//                            self.floor.setAttribute("opacity", 0.0);
+                            self.floor.setAttribute("opacity", 0.0);
 
                             self.scene.appendChild(self.floor);
                         }
@@ -473,7 +473,7 @@ DATAVERSE.renderer.prototype = {
                 self.sky.setAttribute("src", "#sky_img");
                 self.sky.classList.add("dataverse-added");
 
-//                self.sky.setAttribute("opacity", 0.0);
+                self.sky.setAttribute("opacity", 0.0);
 
 
                 self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
@@ -493,7 +493,7 @@ DATAVERSE.renderer.prototype = {
 
                     self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
-//                    self.sky.setAttribute("opacity", 0.0);
+                    self.sky.setAttribute("opacity", 0.0);
 
                     self.scene.appendChild(self.sky);
                 }
@@ -518,7 +518,7 @@ DATAVERSE.renderer.prototype = {
 
                             self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
-//                            self.sky.setAttribute("opacity", 0.0);
+                            self.sky.setAttribute("opacity", 0.0);
 
 
                             self.scene.appendChild(self.sky);
@@ -532,7 +532,7 @@ DATAVERSE.renderer.prototype = {
 
                             self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
-//                            self.sky.setAttribute("opacity", 0.0);
+                            self.sky.setAttribute("opacity", 0.0);
 
 
                             self.scene.appendChild(self.sky);
@@ -632,6 +632,16 @@ DATAVERSE.renderer.prototype = {
                 console.log("LINK PRESSED: ", evt.detail.link);
 
                 self.follow_link(evt.detail.link);
+            });
+
+            self.actual_scene_component.addEventListener("dv_loaded", function(evt){
+
+                console.log("EL COMPONENTE HA ACABADO DE CARGARSE ", self.intro_panel.components);
+
+                self.intro_panel.emit("closed", null, false);
+
+                self.intro_panel.components['intro-panel'].loaded();
+
             });
         }
 

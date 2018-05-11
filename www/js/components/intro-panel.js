@@ -16,7 +16,8 @@ AFRAME.registerComponent('intro-panel', {
         'credits':{type: 'string', default: ""},
         'close_button_dmms': {type: 'number', default: 40},
         'on_loading_message': {type: 'string', default: "Please wait while scene is loading..."},
-        'loaded_message': {type: 'string', default: "Scene loaded!"}
+        'loaded_message': {type: 'string', default: "Scene loaded!"},
+        'loading_gif': {type: 'string', default: "img/loading.gif"}
     },
     init: function () {
 
@@ -29,15 +30,24 @@ AFRAME.registerComponent('intro-panel', {
                 'credits': 12,
                 'loading': 12
             },
+//            heights:{
+//                'title': 0.6,
+//                'body': 0.0,
+//                'loading': -0.9,
+//                'credits_heading': -0.50,
+//                'credits': -0.6
+//            },
             heights:{
-                'title': 0.6,
-                'body': 0.0,
+                'title': 0.9,
+                'body': 0.3,
                 'loading': -0.9,
                 'credits_heading': -0.50,
-                'credits': -0.6
+                'credits': -0.4
             },
-            overlap_factor: 0.95,
-            margin: 0.1
+            overlap_factor: 0.99,
+            margin: 0.1,
+            gif_height: 0.1,
+            gif_pos: -0.7
         };
 
         console.log("INIT INTRO PANEL", self.data);
@@ -135,19 +145,19 @@ AFRAME.registerComponent('intro-panel', {
 
         // Credits
 
-        self.loading = document.createElement("a-text");
-
-        self.loading.setAttribute("value", self.data.on_loading_message);
-        self.loading.setAttribute("align", "center");
-        self.loading.setAttribute("anchor", "center");
-        self.loading.setAttribute("width", width);
-        self.loading.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.loading));
-        self.loading.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-        self.loading.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-        self.loading.setAttribute("position", {x: 0, y: (height/2)*self.constants.heights.loading, z: -(z_amount*self.constants.overlap_factor)});
-
-
-        self.el.appendChild(self.loading);
+//        self.loading = document.createElement("a-text");
+//
+//        self.loading.setAttribute("value", self.data.on_loading_message);
+//        self.loading.setAttribute("align", "center");
+//        self.loading.setAttribute("anchor", "center");
+//        self.loading.setAttribute("width", width);
+//        self.loading.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.loading));
+//        self.loading.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
+//        self.loading.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
+//        self.loading.setAttribute("position", {x: 0, y: (height/2)*self.constants.heights.loading, z: -(z_amount*self.constants.overlap_factor)});
+//
+//
+//        self.el.appendChild(self.loading);
 
 
 
@@ -158,30 +168,86 @@ AFRAME.registerComponent('intro-panel', {
 
         var self = this;
 
-        var z_amount = self.data.distance;
+//        var z_amount = self.data.distance;
+//
+//        var width = self.width*(1-(self.constants.margin*2));
+//        var height = (self.height)*(1-(self.constants.margin*2));
+//
+//
+//        // If loaded, remove self.loading and add it again with 'the other message'
+//
+//        self.loading.parentNode.removeChild(self.loading);
+//
+//        self.loading = document.createElement("a-text");
+//
+//        self.loading.setAttribute("value", self.data.loaded_message);
+//        self.loading.setAttribute("align", "center");
+//        self.loading.setAttribute("anchor", "center");
+//        self.loading.setAttribute("width", width);
+//        self.loading.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.loading));
+//        self.loading.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
+//        self.loading.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
+//        self.loading.setAttribute("position", {x: 0, y: (height/2)*self.constants.heights.loading, z: -(z_amount*self.constants.overlap_factor)});
+//
+//
+//        self.el.appendChild(self.loading);
 
-        var width = self.width*(1-(self.constants.margin*2));
-        var height = (self.height)*(1-(self.constants.margin*2));
+        // Remove gif
+
+        self.loading_panel.parentNode.removeChild(self.loading_panel);
+
+        // Add button
+
+        var close = document.createElement("a-entity");
+        close.setAttribute("uipack-button", {'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+        close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
+
+        var component = self.el;
+
+        close.addEventListener("clicked", function(){
+
+            component.emit("closed", null, false);
+
+            component.parentNode.removeChild(component);
+
+        });
 
 
-        // If loaded, remove self.loading and add it again with 'the other message'
-
-        self.loading.parentNode.removeChild(self.loading);
-
-        self.loading = document.createElement("a-text");
-
-        self.loading.setAttribute("value", self.data.loaded_message);
-        self.loading.setAttribute("align", "center");
-        self.loading.setAttribute("anchor", "center");
-        self.loading.setAttribute("width", width);
-        self.loading.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.loading));
-        self.loading.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-        self.loading.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-        self.loading.setAttribute("position", {x: 0, y: (height/2)*self.constants.heights.loading, z: -(z_amount*self.constants.overlap_factor)});
+        self.el.appendChild(close);
 
 
-        self.el.appendChild(self.loading);
 
+    },
+    // Loading gif painting
+
+    draw_loading : function(){
+
+        var self = this;
+
+        self.loading_panel = document.createElement("a-circle");
+
+        self.loading_panel.setAttribute("radius", self.data.close_button_dmms * self.data.distance / 1000);
+
+
+//        self.loading_panel.setAttribute("height", self.constants.gif_height);
+//        self.loading_panel.setAttribute("width", self.constants.gif_height);
+
+        self.loading_panel.setAttribute("position", {x: 0, y: (self.height/2)*self.constants.gif_pos, z:-self.data.distance*self.constants.overlap_factor});
+
+
+//        self.loading_panel.setAttribute("position", {x:0, y: (self.height/2) * self.constants.gif_pos, z:-self.data.distance*self.constants.overlap_factor});
+
+//        self.loading_panel.setAttribute("color", "blue");
+
+        self.loading_panel.setAttribute("material", {shader:"gif", src: "url(" + (self.data.theme ? DATAVERSE.themes[self.data.theme].loading_gif : self.data.loading_gif) + ")", opacity: 0.75});
+
+        console.log("MATERIAL ATTRIBUTE", self.loading_panel.getAttribute("material"));
+
+//        close.setAttribute("uipack-button", {'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+//        close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
+
+
+        self.el.appendChild(self.loading_panel);
 
     },
 
@@ -213,22 +279,24 @@ AFRAME.registerComponent('intro-panel', {
         // Close button
 
 
-        var close = document.createElement("a-entity");
-        close.setAttribute("uipack-button", {'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-        close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
+//        var close = document.createElement("a-entity");
+//        close.setAttribute("uipack-button", {'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+//        close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
+//
+//        var component = self.el;
+//
+//        close.addEventListener("clicked", function(){
+//
+//            component.emit("closed", null, false);
+//
+//            component.parentNode.removeChild(component);
+//
+//        });
+//
+//
+//        self.el.appendChild(close);
 
-        var component = self.el;
-
-        close.addEventListener("clicked", function(){
-
-            component.emit("closed", null, false);
-
-            component.parentNode.removeChild(component);
-
-        });
-
-
-        self.el.appendChild(close);
+        self.draw_loading();
 
         self.draw_text();
 

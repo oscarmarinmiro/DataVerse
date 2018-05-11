@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
 
     <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
+
 
     <script src="bower_components/d3/d3.min.js"></script>
 
@@ -62,9 +64,15 @@
       <a-scene>
 
           <a-camera dataverse-added>
-              <a-cursor></a-cursor>
+              <a-cursor color="yellow"></a-cursor>
               <!--<a-cursor dataverse-added color="yellow" raycaster="near: 0.0; objects: .clickable" fuse="true" fuse-timeout="1000"></a-cursor>-->
           </a-camera>
+
+          <a-plane position="0 1.6 -4" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
+
+          <a-plane position="-4 1.6 0" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
+          <a-plane position="4 1.6 0" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
+          <a-plane position="0 1.6 4" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
 
       </a-scene>
 
