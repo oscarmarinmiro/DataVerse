@@ -188,7 +188,9 @@ DATAVERSE.renderer.prototype = {
         var icons = self.main.state.state.scene_history.length === 0 ? {'icons': ["home.png"], 'names': ["home"]}: {'icons': ["arrow-left.png","home.png"], 'names': ["back","home"]};
 
 
-        if(media_id!== null) {
+        if(media_id) {
+
+            console.log("MEDIA ES NO NULL", media_id);
 
             self.menu.setAttribute("uipack-menu", {
 
