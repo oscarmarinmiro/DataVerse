@@ -410,6 +410,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         var asset_id = "panel_" + self.data.id;
 
+
         self.media_control_height = (self.width)* self.constants.media_heights.player;
 
         controls.setAttribute("uipack-mediacontrols", {src : "#" + asset_id, width: (self.width), height: self.media_control_height, button_radius: self.data.close_button_dmms * self.data.distance / 1000, theme: self.data.theme});

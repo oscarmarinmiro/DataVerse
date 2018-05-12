@@ -103,6 +103,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
     this.bar_canvas.setAttribute("id", "video_player_canvas");
     this.bar_canvas.width = 1024;
     this.bar_canvas.height = 64;
+
     this.bar_canvas.style.display = "none";
 
     this.context = this.bar_canvas.getContext('2d');

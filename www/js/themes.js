@@ -24,7 +24,6 @@ DATAVERSE.themes =
         'player_text_color': "black",
         'player_font': '40px Roboto',
         'loading_gif': 'themes/dark/textures/loading.gif'
-
     },
     'light': {
         'color_scale': 'category10',
