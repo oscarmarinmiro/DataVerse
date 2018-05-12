@@ -194,6 +194,8 @@ DATAVERSE.renderer.prototype = {
 
             self.menu.setAttribute("uipack-menu", {
 
+                theme: self.theme,
+
                 icons: icons.icons, buttons: [], media_id: media_id, open: true
 
             });
@@ -202,6 +204,8 @@ DATAVERSE.renderer.prototype = {
         else {
 
             self.menu.setAttribute("uipack-menu", {
+
+                theme: self.theme,
 
                 icons: icons.icons,  buttons: []
 

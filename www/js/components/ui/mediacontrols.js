@@ -207,7 +207,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     this.back_plane = document.createElement("a-plane");
 
-    this.back_plane.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].player_background : self.data.backgroundColor);
+    this.back_plane.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].player_background : self.data.backgroundColor, shader: "flat"});
 
 
     // Append image icon + info text + bar to component root
