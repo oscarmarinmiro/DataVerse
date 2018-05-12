@@ -410,11 +410,13 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         var asset_id = "panel_" + self.data.id;
 
-        controls.setAttribute("uipack-mediacontrols", {src : "#" + asset_id, size: (self.width)});
+        self.media_control_height = (self.width)* self.constants.media_heights.player;
+
+        controls.setAttribute("uipack-mediacontrols", {src : "#" + asset_id, width: (self.width), height: self.media_control_height, button_radius: self.data.close_button_dmms * self.data.distance / 1000, theme: self.data.theme});
 
         controls.setAttribute("class", "panel_media");
 
-        controls.setAttribute("position", {x: 0 , y: -(self.media_height/2), z: -(self.data.distance*self.constants.overlap_factor)});
+        controls.setAttribute("position", {x: 0 , y: -(self.media_height/2) - (self.media_control_height/2), z: -(self.data.distance*self.constants.overlap_factor)});
 
         self.el.appendChild(controls);
 

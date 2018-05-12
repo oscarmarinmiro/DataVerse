@@ -20,6 +20,9 @@ DATAVERSE.themes =
         'panel_title_font': "exo2bold",
         'panel_background': "#FFFFFF",
         'panel_backpanel': "#E5E8F2",
+        'player_background': "white",
+        'player_text_color': "black",
+        'player_font': '40px Roboto',
         'loading_gif': 'themes/dark/textures/loading.gif'
 
     },
@@ -42,6 +45,9 @@ DATAVERSE.themes =
         'panel_title_font': "exo2bold",
         'panel_background': "#000000",
         'panel_backpanel': "#313037",
+        'player_background': "#000000",
+        'player_text_color': "white",
+        'player_font': '40px Roboto',
         'loading_gif': 'themes/light/textures/loading.gif'
     }
 };

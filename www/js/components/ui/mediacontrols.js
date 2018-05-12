@@ -5,12 +5,14 @@
 AFRAME.registerComponent('uipack-mediacontrols', {
   schema: {
     src: { type: 'string'},
-    size: { type: 'number', default: 2.0},
+    width: { type: 'number', default: 2.0},
+    height: {type: 'number', default: 0.2},
+    button_radius: {type: 'number', default: 0.3},
     backgroundColor: { default: 'black'},
     barColor: { default: 'red'},
     textColor: { default: 'yellow'},
-    statusTextFont: { default: '40px Helvetica Neue'},
-    timeTextFont: { default: '70px Helvetica Neue'},
+    statusTextFont: { default: '50px Helvetica Neue'},
+    timeTextFont: { default: '60px Helvetica Neue'},
     theme: {type: 'string', default: ""}
   },
 
@@ -56,7 +58,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     self.icon = document.createElement("a-entity");
 
-    self.icon.setAttribute("uipack-button", {'theme': self.data.theme, icon_name : UIPACK_CONSTANTS.play_icon, radius: (self.data.size/10)});
+    self.icon.setAttribute("uipack-button", {'theme': self.data.theme, icon_name : UIPACK_CONSTANTS.play_icon, radius: self.data.button_radius});
 
     this.el.appendChild(self.icon);
 
@@ -100,7 +102,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
     this.bar_canvas = document.createElement("canvas");
     this.bar_canvas.setAttribute("id", "video_player_canvas");
     this.bar_canvas.width = 1024;
-    this.bar_canvas.height = 256;
+    this.bar_canvas.height = 64;
     this.bar_canvas.style.display = "none";
 
     this.context = this.bar_canvas.getContext('2d');
@@ -169,7 +171,9 @@ AFRAME.registerComponent('uipack-mediacontrols', {
     // Create transport bar
 
     this.bar = document.createElement("a-plane");
-    this.bar.setAttribute("color", "#000");
+
+    console.log("BACKGROUND BACK ", self.data.theme, DATAVERSE.themes, DATAVERSE.themes[self.data.theme]);
+    this.bar.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].player_background : self.data.backgroundColor);
 
     // On transport bar click, get point clicked, infer % of new pointer, and make video seek to that point
 
@@ -181,7 +185,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
         var x_offset = this.object3D.worldToLocal(point).x;
 
-        var unit_offset = (x_offset/self.data.size)+0.5;
+        var unit_offset = (x_offset/self.data.width)+0.5;
 
         // Update current step for coherence between point+click and key methods
 
@@ -200,11 +204,16 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     });
 
+    this.back_plane = document.createElement("a-plane");
+
+    this.back_plane.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].player_background : self.data.backgroundColor);
+
 
     // Append image icon + info text + bar to component root
 
     this.el.appendChild(this.bar_canvas);
     this.el.appendChild(this.bar);
+    this.el.appendChild(this.back_plane);
 
 
   },
@@ -217,11 +226,14 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     var self = this;
 
-    self.bar.setAttribute("height", this.data.size/4.0);
-    self.bar.setAttribute("width", this.data.size);
-    self.bar.setAttribute("position", "0.0 0.0 0");
+    self.bar.setAttribute("height", this.data.height/2);
+    self.bar.setAttribute("width", this.data.width - ((self.data.button_radius*5)));
+    self.bar.setAttribute("position", {x: self.data.button_radius*2, y: 0, z:0.01});
 
-    self.icon.setAttribute("position", (-this.data.size/2.0)*1.4 + " 0 0");
+    self.back_plane.setAttribute("height", this.data.height);
+    self.back_plane.setAttribute("width", this.data.width);
+
+    self.icon.setAttribute("position", {x: -((this.data.width/2)) + self.data.button_radius * 2, y: 0, z:0.01});
 
   },
 
@@ -235,6 +247,8 @@ AFRAME.registerComponent('uipack-mediacontrols', {
    * Called on each scene tick.
    */
   tick: function (t) {
+
+    var self = this;
 
     // Refresh every 250 millis
 
@@ -280,7 +294,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
                 this.current_step = Math.round((this.video_el.currentTime/this.video_el.duration)*this.bar_steps);
 
                 var ctx = this.context;
-                ctx.fillStyle = this.data.backgroundColor;
+                ctx.fillStyle = self.data.theme ? DATAVERSE.themes[self.data.theme].player_background : self.data.backgroundColor;
                 ctx.fillRect(0, 0, this.bar_canvas.width, this.bar_canvas.height);
 
                 // Uncomment to draw a single bar for loaded data instead of 'bins'
@@ -295,10 +309,10 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
                 // Display time info text
 
-                ctx.font = this.data.timeTextFont;
-                ctx.fillStyle = "white";
+                ctx.font = self.data.theme ? DATAVERSE.themes[self.data.theme].player_font: this.data.timeTextFont;
+                ctx.fillStyle = self.data.theme ? DATAVERSE.themes[self.data.theme].player_text_color : self.data.textColor;
                 ctx.textAlign = "center";
-                ctx.fillText(time_info_text, this.bar_canvas.width/2, this.bar_canvas.height* 0.80);
+                ctx.fillText(time_info_text, this.bar_canvas.width/2, this.bar_canvas.height* 1.0);
 
                 // DEBUG PURPOSES
 
@@ -307,10 +321,10 @@ AFRAME.registerComponent('uipack-mediacontrols', {
                 // If seeking to position, show
 
                 if(this.video_el.seeking){
-                    ctx.font = this.data.statusTextFont;
-                    ctx.fillStyle = this.data.textColor;
-                    ctx.textAlign = "end";
-                    ctx.fillText("Seeking", this.bar_canvas.width * 0.95, this.bar_canvas.height * 0.75);
+//                    ctx.font = this.data.statusTextFont;
+//                    ctx.fillStyle = self.data.theme ? DATAVERSE.themes[self.data.theme].player_text_color : self.data.textColor;
+//                    ctx.textAlign = "end";
+//                    ctx.fillText("Seeking", this.bar_canvas.width * 0.95, this.bar_canvas.height * 0.75);
                 }
 
                 // Uncomment below to see % of video loaded...
@@ -319,11 +333,11 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
                     var percent = (this.video_el.buffered.end(this.video_el.buffered.length - 1) / this.video_el.duration) * 100;
 
-                    ctx.font = this.data.statusTextFont;
-                    ctx.fillStyle = this.data.textColor;
-                    ctx.textAlign = "end";
-
-                    ctx.fillText(percent.toFixed(0) + "% loaded", this.bar_canvas.width * 0.95, this.bar_canvas.height * 0.75);
+//                    ctx.font = this.data.statusTextFont;
+//                    ctx.fillStyle = self.data.theme ? DATAVERSE.themes[self.data.theme].player_text_color : self.data.textColor;
+//                    ctx.textAlign = "end";
+//
+//                    ctx.fillText(percent.toFixed(0) + "% loaded", this.bar_canvas.width * 0.95, this.bar_canvas.height * 0.75);
                 }
 
 
