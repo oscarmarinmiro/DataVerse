@@ -373,7 +373,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
                 }
 
-                self.panel_image.setAttribute("position", {x: -self.width/2, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
+                self.panel_image.setAttribute("position", {x:0, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
 
                 self.panel_image.setAttribute("class", "panel_media");
 
@@ -798,7 +798,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 //        self.panel_audio.setAttribute("src", "#" + audio_canvas_id);
         self.panel_audio.setAttribute("src", "#" + audio_canvas_id);
 
-        self.panel_audio.setAttribute("position", {x: - self.width/2, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
+        self.panel_audio.setAttribute("position", {x:0, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
 
         self.el.appendChild(self.audio_canvas);
 
@@ -876,7 +876,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
 //                self.panel_image.setAttribute("position", "0 " + (self.height/4) + " 0");
 //                self.panel_image.setAttribute("position", {x:0, y: self.height/4, z: -(self.data.distance*self.constants.overlap_factor)});
-            self.panel_video.setAttribute("position", {x: -self.width/2, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
+            self.panel_video.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
 
             self.panel_video.setAttribute("class", "panel_media");
 
@@ -937,22 +937,22 @@ AFRAME.registerComponent('uipack-mediapanel', {
         self.back_panel.setAttribute("height", self.height);
         self.back_panel.setAttribute("width", self.width);
         self.back_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
-        self.back_panel.setAttribute("position", {x: (self.media_type || self.data.link) ? self.width/2:0, y: 0, z: -self.data.distance});
+        self.back_panel.setAttribute("position", {x: 0, y: 0, z: -self.data.distance});
 
 
         self.el.appendChild(self.back_panel);
 
-        if((self.media_type) || (self.data.link)){
-
-            self.background_panel = document.createElement("a-plane");
-            self.background_panel.setAttribute("height", self.height*1.1);
-            self.background_panel.setAttribute("width", self.width*2.2);
-            self.background_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_backpanel: self.data.backpanel_color});
-            self.background_panel.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance+0.01)});
-
-            self.el.appendChild(self.background_panel);
-
-        }
+//        if((self.media_type) || (self.data.link)){
+//
+//            self.background_panel = document.createElement("a-plane");
+//            self.background_panel.setAttribute("height", self.height*1.1);
+//            self.background_panel.setAttribute("width", self.width*2.2);
+//            self.background_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_backpanel: self.data.backpanel_color});
+//            self.background_panel.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance+0.01)});
+//
+//            self.el.appendChild(self.background_panel);
+//
+//        }
 
 
         // Close button
@@ -960,7 +960,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         var close = document.createElement("a-entity");
         close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-        // close.setAttribute("position", {x: self.media_type? self.width/2:0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
         close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
 
         close.addEventListener("click", function(){
