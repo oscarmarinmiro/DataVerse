@@ -260,7 +260,7 @@ AFRAME.registerComponent('photo-viz', {
             console.log("PHOTO TYPE: Photosphere");
 
             document.getElementsByTagName("a-sky")[0].setAttribute("src", self.data.media_source);
-            document.getElementsByTagName("a-sky")[0].setAttribute("opacity", self.data.debug ? 1.0 : 0.0);
+//            document.getElementsByTagName("a-sky")[0].setAttribute("opacity", self.data.debug ? 1.0 : 0.0);
 
 
             document.getElementsByTagName("a-sky")[0].removeAttribute("color");

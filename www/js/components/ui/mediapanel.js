@@ -260,6 +260,8 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.draw_close();
 
+        self.render_if_link();
+
 
     },
 
@@ -304,7 +306,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.media_text.appendChild(self.credits);
 
-        var text = self.data.title + "(" + self.data.subtitle + ")";
+        var text = self.data.subtitle ? (self.data.title + "(" + self.data.subtitle + ")") : self.data.title;
 
         self.title = document.createElement("a-text");
 
@@ -447,6 +449,8 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
                 self.draw_close();
 
+                self.render_if_link();
+
 
 //                self.render_media_texts();
 
@@ -492,221 +496,15 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
 
     },
+    // Only renders link 'arrow'
 
-    render_link: function(){
+    render_if_link: function(){
 
         var self = this;
 
-        // Only render things if there's not also media. If media: Render media and link button and text
+        console.log("RENDERING IF LINK: ", self.data);
 
-        if(!(self.media_type)) {
-
-
-            console.log("RENDERING LINK");
-
-            var asset_id = "panel_" + self.data.id;
-
-            // Variable to annotate if this is a google street view asset
-
-            var gsv = false;
-
-
-            if (document.getElementById(asset_id) === null) {
-
-                var sv_re = /\s*-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?\s*/i;
-
-                console.log("DATADATA", self.data);
-
-                // console.log("REGEXP",self.data.media_source.search(sv_re));
-
-                if (self.data.link_thumbnail.search(sv_re) !== -1) {
-
-                    gsv = true;
-
-                    var img_asset = document.createElement("img");
-
-                    img_asset.setAttribute("id", asset_id);
-
-                    self.assets.appendChild(img_asset);
-
-                    console.log("LINK TYPE: GSV");
-
-                    var params = self.data.link_thumbnail.trim().split(",");
-
-                    var lat = parseFloat(params[0].trim());
-
-                    var lon = parseFloat(params[1].trim());
-
-                    console.log("LATLONG", lat, lon);
-
-                    // Create a PanoLoader object
-
-                    var loader = new GSVPANO.PanoLoader();
-
-                    loader.setZoom(1);
-
-                    loader.onPanoramaLoad = function () {
-
-                        console.log("ON PANORAMA LOAD");
-
-                        console.log(this.canvas);
-
-                        // var texture = new THREE.Texture(this.canvas);
-
-                        img_asset.src = this.canvas.toDataURL();
-
-
-                        // if (sky.object3D.children[0].material.map === null) {
-                        //     sky.object3D.children[0].material = new THREE.MeshBasicMaterial();
-                        //     sky.object3D.children[0].material.map = texture;
-                        // }
-                        //
-                        // texture.needsUpdate = true;
-
-
-                    };
-
-                    loader.load(new google.maps.LatLng(lat, lon));
-                }
-                else {
-
-                    var img_asset = document.createElement("img");
-
-                    img_asset.setAttribute("id", asset_id);
-                    img_asset.setAttribute("src", self.data.link_thumbnail);
-
-                    self.assets.appendChild(img_asset);
-                }
-
-
-                // dataUrl = canvas.toDataURL(),
-                //     imageFoo = document.createElement('img');
-                // imageFoo.src = dataUrl;
-
-
-            }
-            else {
-                var img_asset = document.getElementById(asset_id);
-            }
-
-
-            self.panel_image = document.createElement("a-plane");
-
-
-            self.panel_image.setAttribute("src", "#" + asset_id);
-            self.panel_image.setAttribute("material", {shader: "flat", repeat: {x: 1, y: 1}, offset: {x: 0, y: 0}});
-
-            // All this is for THREE.js bug that two materials that point to the same image must have the same offset and repeat
-            // So this material comes with other offset and repeat if is used the same image outside
-            // And thus, when closing the panel, restore the old offset and repeat
-
-            self.panel_image.addEventListener("materialtextureloaded", function () {
-
-                console.log("LOADED TEXTURE");
-
-                console.log(self.panel_image.object3D.children[0].material.map);
-
-                if (('material' in this.components.material) && ('material' in this.components.material) && (this.components.material.material.map) && ('image' in this.components.material.material.map)) {
-
-                    console.log(this.components.material.material.map);
-
-
-                    self.old_offset = this.components.material.material.map.offset;
-                    self.old_repeat = this.components.material.material.map.repeat;
-                    self.old_material = this.components.material.material.map;
-
-                    this.components.material.material.map.offset = {x: 0, y: 0};
-                    this.components.material.material.map.repeat = {x: 1.0, y: 1.0};
-                    this.components.material.material.map.needsUpdate = true;
-
-
-                }
-
-            });
-
-
-            // Get image width and height
-
-            var img = document.getElementById(asset_id);
-
-            // Aux closure function to render a panel photo, called from 'img' onload event or directly if image is already loaded
-
-            var render_panel_photo = function () {
-
-                var width = img.naturalWidth;
-                var height = img.naturalHeight;
-
-                console.log("NATURAL WIDTH", img.naturalWidth);
-                console.log("NATURAL HEIGHT", img.naturalHeight);
-
-                var aspect_ratio = width / height;
-
-                self.media_height = self.width / aspect_ratio;
-
-                self.panel_image.setAttribute("height", self.media_height);
-
-                self.panel_image.setAttribute("width", self.width);
-
-                self.panel_image.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance * self.constants.overlap_factor)});
-
-                self.panel_image.setAttribute("class", "panel_media");
-
-                self.el.appendChild(self.panel_image);
-
-                // Render button and type of content
-
-                var launch = document.createElement("a-entity");
-                launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-                launch.setAttribute("position", {x: -(self.width / 2), y: -(self.height / 2), z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
-
-                launch.addEventListener("click", function () {
-
-                    self.el.emit("link", {link: self.data.link}, false);
-
-                });
-
-
-                self.el.appendChild(launch);
-
-                // Type of content
-
-                self.launch_text = document.createElement("a-text");
-
-                self.launch_text.setAttribute("value", "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type));
-                self.launch_text.setAttribute("align", "center");
-                self.launch_text.setAttribute("anchor", "center");
-                self.launch_text.setAttribute("width", self.width / 2);
-                self.launch_text.setAttribute("wrap-count", self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link));
-                self.launch_text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
-                self.launch_text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-                self.launch_text.setAttribute("position", {x: -(self.width / 2), y: -(self.height / 2) - (self.data.close_button_dmms * 2 * self.data.distance / 1000), z: -(self.data.distance * self.constants.overlap_factor)});
-
-                self.el.appendChild(self.launch_text);
-
-
-                // self.render_media_texts();
-
-            };
-
-
-            // if naturalWidth == 0, image is not loaded. Assets 'loaded' event is not fired (?), so we cannot use that :-(
-
-            if (img.naturalWidth !== 0) {
-
-                render_panel_photo();
-
-            }
-            else {
-
-                img.onload = function () {
-
-                    render_panel_photo();
-
-                };
-            }
-        }
-        // Link and media, media will be rendered by render_media, so just render the button and the text...
-        else {
+        if(self.data.link) {
 
             // Is it a google street view panorama?
 
@@ -724,7 +522,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             var launch = document.createElement("a-entity");
             launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-            launch.setAttribute("position", {x: -(self.width / 2), y: -(self.height / 2)*1.5, z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
+            launch.setAttribute("position", {x: 0, y: (self.media_height / 2) , z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
 
             launch.addEventListener("click", function () {
 
@@ -742,15 +540,244 @@ AFRAME.registerComponent('uipack-mediapanel', {
             self.launch_text.setAttribute("value", "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type));
             self.launch_text.setAttribute("align", "center");
             self.launch_text.setAttribute("anchor", "center");
+            self.launch_text.setAttribute("baseline", "bottom");
             self.launch_text.setAttribute("width", self.width / 2);
             self.launch_text.setAttribute("wrap-count", self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link));
             self.launch_text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
             self.launch_text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-            self.launch_text.setAttribute("position", {x: -(self.width / 2), y: -(self.height / 2)*1.5 - (self.data.close_button_dmms * 2 * self.data.distance / 1000), z: -(self.data.distance * self.constants.overlap_factor)});
+            self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) + (self.data.close_button_dmms * self.data.distance / 1000)*2, z: -(self.data.distance * self.constants.overlap_factor)});
 
             self.el.appendChild(self.launch_text);
+        }
+
+    },
+
+    render_link: function(){
+
+        var self = this;
+
+        // Only render things if there's not also media. If media: Render media and link button and text
+
+        if(!(self.media_type)) {
 
 
+            if(self.data.link_thumbnail) {
+
+
+                console.log("RENDERING LINK");
+
+                var asset_id = "panel_" + self.data.id;
+
+                // Variable to annotate if this is a google street view asset
+
+                var gsv = false;
+
+
+                if (document.getElementById(asset_id) === null) {
+
+                    var sv_re = /\s*-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?\s*/i;
+
+                    console.log("DATADATA", self.data);
+
+                    // console.log("REGEXP",self.data.media_source.search(sv_re));
+
+                    if (self.data.link_thumbnail.search(sv_re) !== -1) {
+
+                        gsv = true;
+
+                        var img_asset = document.createElement("img");
+
+                        img_asset.setAttribute("id", asset_id);
+
+                        self.assets.appendChild(img_asset);
+
+                        console.log("LINK TYPE: GSV");
+
+                        var params = self.data.link_thumbnail.trim().split(",");
+
+                        var lat = parseFloat(params[0].trim());
+
+                        var lon = parseFloat(params[1].trim());
+
+                        console.log("LATLONG", lat, lon);
+
+                        // Create a PanoLoader object
+
+                        var loader = new GSVPANO.PanoLoader();
+
+                        loader.setZoom(1);
+
+                        loader.onPanoramaLoad = function () {
+
+                            console.log("ON PANORAMA LOAD");
+
+                            console.log(this.canvas);
+
+                            // var texture = new THREE.Texture(this.canvas);
+
+                            img_asset.src = this.canvas.toDataURL();
+
+
+                            // if (sky.object3D.children[0].material.map === null) {
+                            //     sky.object3D.children[0].material = new THREE.MeshBasicMaterial();
+                            //     sky.object3D.children[0].material.map = texture;
+                            // }
+                            //
+                            // texture.needsUpdate = true;
+
+
+                        };
+
+                        loader.load(new google.maps.LatLng(lat, lon));
+                    }
+                    else {
+
+                        var img_asset = document.createElement("img");
+
+                        img_asset.setAttribute("id", asset_id);
+                        img_asset.setAttribute("src", self.data.link_thumbnail);
+
+                        self.assets.appendChild(img_asset);
+                    }
+
+
+                    // dataUrl = canvas.toDataURL(),
+                    //     imageFoo = document.createElement('img');
+                    // imageFoo.src = dataUrl;
+
+
+                }
+                else {
+                    var img_asset = document.getElementById(asset_id);
+                }
+
+
+                self.panel_image = document.createElement("a-plane");
+
+
+                self.panel_image.setAttribute("src", "#" + asset_id);
+                self.panel_image.setAttribute("material", {shader: "flat", repeat: {x: 1, y: 1}, offset: {x: 0, y: 0}});
+
+                // All this is for THREE.js bug that two materials that point to the same image must have the same offset and repeat
+                // So this material comes with other offset and repeat if is used the same image outside
+                // And thus, when closing the panel, restore the old offset and repeat
+
+                self.panel_image.addEventListener("materialtextureloaded", function () {
+
+                    console.log("LOADED TEXTURE");
+
+                    console.log(self.panel_image.object3D.children[0].material.map);
+
+                    if (('material' in this.components.material) && ('material' in this.components.material) && (this.components.material.material.map) && ('image' in this.components.material.material.map)) {
+
+                        console.log(this.components.material.material.map);
+
+
+                        self.old_offset = this.components.material.material.map.offset;
+                        self.old_repeat = this.components.material.material.map.repeat;
+                        self.old_material = this.components.material.material.map;
+
+                        this.components.material.material.map.offset = {x: 0, y: 0};
+                        this.components.material.material.map.repeat = {x: 1.0, y: 1.0};
+                        this.components.material.material.map.needsUpdate = true;
+
+
+                    }
+
+                });
+
+
+                // Get image width and height
+
+                var img = document.getElementById(asset_id);
+
+                // Aux closure function to render a panel photo, called from 'img' onload event or directly if image is already loaded
+
+                var render_panel_photo = function () {
+
+                    var width = img.naturalWidth;
+                    var height = img.naturalHeight;
+
+                    console.log("NATURAL WIDTH", img.naturalWidth);
+                    console.log("NATURAL HEIGHT", img.naturalHeight);
+
+                    var aspect_ratio = width / height;
+
+                    self.media_height = self.width / aspect_ratio;
+
+                    self.panel_image.setAttribute("height", self.media_height);
+
+                    self.panel_image.setAttribute("width", self.width);
+
+                    self.panel_image.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance * self.constants.overlap_factor)});
+
+                    self.panel_image.setAttribute("class", "panel_media");
+
+                    self.el.appendChild(self.panel_image);
+
+                    // Render button and type of content
+
+                    var launch = document.createElement("a-entity");
+                    launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+                    launch.setAttribute("position", {x: 0, y: (self.media_height / 2) - self.data.close_button_dmms * self.data.distance / 1000, z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
+
+                    launch.addEventListener("click", function () {
+
+                        self.el.emit("link", {link: self.data.link}, false);
+
+                    });
+
+
+                    self.el.appendChild(launch);
+
+                    // Type of content
+
+                    self.launch_text = document.createElement("a-text");
+
+                    self.launch_text.setAttribute("value", "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type));
+                    self.launch_text.setAttribute("align", "center");
+                    self.launch_text.setAttribute("anchor", "center");
+                    self.launch_text.setAttribute("baseline", "bottom");
+                    self.launch_text.setAttribute("width", self.width / 2);
+                    self.launch_text.setAttribute("wrap-count", self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link));
+                    self.launch_text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
+                    self.launch_text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
+                    self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) + self.data.close_button_dmms * self.data.distance / 1000, z: -(self.data.distance * self.constants.overlap_factor)});
+
+                    self.el.appendChild(self.launch_text);
+
+                    // No media controls here (for render_media_texts)
+
+                    self.media_control_height = 0;
+
+                    self.render_media_texts();
+
+                    self.draw_close();
+
+                };
+
+
+                // if naturalWidth == 0, image is not loaded. Assets 'loaded' event is not fired (?), so we cannot use that :-(
+
+                if (img.naturalWidth !== 0) {
+
+                    render_panel_photo();
+
+                }
+                else {
+
+                    img.onload = function () {
+
+                        render_panel_photo();
+
+                    };
+                }
+            }
+            else {
+                // Link but no thumbnail nor media ====> render_text
+
+                self.media_renderers["text"].bind(self)();
+            }
         }
 
     },
@@ -856,6 +883,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.draw_close();
 
+        self.render_if_link();
 
 //        self.render_media_texts();
 
@@ -921,6 +949,8 @@ AFRAME.registerComponent('uipack-mediapanel', {
             self.render_media_texts();
 
             self.draw_close();
+
+            self.render_if_link();
 
 //            self.render_media_texts();
 
@@ -1034,10 +1064,11 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         if(!((self.media_type) || (self.data.link))){
 
+            console.log("RENDERING TEXT");
+
             self.media_renderers["text"].bind(self)();
 
         }
-
 
     },
 
