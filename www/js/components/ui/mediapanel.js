@@ -14,6 +14,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
         'yaw': { type: 'number', default: 0.0},
         'pitch': { type: 'number', default: 0.0},
         'coverage': {type: 'number', default: 60.0},
+        'aspect_ratio': {type: 'number', default: (16/9)},
         'height': {type: 'number', default: 30.0},
         'text_color': { type: 'string', default: 'black'},
         'aux_color': { type: 'string', default: "white"},
@@ -51,7 +52,8 @@ AFRAME.registerComponent('uipack-mediapanel', {
             'photo': self.render_photo,
             'video': self.render_video,
             'audio': self.render_audio,
-            'link': self.render_link
+            'link': self.render_link,
+            'text': self.render_text
         };
 
 
@@ -63,7 +65,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
         self.constants = {
             overlap_factor: 0.99,
             media_dim : 0.90,
-            margin: 0.05,
+            margin: 0.1,
             audio_analyser: {
                 width: 1024,
                 height: 1024
@@ -80,6 +82,24 @@ AFRAME.registerComponent('uipack-mediapanel', {
                 'subtitle': 0.40,
                 'body': -0.3,
                 'footnote': -0.8
+            },
+            // This is in % of width
+            media_heights: {
+                player: 0.1,
+                text_box: 0.3
+
+            },
+            // This is in % of width from top line of text_box
+            media_text_pos: {
+                title: 0.1,
+                body: 0.3,
+                credits: 0.5
+
+            },
+            media_text_dmms: {
+                title: 40,
+                body: 20,
+                credits: 12
             }
         };
 
@@ -89,8 +109,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.el.setAttribute("rotation", {x: self.data.pitch, y: self.data.yaw, z:0});
 
-        // self.el.setAttribute("position", {x:0, y: self.data.elevation, z:0});
-
         // Get a handle for scene assets
 
         self.assets = document.querySelector("a-assets");
@@ -98,18 +116,8 @@ AFRAME.registerComponent('uipack-mediapanel', {
             if(DATAVERSE_VIZ_AUX.global_tracking.last_media !== undefined){
                 DATAVERSE_VIZ_AUX.global_tracking.last_media.pause();
 
-//                        if(self.last_media.tagName === "AUDIO") {
-//                            self.context.close();
-//                        }
-
-//
                 DATAVERSE_VIZ_AUX.global_tracking.last_media = undefined;
             }
-
-
-
-//        self.back_panel = <a-curvedimage src="#my-image" height="3.0" radius="5.7" theta-length="72"
-//                 rotation="0 100 0" scale="0.8 0.8 0.8"></a-curvedimage>
 
     },
 
@@ -186,9 +194,17 @@ AFRAME.registerComponent('uipack-mediapanel', {
     },
 
 
-    draw_text: function() {
+    render_text: function() {
 
         var self = this;
+
+        self.back_panel.setAttribute("height", self.height);
+        self.back_panel.setAttribute("width", self.width);
+        self.back_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
+        self.back_panel.setAttribute("position", {x: 0, y: 0, z: -self.data.distance});
+
+        self.el.appendChild(self.back_panel);
+
 
         var z_amount = self.data.distance;
 
@@ -200,7 +216,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
         self.title.setAttribute("value", self.data.title);
         self.title.setAttribute("align", "center");
         self.title.setAttribute("width", width);
-        // console.log("wrapCount", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.title));
         self.title.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.title));
         self.title.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
         self.title.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font);
@@ -233,8 +248,11 @@ AFRAME.registerComponent('uipack-mediapanel', {
         self.text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
         self.text.setAttribute("position", {x: (self.media_type || self.data.link) ? width/2:0, y: (height/2)*self.constants.heights.body, z: -(z_amount*self.constants.overlap_factor)});
 
-
         self.el.appendChild(self.text);
+
+        self.close_button_y = -(self.height/2);
+
+        self.draw_close();
 
 
     },
@@ -334,12 +352,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
         });
 
 
-        var plane_height = (self.height) * (self.constants.media_dim);
-
-        var plane_width = (self.width) * (self.constants.media_dim);
-
-        var plane_aspect_ratio = plane_width / plane_height;
-
         // Get image width and height
 
         var img = document.getElementById(asset_id);
@@ -351,27 +363,15 @@ AFRAME.registerComponent('uipack-mediapanel', {
                 var width = img.naturalWidth;
                 var height = img.naturalHeight;
 
-                console.log("NATURAL WIDTH", img.naturalWidth);
-                console.log("NATURAL HEIGHT", img.naturalHeight);
+                var aspect_ratio = (width/height);
 
-                var aspect_ratio = width / height;
+                self.media_height = (self.width / aspect_ratio);
 
-                if(aspect_ratio > plane_aspect_ratio){
+                // Width is fixed @ self.width (based on 'coverage). Height is based on width + photo aspect_ratio
 
-                    self.panel_image.setAttribute("width", plane_width);
+                self.panel_image.setAttribute("width", self.width);
 
-                    self.panel_image.setAttribute("height", plane_width / aspect_ratio);
-
-//                    self.panel.setAttribute("")
-
-                }
-                else {
-
-                    self.panel_image.setAttribute("height", plane_height);
-
-                    self.panel_image.setAttribute("width", plane_height * aspect_ratio);
-
-                }
+                self.panel_image.setAttribute("height", self.media_height);
 
                 self.panel_image.setAttribute("position", {x:0, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
 
@@ -379,7 +379,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
                 self.el.appendChild(self.panel_image);
 
-                self.render_media_texts();
+//                self.render_media_texts();
 
         };
 
@@ -410,11 +410,11 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         var asset_id = "panel_" + self.data.id;
 
-        controls.setAttribute("uipack-mediacontrols", {src : "#" + asset_id, size: (self.width/4)});
+        controls.setAttribute("uipack-mediacontrols", {src : "#" + asset_id, size: (self.width)});
 
         controls.setAttribute("class", "panel_media");
 
-        controls.setAttribute("position", {x: -self.width/2 , y: -self.height/2*1.1, z: -(self.data.distance*self.constants.overlap_factor)});
+        controls.setAttribute("position", {x: 0 , y: -(self.media_height/2), z: -(self.data.distance*self.constants.overlap_factor)});
 
         self.el.appendChild(controls);
 
@@ -553,12 +553,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
             });
 
 
-            var plane_height = (self.height) * (self.constants.media_dim);
-
-            var plane_width = (self.width) * (self.constants.media_dim);
-
-            var plane_aspect_ratio = plane_width / plane_height;
-
             // Get image width and height
 
             var img = document.getElementById(asset_id);
@@ -575,24 +569,13 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
                 var aspect_ratio = width / height;
 
-                if (aspect_ratio > plane_aspect_ratio) {
+                self.media_height = self.width / aspect_ratio;
 
-                    self.panel_image.setAttribute("width", plane_width);
+                self.panel_image.setAttribute("height", self.media_height);
 
-                    self.panel_image.setAttribute("height", plane_width / aspect_ratio);
+                self.panel_image.setAttribute("width", self.width);
 
-                    //                    self.panel.setAttribute("")
-
-                }
-                else {
-
-                    self.panel_image.setAttribute("height", plane_height);
-
-                    self.panel_image.setAttribute("width", plane_height * aspect_ratio);
-
-                }
-
-                self.panel_image.setAttribute("position", {x: -self.width / 2, y: 0, z: -(self.data.distance * self.constants.overlap_factor)});
+                self.panel_image.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance * self.constants.overlap_factor)});
 
                 self.panel_image.setAttribute("class", "panel_media");
 
@@ -720,15 +703,11 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.panel_audio = document.createElement("a-plane");
 
-//        self.panel_audio.setAttribute("src", "#" + asset_id);
-//
-//        self.panel_audio.setAttribute("color", "white");
+        var plane_height = (self.width) / self.data.aspect_ratio;
 
-        var plane_height = (self.height) * (self.constants.media_dim);
+        var plane_width = (self.width);
 
-        var plane_width = (self.width) * (self.constants.media_dim);
-
-        var plane_aspect_ratio = plane_width / plane_height;
+        self.media_height = plane_height;
 
         self.panel_audio.setAttribute("width", plane_width);
         self.panel_audio.setAttribute("height", plane_height);
@@ -793,9 +772,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.audio_context = self.audio_canvas.getContext('2d');
 
-//        self.audio_texture = new THREE.Texture(self.audio_canvas);
-
-//        self.panel_audio.setAttribute("src", "#" + audio_canvas_id);
         self.panel_audio.setAttribute("src", "#" + audio_canvas_id);
 
         self.panel_audio.setAttribute("position", {x:0, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
@@ -804,7 +780,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.render_media_controls();
 
-        self.render_media_texts();
+//        self.render_media_texts();
 
         audio_asset.play();
 
@@ -835,12 +811,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.panel_video.setAttribute("src", "#" + asset_id);
 
-        var plane_height = (self.height) * (self.constants.media_dim);
-
-        var plane_width = (self.width) * (self.constants.media_dim);
-
-        var plane_aspect_ratio = plane_width / plane_height;
-
         DATAVERSE_VIZ_AUX.global_tracking.last_media = video_asset;
 
         var render_panel_video = function(){
@@ -850,32 +820,18 @@ AFRAME.registerComponent('uipack-mediapanel', {
             var width = video_asset.videoWidth;
             var height = video_asset.videoHeight;
 
-            var aspect_ratio = width/height;
+            var plane_height = (height/width) * self.width;
 
-            if(aspect_ratio > plane_aspect_ratio){
+            self.media_height = plane_height;
 
-                self.panel_video.setAttribute("width", plane_width);
+            // panel_video width is fixed and based in mediapanel "coverage" parameter
 
-                self.panel_video.setAttribute("height", plane_width / aspect_ratio);
+            self.panel_video.setAttribute("width", self.width);
+            self.panel_video.setAttribute("height", plane_height);
 
-//                    self.panel.setAttribute("")
-
-            }
-            else {
-
-                self.panel_video.setAttribute("height", plane_height);
-
-                self.panel_video.setAttribute("width", plane_height * aspect_ratio);
-
-            }
 
             self.panel_video.setAttribute("material", {src: "#" + asset_id});
 
-
-//                var real_width = cur * aspect_ratio;
-
-//                self.panel_image.setAttribute("position", "0 " + (self.height/4) + " 0");
-//                self.panel_image.setAttribute("position", {x:0, y: self.height/4, z: -(self.data.distance*self.constants.overlap_factor)});
             self.panel_video.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
 
             self.panel_video.setAttribute("class", "panel_media");
@@ -885,9 +841,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             self.render_media_controls();
 
-            self.render_media_texts();
-
-//          self.render_media_controls(slide_number, datum, timestamp, tetha_length/2);
+//            self.render_media_texts();
 
             video_asset.play();
 
@@ -913,6 +867,44 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
 
     },
+
+    draw_close: function() {
+
+        var self = this;
+
+       // Close button
+
+
+        var close = document.createElement("a-entity");
+        close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+        close.setAttribute("position", {x: 0, y: self.close_button_y, z:-self.data.distance*self.constants.overlap_factor});
+        close.addEventListener("click", function(){
+
+            // Resolve the 'duplicate image with different offset and repeat THREE.js bug
+
+            if(self.old_material){
+                self.old_material.offset = self.old_offset;
+                self.old_material.repeat = self.old_repeat;
+                self.old_material.needsUpdate = true;
+            }
+
+
+            // Stop old video if any
+
+            if(DATAVERSE_VIZ_AUX.global_tracking.last_media !== undefined){
+                DATAVERSE_VIZ_AUX.global_tracking.last_media.pause();
+
+            }
+
+
+            self.el.parentNode.removeChild(self.el);
+
+        });
+
+
+        self.el.appendChild(close);
+
+    },
     update: function () {
 
         var self = this;
@@ -930,71 +922,12 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.back_panel = document.createElement("a-plane");
 
-        self.height = 2*self.data.distance*Math.tan(THREE.Math.degToRad(self.data.height/2.0));
         self.width = 2*self.data.distance*Math.tan(THREE.Math.degToRad(self.data.coverage/2.0));
 
+        // This is only valid for 'only' text drawing....
 
-        self.back_panel.setAttribute("height", self.height);
-        self.back_panel.setAttribute("width", self.width);
-        self.back_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
-        self.back_panel.setAttribute("position", {x: 0, y: 0, z: -self.data.distance});
+        self.height = (self.width / self.data.aspect_ratio);
 
-
-        self.el.appendChild(self.back_panel);
-
-//        if((self.media_type) || (self.data.link)){
-//
-//            self.background_panel = document.createElement("a-plane");
-//            self.background_panel.setAttribute("height", self.height*1.1);
-//            self.background_panel.setAttribute("width", self.width*2.2);
-//            self.background_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_backpanel: self.data.backpanel_color});
-//            self.background_panel.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance+0.01)});
-//
-//            self.el.appendChild(self.background_panel);
-//
-//        }
-
-
-        // Close button
-
-
-        var close = document.createElement("a-entity");
-        close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-        close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
-
-        close.addEventListener("click", function(){
-
-            // Resolve the 'duplicate image with different offset and repeat THREE.js bug
-
-            if(self.old_material){
-                self.old_material.offset = self.old_offset;
-                self.old_material.repeat = self.old_repeat;
-                self.old_material.needsUpdate = true;
-            }
-
-
-            // Stop old video if any
-
-            if(DATAVERSE_VIZ_AUX.global_tracking.last_media !== undefined){
-                DATAVERSE_VIZ_AUX.global_tracking.last_media.pause();
-
-//                        if(self.last_media.tagName === "AUDIO") {
-//                            self.context.close();
-//                        }
-
-//
-//                self.last_media = undefined;
-            }
-
-
-            self.el.parentNode.removeChild(self.el);
-
-        });
-
-
-        self.el.appendChild(close);
-
-        self.draw_text();
 
         // bind to self, since it is bound to self.media_renderers object...
 
@@ -1009,6 +942,13 @@ AFRAME.registerComponent('uipack-mediapanel', {
             self.media_renderers[self.media_type].bind(self)();
 
         }
+
+        if(!((self.media_type) || (self.data.link))){
+
+            self.media_renderers["text"].bind(self)();
+
+        }
+
 
     },
 

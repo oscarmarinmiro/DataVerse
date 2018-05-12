@@ -50,9 +50,9 @@ AFRAME.registerComponent('uipack-mediacontrols', {
     this.video_el = document.querySelector(this.video_selector);
 
 
-    console.log("CONTROLS INIT");
-    console.log("VIDEO ELEMENT");
-    console.log(this.video_el);
+//    console.log("CONTROLS INIT");
+//    console.log("VIDEO ELEMENT");
+//    console.log(this.video_el);
 
     self.icon = document.createElement("a-entity");
 
