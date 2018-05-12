@@ -195,7 +195,7 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                 var icon_radius = (self.data.general_button_dmms * self.data.size) / 1000;
 
-                more_button.setAttribute("uipack-button", {icon_name: 'plus.png', radius: (self.data.general_button_dmms * self.data.size) / 1000});
+                more_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: 'plus.png', radius: (self.data.general_button_dmms * self.data.size) / 1000});
 
                 more_button.setAttribute("position", {x: 0, y: label_height, z: 0});
 

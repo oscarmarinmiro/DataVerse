@@ -526,7 +526,7 @@ AFRAME.registerComponent('timeline-viz', {
 
             var more_button = document.createElement("a-entity");
 
-            more_button.setAttribute("uipack-button", {icon_name: 'plus.png', radius: (self.data.general_button_dmms * self.data.size) / 1000});
+            more_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: 'plus.png', radius: (self.data.general_button_dmms * self.data.size) / 1000});
 
             more_button.setAttribute("position", geom_data.position);
             more_button.setAttribute("rotation", geom_data.rotation);

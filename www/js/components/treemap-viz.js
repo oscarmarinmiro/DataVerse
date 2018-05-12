@@ -207,7 +207,7 @@ AFRAME.registerComponent('treemap-viz', {
 
                 var more_button = document.createElement("a-entity");
 
-                more_button.setAttribute("uipack-button", {icon_name: 'plus.png', radius: (self.data.general_button_dmms * self.data.distance) / 1000});
+                more_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: 'plus.png', radius: (self.data.general_button_dmms * self.data.distance) / 1000});
 
                 more_button.setAttribute("position", {x: -(self.data.general_button_dmms * self.data.distance) / 1000, y: 0, z: 0});
 
@@ -280,7 +280,7 @@ AFRAME.registerComponent('treemap-viz', {
 
             var zoom_button = document.createElement("a-entity");
 
-            zoom_button.setAttribute("uipack-button", {icon_name: 'search.png', radius: (self.data.general_button_dmms * self.data.distance) / 1000});
+            zoom_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: 'search.png', radius: (self.data.general_button_dmms * self.data.distance) / 1000});
 
             zoom_button.setAttribute("position", {x: self.data.treemap_data.headline != "" ? +(self.data.general_button_dmms * self.data.distance) / 1000 : 0, y: 0, z: 0});
 
@@ -672,7 +672,7 @@ AFRAME.registerComponent('small-treemap-viz', {
 
         self.close_button = document.createElement("a-entity");
 
-        self.close_button.setAttribute("uipack-button", {icon_name: 'times.png', radius: (self.data.general_button_dmms * (self.data.distance)) / 1000});
+        self.close_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: 'times.png', radius: (self.data.general_button_dmms * (self.data.distance)) / 1000});
 
         self.close_button.setAttribute("position", {x: -(self.data.width/4) * 1.3, y: 0, z: -self.data.distance/2});
 
@@ -879,7 +879,7 @@ AFRAME.registerComponent('small-treemap-viz', {
             // button
 
             var propor_button = document.createElement("a-entity");
-            propor_button.setAttribute("uipack-button", {icon_name: "toggle-off.png", radius: (self.data.general_button_dmms * self.data.distance) / 1000});
+            propor_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: "toggle-off.png", radius: (self.data.general_button_dmms * self.data.distance) / 1000});
             propor_button.setAttribute("position", {x: -width*0.3, y: params.vertical_scale(self.data.rows - 0.5), z: -self.data.distance});
 
             self.el.appendChild(propor_button);
@@ -893,7 +893,7 @@ AFRAME.registerComponent('small-treemap-viz', {
                 self.proportional = !self.proportional;
 
                 if(self.proportional){
-                    propor_button.setAttribute("uipack-button", {icon_name: "toggle-on.png", radius: (self.data.general_button_dmms * self.data.distance) / 1000});
+                    propor_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: "toggle-on.png", radius: (self.data.general_button_dmms * self.data.distance) / 1000});
 
                     self.treemaps.forEach(function(d,i){
 
@@ -906,7 +906,7 @@ AFRAME.registerComponent('small-treemap-viz', {
                     });
                 }
                 else {
-                    propor_button.setAttribute("uipack-button", {icon_name: "toggle-off.png", radius: (self.data.general_button_dmms * self.data.distance) / 1000});
+                    propor_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: "toggle-off.png", radius: (self.data.general_button_dmms * self.data.distance) / 1000});
 
                     self.treemaps.forEach(function(d,i){
 

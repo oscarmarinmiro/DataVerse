@@ -601,7 +601,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
                 // Render button and type of content
 
                 var launch = document.createElement("a-entity");
-                launch.setAttribute("uipack-button", {'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+                launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
                 launch.setAttribute("position", {x: -(self.width / 2), y: -(self.height / 2), z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
 
                 launch.addEventListener("click", function () {
@@ -668,7 +668,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
             // Render button and type of content
 
             var launch = document.createElement("a-entity");
-            launch.setAttribute("uipack-button", {'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+            launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
             launch.setAttribute("position", {x: -(self.width / 2), y: -(self.height / 2)*1.5, z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
 
             launch.addEventListener("click", function () {
@@ -959,7 +959,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
 
         var close = document.createElement("a-entity");
-        close.setAttribute("uipack-button", {'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+        close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
         // close.setAttribute("position", {x: self.media_type? self.width/2:0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
         close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
 

@@ -54,6 +54,7 @@ AFRAME.registerComponent('photo-viz', {
             var icon_radius = (self.data.general_button_dmms * self.data.label_distance) / 1000;
 
             more_button.setAttribute("uipack-button", {
+                theme: self.data.theme,
                 icon_name: 'plus.png',
                 radius: (self.data.general_button_dmms * self.data.label_distance) / 1000
             });

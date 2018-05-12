@@ -136,7 +136,7 @@ AFRAME.registerComponent('photogrid-viz', {
 
             var more_button = document.createElement("a-entity");
 
-            more_button.setAttribute("uipack-button", {icon_name: 'plus.png', radius: (self.data.general_button_dmms * self.data.distance) / 1000});
+            more_button.setAttribute("uipack-button", { theme: self.data.theme, icon_name: 'plus.png', radius: (self.data.general_button_dmms * self.data.distance) / 1000});
 
             more_button.setAttribute("position", {x: 0, y: params.thumbnail_size * 0.8, z: 0});
 

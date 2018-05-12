@@ -438,7 +438,7 @@ AFRAME.registerComponent('tilemap-viz', {
 //        more.setAttribute("uipack-button", {'icon_name': 'plus.png', 'radius': 25});
 //        more.setAttribute("dimmify", "");
 
-        more.setAttribute("uipack-button", {'icon_name': 'plus.png', 'radius': icon_radius});
+        more.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'plus.png', 'radius': icon_radius});
 
 
         more.setAttribute("position", {x: -icon_radius*2, y:  self.data.marker_size/4 + (label_height*1.5), z:0});
@@ -524,7 +524,7 @@ AFRAME.registerComponent('tilemap-viz', {
 
 
         var link = document.createElement("a-entity");
-        link.setAttribute("uipack-button", {'icon_name': 'arrow-up.png', 'radius': icon_radius});
+        link.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': icon_radius});
         link.setAttribute("position", {x: icon_radius*2, y: self.data.marker_size/4 + (label_height*1.5), z:0});
 
         link.addEventListener("click", function(){

@@ -10,7 +10,8 @@ AFRAME.registerComponent('uipack-mediacontrols', {
     barColor: { default: 'red'},
     textColor: { default: 'yellow'},
     statusTextFont: { default: '40px Helvetica Neue'},
-    timeTextFont: { default: '70px Helvetica Neue'}
+    timeTextFont: { default: '70px Helvetica Neue'},
+    theme: {type: 'string', default: ""}
   },
 
   position_time_from_steps: function(){
@@ -55,7 +56,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     self.icon = document.createElement("a-entity");
 
-    self.icon.setAttribute("uipack-button", {icon_name : UIPACK_CONSTANTS.play_icon, radius: (self.data.size/10)});
+    self.icon.setAttribute("uipack-button", {'theme': self.data.theme, icon_name : UIPACK_CONSTANTS.play_icon, radius: (self.data.size/10)});
 
     this.el.appendChild(self.icon);
 
