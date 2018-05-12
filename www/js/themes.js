@@ -22,7 +22,7 @@ DATAVERSE.themes =
         'panel_backpanel': "#E5E8F2",
         'player_background': "white",
         'player_text_color': "black",
-        'player_font': '40px Roboto',
+        'player_font': '30px Roboto',
         'loading_gif': 'themes/dark/textures/loading.gif'
     },
     'light': {
@@ -46,7 +46,7 @@ DATAVERSE.themes =
         'panel_backpanel': "#313037",
         'player_background': "#000000",
         'player_text_color': "white",
-        'player_font': '40px Roboto',
+        'player_font': '30px Roboto',
         'loading_gif': 'themes/light/textures/loading.gif'
     }
 };

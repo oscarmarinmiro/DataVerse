@@ -24,6 +24,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
         'backpanel_color': { type: 'string', default: 'black'},
         'media_url': {type: 'string', default: ""},
         'title': {type: 'string', default: ""},
+        'low_height': {type: 'number', default: -1},
         'subtitle': {type: 'string', default: ""},
         'text': {type: 'string', default: ""},
         'media_caption': {type: 'string', default: ""},
@@ -85,21 +86,21 @@ AFRAME.registerComponent('uipack-mediapanel', {
             },
             // This is in % of width
             media_heights: {
-                player: 0.1,
-                text_box: 0.3
+                player: 0.085,
+                text_box: 0.15
 
             },
             // This is in % of width from top line of text_box
             media_text_pos: {
-                title: 0.1,
-                body: 0.3,
-                credits: 0.5
+                title: 0.35,
+                body: 0.15,
+                credits: -0.30
 
             },
             media_text_dmms: {
-                title: 40,
-                body: 20,
-                credits: 12
+                title: 16,
+                body: 12,
+                credits: 8
             }
         };
 
@@ -198,59 +199,64 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         var self = this;
 
-        self.back_panel.setAttribute("height", self.height);
-        self.back_panel.setAttribute("width", self.width);
-        self.back_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
-        self.back_panel.setAttribute("position", {x: 0, y: 0, z: -self.data.distance});
+        self.media_height = 0;
+        self.media_control_height = 0;
 
-        self.el.appendChild(self.back_panel);
+        self.render_media_texts();
 
-
-        var z_amount = self.data.distance;
-
-        var width = self.width*(1-(self.constants.margin*2));
-        var height = (self.height)*(1-(self.constants.margin*2));
-
-        self.title = document.createElement("a-text");
-
-        self.title.setAttribute("value", self.data.title);
-        self.title.setAttribute("align", "center");
-        self.title.setAttribute("width", width);
-        self.title.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.title));
-        self.title.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-        self.title.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font);
-        self.title.setAttribute("position", {x: (self.media_type || self.data.link) ? width/2:0, y: (height/2)*self.constants.heights.title, z: -(z_amount*self.constants.overlap_factor)});
-
-
-        self.el.appendChild(self.title);
-
-        self.subtitle = document.createElement("a-text");
-
-        self.subtitle.setAttribute("value", self.data.subtitle);
-        self.subtitle.setAttribute("align", "center");
-        self.subtitle.setAttribute("width", width);
-        console.log("wrapCount", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.subtitle));
-        self.subtitle.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.subtitle));
-        self.subtitle.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-        self.subtitle.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-        self.subtitle.setAttribute("position", {x: (self.media_type || self.data.link)? width/2:0, y: (height/2)*self.constants.heights.subtitle, z: -(z_amount*self.constants.overlap_factor)});
-
-        self.el.appendChild(self.subtitle);
-
-        self.text = document.createElement("a-text");
-
-        self.text.setAttribute("value", self.data.text);
-        self.text.setAttribute("align", "center");
-        self.text.setAttribute("anchor", "center");
-        self.text.setAttribute("width", width);
-        self.text.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.body));
-        self.text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-        self.text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-        self.text.setAttribute("position", {x: (self.media_type || self.data.link) ? width/2:0, y: (height/2)*self.constants.heights.body, z: -(z_amount*self.constants.overlap_factor)});
-
-        self.el.appendChild(self.text);
-
-        self.close_button_y = -(self.height/2);
+//        self.back_panel.setAttribute("height", self.height);
+//        self.back_panel.setAttribute("width", self.width);
+//        self.back_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
+//        self.back_panel.setAttribute("position", {x: 0, y: 0, z: -self.data.distance});
+//
+//        self.el.appendChild(self.back_panel);
+//
+//
+//        var z_amount = self.data.distance;
+//
+//        var width = self.width*(1-(self.constants.margin*2));
+//        var height = (self.height)*(1-(self.constants.margin*2));
+//
+//        self.title = document.createElement("a-text");
+//
+//        self.title.setAttribute("value", self.data.title);
+//        self.title.setAttribute("align", "center");
+//        self.title.setAttribute("width", width);
+//        self.title.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.title));
+//        self.title.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
+//        self.title.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font);
+//        self.title.setAttribute("position", {x: (self.media_type || self.data.link) ? width/2:0, y: (height/2)*self.constants.heights.title, z: -(z_amount*self.constants.overlap_factor)});
+//
+//
+//        self.el.appendChild(self.title);
+//
+//        self.subtitle = document.createElement("a-text");
+//
+//        self.subtitle.setAttribute("value", self.data.subtitle);
+//        self.subtitle.setAttribute("align", "center");
+//        self.subtitle.setAttribute("width", width);
+//        console.log("wrapCount", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.subtitle));
+//        self.subtitle.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.subtitle));
+//        self.subtitle.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
+//        self.subtitle.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
+//        self.subtitle.setAttribute("position", {x: (self.media_type || self.data.link)? width/2:0, y: (height/2)*self.constants.heights.subtitle, z: -(z_amount*self.constants.overlap_factor)});
+//
+//        self.el.appendChild(self.subtitle);
+//
+//        self.text = document.createElement("a-text");
+//
+//        self.text.setAttribute("value", self.data.text);
+//        self.text.setAttribute("align", "center");
+//        self.text.setAttribute("anchor", "center");
+//        self.text.setAttribute("width", width);
+//        self.text.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.body));
+//        self.text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
+//        self.text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
+//        self.text.setAttribute("position", {x: (self.media_type || self.data.link) ? width/2:0, y: (height/2)*self.constants.heights.body, z: -(z_amount*self.constants.overlap_factor)});
+//
+//        self.el.appendChild(self.text);
+//
+//        self.close_button_y = -(self.width * self.constants.media_heights.text_box);
 
         self.draw_close();
 
@@ -261,20 +267,74 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         var self = this;
 
-        var text = self.data.media_caption + self.data.media_credit ? "\nCredits: " + self.data.media_credit : "";
+        console.log("RENDERING MEDIA TEXTS");
 
-        self.text = document.createElement("a-text");
+        var offset = (self.media_height/2) + self.media_control_height + (self.width * self.constants.media_heights.text_box/2);
 
-        self.text.setAttribute("value", text);
-        self.text.setAttribute("align", "right");
-        self.text.setAttribute("anchor", "right");
-        self.text.setAttribute("width", self.width);
-        self.text.setAttribute("wrap-count", self.get_count_from_dmms(self.width, self.data.distance*self.constants.overlap_factor, self.constants.dmm.footnote));
-        self.text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
-        self.text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-        self.text.setAttribute("position", {x: -self.width/8, y: -self.height/2, z: -(self.data.distance*self.constants.overlap_factor)});
+        offset = offset * (1.02);
 
-        self.el.appendChild(self.text);
+        self.close_button_y = -offset - (self.width * self.constants.media_heights.text_box/2);
+
+        // Text plane
+
+        self.media_text = document.createElement("a-plane");
+
+        self.media_text.setAttribute("height", self.width * self.constants.media_heights.text_box);
+        self.media_text.setAttribute("width", self.width);
+        self.media_text.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
+//        self.media_text.setAttribute("material", {shader: "flat", color: "red"});
+        self.media_text.setAttribute("position", {x: 0, y: -offset, z: -self.data.distance*self.constants.overlap_factor});
+
+        self.el.appendChild(self.media_text);
+
+        var text = self.data.media_caption + (self.data.media_credit ? "\nCredits: " + self.data.media_credit : "");
+
+        console.log("TEXTO DE CREDITO", self.data, text);
+
+        self.credits = document.createElement("a-text");
+
+        self.credits.setAttribute("value", text);
+        self.credits.setAttribute("align", "right");
+        self.credits.setAttribute("anchor", "right");
+        self.credits.setAttribute("width", self.width * (1 - (self.constants.margin * 2)));
+        self.credits.setAttribute("wrap-count", self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.credits));
+        self.credits.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
+        self.credits.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
+        self.credits.setAttribute("position", {x:(self.width/2)*(1-(self.constants.margin)) , y: self.width * self.constants.media_heights.text_box * self.constants.media_text_pos.credits, z: 0});
+
+        self.media_text.appendChild(self.credits);
+
+        var text = self.data.title + "(" + self.data.subtitle + ")";
+
+        self.title = document.createElement("a-text");
+
+        self.title.setAttribute("value", text);
+        self.title.setAttribute("align", "left");
+        self.title.setAttribute("anchor", "left");
+        self.title.setAttribute("width", self.width * (1 - (self.constants.margin * 2)));
+        self.title.setAttribute("wrap-count", self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.title));
+        self.title.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color);
+        self.title.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font);
+        self.title.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: (self.width * self.constants.media_heights.text_box) * self.constants.media_text_pos.title, z: 0});
+
+        self.media_text.appendChild(self.title);
+
+
+        self.body = document.createElement("a-text");
+
+        self.body.setAttribute("value", self.data.text);
+        self.body.setAttribute("align", "left");
+        self.body.setAttribute("anchor", "left");
+        self.body.setAttribute("baseline", "top");
+        self.body.setAttribute("width", self.width * (1 - (self.constants.margin)));
+        self.body.setAttribute("wrap-count", self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.body));
+        self.body.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color);
+        self.body.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.panel_font);
+        self.body.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: (self.width * self.constants.media_heights.text_box) * self.constants.media_text_pos.body, z: 0});
+
+        self.media_text.appendChild(self.body);
+
+
 
 
     },
@@ -378,6 +438,15 @@ AFRAME.registerComponent('uipack-mediapanel', {
                 self.panel_image.setAttribute("class", "panel_media");
 
                 self.el.appendChild(self.panel_image);
+
+                // No media controls here (for render_media_texts)
+
+                self.media_control_height = 0;
+
+                self.render_media_texts();
+
+                self.draw_close();
+
 
 //                self.render_media_texts();
 
@@ -783,6 +852,11 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.render_media_controls();
 
+        self.render_media_texts();
+
+        self.draw_close();
+
+
 //        self.render_media_texts();
 
         audio_asset.play();
@@ -844,6 +918,10 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             self.render_media_controls();
 
+            self.render_media_texts();
+
+            self.draw_close();
+
 //            self.render_media_texts();
 
             video_asset.play();
@@ -864,11 +942,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
             });
         }
 
-
-
-
-
-
     },
 
     draw_close: function() {
@@ -880,7 +953,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         var close = document.createElement("a-entity");
         close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-        close.setAttribute("position", {x: 0, y: self.close_button_y, z:-self.data.distance*self.constants.overlap_factor});
+        close.setAttribute("position", {x: 0, y: self.close_button_y, z:-(self.data.distance*self.constants.overlap_factor*self.constants.overlap_factor)});
         close.addEventListener("click", function(){
 
             // Resolve the 'duplicate image with different offset and repeat THREE.js bug
@@ -904,8 +977,21 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         });
 
-
         self.el.appendChild(close);
+
+        var close_position = self.close_button_y + self.el.getAttribute("position").y;
+
+        if(self.data.low_height !== -1){
+
+            var offset = (self.data.low_height - close_position);
+
+            var position = self.el.getAttribute("position");
+
+            position.y += offset;
+
+            self.el.setAttribute("position", position);
+        }
+
 
     },
     update: function () {
