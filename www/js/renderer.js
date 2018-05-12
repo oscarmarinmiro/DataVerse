@@ -192,7 +192,7 @@ DATAVERSE.renderer.prototype = {
 
             self.menu.setAttribute("uipack-menu", {
 
-                icons: icons.icons, buttons: [], media_id: media_id
+                icons: icons.icons, buttons: [], media_id: media_id, open: true
 
             });
 
