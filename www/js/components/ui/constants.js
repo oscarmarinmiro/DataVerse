@@ -12,7 +12,7 @@ var UIPACK_CONSTANTS = {
     menu_player_width: 0.5,
     button_spacing : 0.1,
     menu_button_width : 3.0,
-    icon_path :  "icons/",
+    icon_path :  "themes/dark/icons/",
     button_radius : 0.05,
     button_distance : 2.9,
     button_elevation : 1.8,
