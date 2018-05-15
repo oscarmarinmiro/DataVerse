@@ -76,7 +76,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
                 'subtitle': 28,
                 'body': 18,
                 'footnote': 12,
-                'link': 20
+                'link': 16
             },
             heights:{
                 'title': 0.8,
@@ -89,6 +89,11 @@ AFRAME.registerComponent('uipack-mediapanel', {
                 player: 0.085,
                 text_box: 0.15
 
+            },
+            separations: {
+                title: 0.2,
+                body: 0.1,
+                credits: 0.1
             },
             // This is in % of width from top line of text_box
             media_text_pos: {
@@ -202,159 +207,178 @@ AFRAME.registerComponent('uipack-mediapanel', {
         self.media_height = 0;
         self.media_control_height = 0;
 
-        self.render_media_texts();
-
-//        self.back_panel.setAttribute("height", self.height);
-//        self.back_panel.setAttribute("width", self.width);
-//        self.back_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
-//        self.back_panel.setAttribute("position", {x: 0, y: 0, z: -self.data.distance});
-//
-//        self.el.appendChild(self.back_panel);
-//
-//
-//        var z_amount = self.data.distance;
-//
-//        var width = self.width*(1-(self.constants.margin*2));
-//        var height = (self.height)*(1-(self.constants.margin*2));
-//
-//        self.title = document.createElement("a-text");
-//
-//        self.title.setAttribute("value", self.data.title);
-//        self.title.setAttribute("align", "center");
-//        self.title.setAttribute("width", width);
-//        self.title.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.title));
-//        self.title.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-//        self.title.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font);
-//        self.title.setAttribute("position", {x: (self.media_type || self.data.link) ? width/2:0, y: (height/2)*self.constants.heights.title, z: -(z_amount*self.constants.overlap_factor)});
-//
-//
-//        self.el.appendChild(self.title);
-//
-//        self.subtitle = document.createElement("a-text");
-//
-//        self.subtitle.setAttribute("value", self.data.subtitle);
-//        self.subtitle.setAttribute("align", "center");
-//        self.subtitle.setAttribute("width", width);
-//        console.log("wrapCount", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.subtitle));
-//        self.subtitle.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.subtitle));
-//        self.subtitle.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-//        self.subtitle.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-//        self.subtitle.setAttribute("position", {x: (self.media_type || self.data.link)? width/2:0, y: (height/2)*self.constants.heights.subtitle, z: -(z_amount*self.constants.overlap_factor)});
-//
-//        self.el.appendChild(self.subtitle);
-//
-//        self.text = document.createElement("a-text");
-//
-//        self.text.setAttribute("value", self.data.text);
-//        self.text.setAttribute("align", "center");
-//        self.text.setAttribute("anchor", "center");
-//        self.text.setAttribute("width", width);
-//        self.text.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.body));
-//        self.text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-//        self.text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-//        self.text.setAttribute("position", {x: (self.media_type || self.data.link) ? width/2:0, y: (height/2)*self.constants.heights.body, z: -(z_amount*self.constants.overlap_factor)});
-//
-//        self.el.appendChild(self.text);
-//
-//        self.close_button_y = -(self.width * self.constants.media_heights.text_box);
-
-        self.draw_close();
-
-        self.render_if_link();
-
+        self.render_media_texts(true);
 
     },
 
-    render_media_texts: function() {
+    render_media_texts: function(render_link) {
 
         var self = this;
 
         console.log("RENDERING MEDIA TEXTS");
 
-        var offset = (self.media_height/2) + self.media_control_height + (self.width * self.constants.media_heights.text_box/2);
+        self.media_box_offset = (self.media_height/2) + self.media_control_height + (self.width * self.constants.media_heights.text_box/2);
 
-        offset = offset * (1.02);
+        self.media_box_offset = self.media_box_offset * (1.02);
 
-        self.close_button_y = -offset - (self.width * self.constants.media_heights.text_box/2);
+        self.close_button_y = -self.media_box_offset - (self.width * self.constants.media_heights.text_box/2);
+
+        self.media_box_height = self.width * self.constants.media_heights.text_box;
 
         // Text plane
 
         self.media_text = document.createElement("a-plane");
 
-        self.media_text.setAttribute("height", self.width * self.constants.media_heights.text_box);
+        self.media_text.setAttribute("height", self.media_box_height);
         self.media_text.setAttribute("width", self.width);
         self.media_text.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
-//        self.media_text.setAttribute("material", {shader: "flat", color: "red"});
-        self.media_text.setAttribute("position", {x: 0, y: -offset, z: -self.data.distance*self.constants.overlap_factor});
+        self.media_text.setAttribute("position", {x: 0, y: -self.media_box_offset, z: -self.data.distance*self.constants.overlap_factor});
 
         self.el.appendChild(self.media_text);
 
+        self.media_text_container = document.createElement("a-entity");
+
+        self.media_text.appendChild(self.media_text_container);
+
         // TITLE
 
-        var text = self.data.subtitle ? (self.data.title + "(" + self.data.subtitle + ")") : self.data.title;
+        var text = self.data.subtitle ? (self.data.title + " (" + self.data.subtitle + ")") : self.data.title;
 
-        self.title = document.createElement("a-text");
+        self.title = document.createElement("a-entity");
 
-        self.title.setAttribute("value", text);
-        self.title.setAttribute("align", "left");
-        self.title.setAttribute("anchor", "left");
-        self.title.setAttribute("baseline", "top");
-        self.title.setAttribute("width", self.width * (1 - (self.constants.margin * 2)));
-        self.title.setAttribute("wrap-count", self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.title));
-        self.title.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color);
-        self.title.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font);
-        self.title.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: (self.width * self.constants.media_heights.text_box) * self.constants.media_text_pos.title, z: 0});
+        self.title.setAttribute("text", {
+            value: text,
+            align: "left",
+            anchor: "left",
+            baseline: "top",
+            width: self.width * (1 - (self.constants.margin * 2)),
+            wrapCount: self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.title),
+            color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color,
+            font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font
+        });
 
-        self.media_text.appendChild(self.title);
+        self.title.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: self.media_box_height * (0.5 - self.constants.separations.title), z: 0});
+
+        self.title.setAttribute("geometry", {primitive: "plane", width: "auto", height: "auto"});
+        self.title.setAttribute("material", {shader: "flat", "visible": false});
+
+        self.media_text_container.appendChild(self.title);
+
+        self.total_height = (self.media_box_height)*self.constants.separations.title;
+
+        var title_y = self.media_box_height * (0.5 - self.constants.separations.title);
 
         self.title.addEventListener("textfontset", function(){
 
-            console.log("LOADED TITLE FONT");
+            var title_height = self.title.components.geometry.data.height;
 
-            console.log(self.title.object3D);
+            self.total_height+= title_height + (self.total_height) * self.constants.separations.body;
+
+            var body_y = title_y - (self.total_height) * self.constants.separations.body - title_height;
+
+
+            self.body = document.createElement("a-entity");
+
+            self.body.setAttribute("text", {
+
+                value: self.data.text,
+                align: "left",
+                anchor: "left",
+                baseline: "top",
+                width: self.width * (1 - (self.constants.margin)),
+                wrapCount: self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.body),
+                color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color,
+                font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.panel_font
+
+            });
+
+            self.body.setAttribute("geometry", {primitive: "plane", width: "auto", height: "auto"});
+            self.body.setAttribute("material", {shader: "flat", "visible": false});
+
+
+            self.body.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: body_y, z: 0});
+
+            self.media_text_container.appendChild(self.body);
+
+
+            self.body.addEventListener("textfontset", function () {
+
+                var body_height = self.body.components.geometry.data.height + (self.total_height) * self.constants.separations.credits;
+
+                self.total_height += body_height + (self.total_height) * self.constants.separations.credits;
+
+                var credits_y = body_y - (self.total_height) * self.constants.separations.credits - body_height;
+
+                var text = self.data.media_caption + (self.data.media_credit ? "\nCredits: " + self.data.media_credit : "");
+
+                self.credits = document.createElement("a-entity");
+
+                self.credits.setAttribute("text", {
+                    value: text,
+                    align: "right",
+                    anchor: "right",
+                    width: self.width * (1 - (self.constants.margin * 2)),
+                    wrapCount: self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.credits),
+                    color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color,
+                    font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font
+
+                });
+
+                self.credits.setAttribute("position", {x:(self.width/2)*(1-(self.constants.margin)) , y: credits_y, z: 0});
+
+                self.credits.setAttribute("geometry", {primitive: "plane", width: "auto", height: "auto"});
+                self.credits.setAttribute("material", {shader: "flat", "visible": false});
+
+                self.media_text_container.appendChild(self.credits);
+
+                self.credits.addEventListener("textfontset", function() {
+
+                    var credits_height = self.credits.components.geometry.data.height;
+
+                    self.total_height+= credits_height + (self.data.close_button_dmms * self.data.distance / 1000)/2;
+
+                    console.log("TOTAL HEIGHT", self.total_height);
+
+                    self.fix_positions();
+
+                    self.draw_close();
+
+                    if(render_link) {
+
+                        self.render_if_link();
+                    }
+
+
+                });
+
+            });
+
 
         });
 
+    },
 
-        // BODY
+   fix_positions: function() {
 
+        var self = this;
 
-        self.body = document.createElement("a-text");
+        self.old_height = self.media_box_height;
 
-        self.body.setAttribute("value", self.data.text);
-        self.body.setAttribute("align", "left");
-        self.body.setAttribute("anchor", "left");
-        self.body.setAttribute("baseline", "top");
-        self.body.setAttribute("width", self.width * (1 - (self.constants.margin)));
-        self.body.setAttribute("wrap-count", self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.body));
-        self.body.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color);
-        self.body.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.panel_font);
-        self.body.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: (self.width * self.constants.media_heights.text_box) * self.constants.media_text_pos.body, z: 0});
+        self.new_height_margins = self.total_height;
 
-        self.media_text.appendChild(self.body);
+        self.new_height = self.total_height;
 
-        // CREDITS
+        self.media_text.setAttribute("height", self.new_height_margins);
 
-        var text = self.data.media_caption + (self.data.media_credit ? "\nCredits: " + self.data.media_credit : "");
+        self.offset_y = (self.new_height - self.old_height)/2;
 
-        console.log("TEXTO DE CREDITO", self.data, text);
+        self.media_box_offset+= self.offset_y;
 
-        self.credits = document.createElement("a-text");
+        self.media_text.setAttribute("position", {x: 0, y: -self.media_box_offset, z: -self.data.distance*self.constants.overlap_factor});
 
-        self.credits.setAttribute("value", text);
-        self.credits.setAttribute("align", "right");
-        self.credits.setAttribute("anchor", "right");
-        self.credits.setAttribute("width", self.width * (1 - (self.constants.margin * 2)));
-        self.credits.setAttribute("wrap-count", self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.credits));
-        self.credits.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
-        self.credits.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-        self.credits.setAttribute("position", {x:(self.width/2)*(1-(self.constants.margin)) , y: self.width * self.constants.media_heights.text_box * self.constants.media_text_pos.credits, z: 0});
+        self.media_text_container.setAttribute("position", {x:0, y: self.offset_y, z:0});
 
-        self.media_text.appendChild(self.credits);
-
-
-
-
+        self.close_button_y = -self.media_box_offset - (self.total_height/2);
 
     },
 
@@ -410,22 +434,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
                 this.components.material.material.map.offset = {x:0, y:0};
                 this.components.material.material.map.repeat = {x:1.0, y:1.0};
                 this.components.material.material.map.needsUpdate = true;
-
-
-            //
-            //     var width = this.components.material.material.map.image.naturalWidth;
-            //     var height = this.components.material.material.map.image.naturalHeight;
-            //
-            //     if (width >= height) {
-            //         this.components.material.material.map.repeat = {x: height / width, y: 1};
-            //         this.components.material.material.map.offset = {x: (1 - (height / width)) / 2, y: 0.0};
-            //     }
-            //     else {
-            //         this.components.material.material.map.repeat = {x: 1, y: width / height};
-            //         this.components.material.material.map.offset = {x: 0.0, y: (1 - (width / height)) / 2};
-            //     }
-            //
-            //     this.components.material.material.map.needsUpdate = true;
             }
 
         });
@@ -462,14 +470,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
                 self.media_control_height = 0;
 
-                self.render_media_texts();
-
-                self.draw_close();
-
-                self.render_if_link();
-
-
-//                self.render_media_texts();
+                self.render_media_texts(true);
 
         };
 
@@ -552,16 +553,29 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             // Type of content
 
-            self.launch_text = document.createElement("a-text");
+            self.launch_text = document.createElement("a-entity");
 
-            self.launch_text.setAttribute("value", "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type));
-            self.launch_text.setAttribute("align", "center");
-            self.launch_text.setAttribute("anchor", "center");
-            self.launch_text.setAttribute("baseline", "bottom");
-            self.launch_text.setAttribute("width", self.width / 2);
-            self.launch_text.setAttribute("wrap-count", self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link));
-            self.launch_text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
-            self.launch_text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
+            self.launch_text.setAttribute("text", {
+
+                value: "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type),
+                align: "center",
+                anchor: "center",
+                width: self.width/2,
+                wrapCount: self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link),
+                color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color,
+                font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font
+
+            });
+
+
+
+            var label_height = ((self.constants.dmm.link * self.data.distance) / 1000)*3;
+
+            self.launch_text.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+
+            self.launch_text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color, shader: "flat"});
+
+
             self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) + (self.data.close_button_dmms * self.data.distance / 1000)*2, z: -(self.data.distance * self.constants.overlap_factor)});
 
             self.el.appendChild(self.launch_text);
@@ -767,9 +781,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
                     self.media_control_height = 0;
 
-                    self.render_media_texts();
-
-                    self.draw_close();
+                    self.render_media_texts(false);
 
                 };
 
@@ -896,13 +908,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.render_media_controls();
 
-        self.render_media_texts();
-
-        self.draw_close();
-
-        self.render_if_link();
-
-//        self.render_media_texts();
+        self.render_media_texts(true);
 
         audio_asset.play();
 
@@ -963,13 +969,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             self.render_media_controls();
 
-            self.render_media_texts();
-
-            self.draw_close();
-
-            self.render_if_link();
-
-//            self.render_media_texts();
+            self.render_media_texts(true);
 
             video_asset.play();
 

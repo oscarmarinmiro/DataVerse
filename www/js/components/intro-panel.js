@@ -247,7 +247,10 @@ AFRAME.registerComponent('intro-panel', {
 
         self.height = self.new_height_margins;
 
-        self.close.setAttribute("position", {x:0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
+        if(self.close) {
+
+            self.close.setAttribute("position", {x: 0, y: -(self.height / 2), z: -self.data.distance * self.constants.overlap_factor});
+        }
 
         self.el.setAttribute("visible", true);
 
