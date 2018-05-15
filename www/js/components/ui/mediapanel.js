@@ -289,6 +289,52 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.el.appendChild(self.media_text);
 
+        // TITLE
+
+        var text = self.data.subtitle ? (self.data.title + "(" + self.data.subtitle + ")") : self.data.title;
+
+        self.title = document.createElement("a-text");
+
+        self.title.setAttribute("value", text);
+        self.title.setAttribute("align", "left");
+        self.title.setAttribute("anchor", "left");
+        self.title.setAttribute("baseline", "top");
+        self.title.setAttribute("width", self.width * (1 - (self.constants.margin * 2)));
+        self.title.setAttribute("wrap-count", self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.title));
+        self.title.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color);
+        self.title.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font);
+        self.title.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: (self.width * self.constants.media_heights.text_box) * self.constants.media_text_pos.title, z: 0});
+
+        self.media_text.appendChild(self.title);
+
+        self.title.addEventListener("textfontset", function(){
+
+            console.log("LOADED TITLE FONT");
+
+            console.log(self.title.object3D);
+
+        });
+
+
+        // BODY
+
+
+        self.body = document.createElement("a-text");
+
+        self.body.setAttribute("value", self.data.text);
+        self.body.setAttribute("align", "left");
+        self.body.setAttribute("anchor", "left");
+        self.body.setAttribute("baseline", "top");
+        self.body.setAttribute("width", self.width * (1 - (self.constants.margin)));
+        self.body.setAttribute("wrap-count", self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.body));
+        self.body.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color);
+        self.body.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.panel_font);
+        self.body.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: (self.width * self.constants.media_heights.text_box) * self.constants.media_text_pos.body, z: 0});
+
+        self.media_text.appendChild(self.body);
+
+        // CREDITS
+
         var text = self.data.media_caption + (self.data.media_credit ? "\nCredits: " + self.data.media_credit : "");
 
         console.log("TEXTO DE CREDITO", self.data, text);
@@ -306,35 +352,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.media_text.appendChild(self.credits);
 
-        var text = self.data.subtitle ? (self.data.title + "(" + self.data.subtitle + ")") : self.data.title;
-
-        self.title = document.createElement("a-text");
-
-        self.title.setAttribute("value", text);
-        self.title.setAttribute("align", "left");
-        self.title.setAttribute("anchor", "left");
-        self.title.setAttribute("width", self.width * (1 - (self.constants.margin * 2)));
-        self.title.setAttribute("wrap-count", self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.title));
-        self.title.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color);
-        self.title.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font);
-        self.title.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: (self.width * self.constants.media_heights.text_box) * self.constants.media_text_pos.title, z: 0});
-
-        self.media_text.appendChild(self.title);
-
-
-        self.body = document.createElement("a-text");
-
-        self.body.setAttribute("value", self.data.text);
-        self.body.setAttribute("align", "left");
-        self.body.setAttribute("anchor", "left");
-        self.body.setAttribute("baseline", "top");
-        self.body.setAttribute("width", self.width * (1 - (self.constants.margin)));
-        self.body.setAttribute("wrap-count", self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.body));
-        self.body.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color);
-        self.body.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.panel_font);
-        self.body.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: (self.width * self.constants.media_heights.text_box) * self.constants.media_text_pos.body, z: 0});
-
-        self.media_text.appendChild(self.body);
 
 
 

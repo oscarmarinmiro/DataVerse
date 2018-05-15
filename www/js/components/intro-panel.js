@@ -23,6 +23,8 @@ AFRAME.registerComponent('intro-panel', {
 
         var self = this;
 
+        self.is_loaded = false;
+
         self.constants = {
             dmm: {
                 'title': 40,
@@ -30,19 +32,11 @@ AFRAME.registerComponent('intro-panel', {
                 'credits': 12,
                 'loading': 12
             },
-//            heights:{
-//                'title': 0.6,
-//                'body': 0.0,
-//                'loading': -0.9,
-//                'credits_heading': -0.50,
-//                'credits': -0.6
-//            },
-            heights:{
-                'title': 0.9,
-                'body': 0.3,
-                'loading': -0.9,
-                'credits_heading': -0.50,
-                'credits': -0.4
+            separations: {
+                title: 0.2,
+                body: 0.0,
+                loading: 0.2,
+                credits: 0.1
             },
             overlap_factor: 0.99,
             margin: 0.1,
@@ -55,6 +49,10 @@ AFRAME.registerComponent('intro-panel', {
         self.el.setAttribute("class", "intro-panel clickable");
 
         self.el.setAttribute("rotation", {x: self.data.pitch, y: self.data.yaw, z:0});
+
+        // Hide element until reposition
+
+        self.el.setAttribute("visible", false);
 
 
     },
@@ -72,95 +70,113 @@ AFRAME.registerComponent('intro-panel', {
         var z_amount = self.data.distance;
 
         var width = self.width*(1-(self.constants.margin*2));
-        var height = (self.height)*(1-(self.constants.margin*2));
+        var height = (self.height);
 
         // Title
 
-        self.title = document.createElement("a-text");
+        self.title = document.createElement("a-entity");
 
-        self.title.setAttribute("value", self.data.title);
-        self.title.setAttribute("align", "center");
-        self.title.setAttribute("width", width);
-        self.title.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.title));
-        self.title.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-        self.title.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font);
-        self.title.setAttribute("position", {x: 0, y: (height/2)*self.constants.heights.title, z: -(z_amount*self.constants.overlap_factor)});
+        self.title.setAttribute("text", {
+            value: self.data.title,
+            align: "center",
+            baseline: "top",
+            width: width,
+            wrapCount: self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.title),
+            color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color,
+            font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font
+        });
 
-
-        self.el.appendChild(self.title);
-
-        // Text body
-
-        self.text = document.createElement("a-text");
-
-        self.text.setAttribute("value", self.data.text);
-        self.text.setAttribute("align", "center");
-        self.text.setAttribute("anchor", "center");
-        self.text.setAttribute("width", width);
-        self.text.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.body));
-        self.text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-        self.text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-        self.text.setAttribute("position", {x: 0, y: (height/2)*self.constants.heights.body, z: -(z_amount*self.constants.overlap_factor)});
+        var title_y = (height/2) - (height)*self.constants.separations.title;
 
 
-        self.el.appendChild(self.text);
+        self.title.setAttribute("position", {x: 0, y: title_y, z: -(z_amount*self.constants.overlap_factor)});
 
 
-//        // Credits heading
-//
-//        self.credits_heading = document.createElement("a-text");
-//
-//        self.credits_heading.setAttribute("value", "Credits");
-//        self.credits_heading.setAttribute("align", "center");
-//        self.credits_heading.setAttribute("anchor", "center");
-//        self.credits_heading.setAttribute("width", width);
-//        self.credits_heading.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.credits));
-//        self.credits_heading.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-//        self.credits_heading.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-//        self.credits_heading.setAttribute("position", {x: 0, y: (height/2)*self.constants.heights.credits_heading, z: -(z_amount*self.constants.overlap_factor)});
-//
-//
-//        self.el.appendChild(self.credits_heading);
+        self.title.setAttribute("geometry", {primitive: "plane", width: "auto", height: "auto"});
+        self.title.setAttribute("material", {shader: "flat", visible: false});
 
+        self.text_panel.appendChild(self.title);
 
-        // Credits
+        self.total_height = (height)*self.constants.separations.title;
 
-        self.credits = document.createElement("a-text");
+        self.title.addEventListener("textfontset", function() {
 
-        self.credits.setAttribute("value", self.data.credits);
-        self.credits.setAttribute("align", "center");
-        self.credits.setAttribute("anchor", "center");
-        self.credits.setAttribute("width", width);
-        self.credits.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.credits));
-        self.credits.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-        self.credits.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-        self.credits.setAttribute("position", {x: 0, y: (height/2)*self.constants.heights.credits, z: -(z_amount*self.constants.overlap_factor)});
+            var title_height = self.title.components.geometry.data.height;
 
+            self.total_height+= title_height + (height) * self.constants.separations.body;
 
-        self.el.appendChild(self.credits);
+            var body_y = title_y - (height) * self.constants.separations.body - title_height;
 
+            console.log("LOADED TITLE FONT", self.title.components.geometry.data.height, self.title.components);
 
-        // Loading
+            // Text body
 
+            self.text = document.createElement("a-entity");
 
-        // Credits
+            self.text.setAttribute("text", {
+                value: self.data.text,
+                align: "center",
+                anchor: "center",
+                baseline: "top",
+                width: width,
+                wrapCount: self.get_count_from_dmms(width, z_amount * self.constants.overlap_factor, self.constants.dmm.body),
+                color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color,
+                font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font
+            });
 
-//        self.loading = document.createElement("a-text");
-//
-//        self.loading.setAttribute("value", self.data.on_loading_message);
-//        self.loading.setAttribute("align", "center");
-//        self.loading.setAttribute("anchor", "center");
-//        self.loading.setAttribute("width", width);
-//        self.loading.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.loading));
-//        self.loading.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-//        self.loading.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-//        self.loading.setAttribute("position", {x: 0, y: (height/2)*self.constants.heights.loading, z: -(z_amount*self.constants.overlap_factor)});
-//
-//
-//        self.el.appendChild(self.loading);
+            self.text.setAttribute("geometry", {primitive: "plane", width: "auto", height: "auto"});
+            self.text.setAttribute("material", {shader: "flat", "visible": false});
 
+            self.text.setAttribute("position", {x: 0, y: body_y, z: -(z_amount * self.constants.overlap_factor)});
 
+            self.text_panel.appendChild(self.text);
 
+            self.text.addEventListener("textfontset", function () {
+
+                console.log("DRAWING CREDITS");
+
+                var body_height = self.text.components.geometry.data.height + (height) * self.constants.separations.credits;
+
+                self.total_height+= body_height + (height) * self.constants.separations.credits;
+
+                var credits_y = body_y - (height) * self.constants.separations.credits - body_height;
+
+                self.credits = document.createElement("a-entity");
+
+                self.credits.setAttribute("text", {
+                    value: self.data.credits,
+                    align: "center",
+                    anchor: "center",
+                    baseline: "top",
+                    width: width,
+                    wrapCount: self.get_count_from_dmms(width, z_amount * self.constants.overlap_factor, self.constants.dmm.credits),
+                    color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color,
+                    font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font
+                });
+
+                self.credits.setAttribute("position", {x: 0, y: credits_y, z: -(z_amount * self.constants.overlap_factor)});
+
+                self.credits.setAttribute("geometry", {primitive: "plane", width: "auto", height: "auto"});
+                self.credits.setAttribute("material", {shader: "flat", "visible": false});
+
+                self.text_panel.appendChild(self.credits);
+
+                self.credits.addEventListener("textfontset", function () {
+
+                    console.log("DRAWING LOADING");
+
+                    var credits_height = self.credits.components.geometry.data.height;
+
+                    self.total_height+= credits_height + (height) * self.constants.separations.loading;
+
+                    self.loading_position = credits_y - credits_height - (height) * self.constants.separations.loading;
+
+                    self.draw_loading();
+                });
+
+            });
+
+        });
 
     },
 
@@ -168,43 +184,26 @@ AFRAME.registerComponent('intro-panel', {
 
         var self = this;
 
-//        var z_amount = self.data.distance;
-//
-//        var width = self.width*(1-(self.constants.margin*2));
-//        var height = (self.height)*(1-(self.constants.margin*2));
-//
-//
-//        // If loaded, remove self.loading and add it again with 'the other message'
-//
-//        self.loading.parentNode.removeChild(self.loading);
-//
-//        self.loading = document.createElement("a-text");
-//
-//        self.loading.setAttribute("value", self.data.loaded_message);
-//        self.loading.setAttribute("align", "center");
-//        self.loading.setAttribute("anchor", "center");
-//        self.loading.setAttribute("width", width);
-//        self.loading.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.loading));
-//        self.loading.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-//        self.loading.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-//        self.loading.setAttribute("position", {x: 0, y: (height/2)*self.constants.heights.loading, z: -(z_amount*self.constants.overlap_factor)});
-//
-//
-//        self.el.appendChild(self.loading);
-
         // Remove gif
 
-        self.loading_panel.parentNode.removeChild(self.loading_panel);
+        if(self.loading_panel) {
+
+            self.loading_panel.parentNode.removeChild(self.loading_panel);
+        }
+
+
+        self.is_loaded = true;
+
 
         // Add button
 
-        var close = document.createElement("a-entity");
-        close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-        close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
+        self.close = document.createElement("a-entity");
+        self.close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+        self.close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
 
         var component = self.el;
 
-        close.addEventListener("clicked", function(){
+        self.close.addEventListener("clicked", function(){
 
             component.emit("closed", null, false);
 
@@ -213,41 +212,71 @@ AFRAME.registerComponent('intro-panel', {
         });
 
 
-        self.el.appendChild(close);
-
+        self.el.appendChild(self.close);
 
 
     },
+
+    // Once all text and loading is drawn, change back_panel height and element positions
+
+    fix_positions: function() {
+
+        var self = this;
+
+        self.old_height = self.height;
+
+//        self.new_height = self.total_height * (1 + (2 * (self.constants.margin)));
+
+        self.new_height_margins = self.total_height * (1 + (2 * (self.constants.margin)));
+
+        self.new_height_margins = self.total_height;
+
+        self.new_height = self.total_height;
+
+        console.log("NEW HEIGHT", self.new_height);
+
+        self.back_panel.setAttribute("height", self.new_height_margins);
+
+        self.offset_y = (self.new_height - self.old_height);
+
+        console.log("OFFSET Y", self.offset_y);
+
+        // Reposition text_panel
+
+        self.text_panel.setAttribute("position",  {x:0, y: self.offset_y/2, z:0});
+
+        self.height = self.new_height_margins;
+
+        self.close.setAttribute("position", {x:0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
+
+        self.el.setAttribute("visible", true);
+
+    },
+
     // Loading gif painting
 
     draw_loading : function(){
 
         var self = this;
 
-        self.loading_panel = document.createElement("a-circle");
+        if(!self.is_loaded) {
 
-        self.loading_panel.setAttribute("radius", self.data.close_button_dmms * self.data.distance / 1000);
+            self.loading_panel = document.createElement("a-circle");
 
+            self.loading_panel.setAttribute("radius", self.data.close_button_dmms * self.data.distance / 1000);
 
-//        self.loading_panel.setAttribute("height", self.constants.gif_height);
-//        self.loading_panel.setAttribute("width", self.constants.gif_height);
+            self.loading_panel.setAttribute("position", {x: 0, y: self.loading_position, z: -self.data.distance * self.constants.overlap_factor});
 
-        self.loading_panel.setAttribute("position", {x: 0, y: (self.height/2)*self.constants.gif_pos, z:-self.data.distance*self.constants.overlap_factor});
+            self.loading_panel.setAttribute("material", {shader: "gif", src: "url(" + (self.data.theme ? DATAVERSE.themes[self.data.theme].loading_gif : self.data.loading_gif) + ")", opacity: 0.75});
 
+            console.log("MATERIAL ATTRIBUTE", self.loading_panel.getAttribute("material"));
 
-//        self.loading_panel.setAttribute("position", {x:0, y: (self.height/2) * self.constants.gif_pos, z:-self.data.distance*self.constants.overlap_factor});
+            self.text_panel.appendChild(self.loading_panel);
+        }
 
-//        self.loading_panel.setAttribute("color", "blue");
+        self.total_height += (self.data.close_button_dmms * self.data.distance / 1000) * 3;
 
-        self.loading_panel.setAttribute("material", {shader:"gif", src: "url(" + (self.data.theme ? DATAVERSE.themes[self.data.theme].loading_gif : self.data.loading_gif) + ")", opacity: 0.75});
-
-        console.log("MATERIAL ATTRIBUTE", self.loading_panel.getAttribute("material"));
-
-//        close.setAttribute("uipack-button", {'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-//        close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
-
-
-        self.el.appendChild(self.loading_panel);
+        self.fix_positions();
 
     },
 
@@ -275,28 +304,11 @@ AFRAME.registerComponent('intro-panel', {
 
         self.el.appendChild(self.back_panel);
 
+        self.text_panel = document.createElement("a-entity");
 
-        // Close button
+        self.text_panel.setAttribute("position", {x: 0, y: 0, z: 0});
 
-
-//        var close = document.createElement("a-entity");
-//        close.setAttribute("uipack-button", {'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-//        close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
-//
-//        var component = self.el;
-//
-//        close.addEventListener("clicked", function(){
-//
-//            component.emit("closed", null, false);
-//
-//            component.parentNode.removeChild(component);
-//
-//        });
-//
-//
-//        self.el.appendChild(close);
-
-        self.draw_loading();
+        self.el.appendChild(self.text_panel);
 
         self.draw_text();
 
