@@ -575,7 +575,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             self.launch_text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color, shader: "flat"});
 
-            self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) + (self.data.close_button_dmms * self.data.distance / 1000)*2, z: -(self.data.distance * self.constants.overlap_factor)});
+            self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) - (self.data.close_button_dmms * self.data.distance / 1000)*2, z: -(self.data.distance * self.constants.overlap_factor * self.constants.overlap_factor)});
 
             self.el.appendChild(self.launch_text);
         }
@@ -749,7 +749,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
                     var launch = document.createElement("a-entity");
                     launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-                    launch.setAttribute("position", {x: 0, y: (self.media_height / 2) - self.data.close_button_dmms * self.data.distance / 1000, z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
+                    launch.setAttribute("position", {x: 0, y: (self.media_height / 2), z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
 
                     launch.addEventListener("click", function () {
 
@@ -760,21 +760,48 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
                     self.el.appendChild(launch);
 
-                    // Type of content
+                    self.launch_text = document.createElement("a-entity");
 
-                    self.launch_text = document.createElement("a-text");
+                    self.launch_text.setAttribute("text", {
 
-                    self.launch_text.setAttribute("value", "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type));
-                    self.launch_text.setAttribute("align", "center");
-                    self.launch_text.setAttribute("anchor", "center");
-                    self.launch_text.setAttribute("baseline", "bottom");
-                    self.launch_text.setAttribute("width", self.width / 2);
-                    self.launch_text.setAttribute("wrap-count", self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link));
-                    self.launch_text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
-                    self.launch_text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-                    self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) + self.data.close_button_dmms * self.data.distance / 1000, z: -(self.data.distance * self.constants.overlap_factor)});
+                        value: "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type),
+                        align: "center",
+                        anchor: "center",
+                        width: self.width/2,
+                        wrapCount: self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link),
+                        color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color,
+                        font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font
+
+                    });
+
+
+
+                    var label_height = ((self.constants.dmm.link * self.data.distance) / 1000)*3;
+
+                    self.launch_text.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+
+                    self.launch_text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color, shader: "flat"});
+
+                    self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) - (self.data.close_button_dmms * self.data.distance / 1000)*2, z: -(self.data.distance * self.constants.overlap_factor * self.constants.overlap_factor)});
 
                     self.el.appendChild(self.launch_text);
+
+
+//                    // Type of content
+//
+//                    self.launch_text = document.createElement("a-text");
+//
+//                    self.launch_text.setAttribute("value", "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type));
+//                    self.launch_text.setAttribute("align", "center");
+//                    self.launch_text.setAttribute("anchor", "center");
+//                    self.launch_text.setAttribute("baseline", "bottom");
+//                    self.launch_text.setAttribute("width", self.width / 2);
+//                    self.launch_text.setAttribute("wrap-count", self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link));
+//                    self.launch_text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
+//                    self.launch_text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
+//                    self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) + self.data.close_button_dmms * self.data.distance / 1000, z: -(self.data.distance * self.constants.overlap_factor)});
+//
+//                    self.el.appendChild(self.launch_text);
 
                     // No media controls here (for render_media_texts)
 
@@ -1025,7 +1052,13 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             }
 
-            self.el.parentNode.removeChild(self.el);
+            var close_this = function(){
+
+                self.el.parentNode.removeChild(self.el);
+
+            };
+
+            setTimeout(function(){self.el.parentNode.removeChild(self.el); }, 100);
 
         });
 

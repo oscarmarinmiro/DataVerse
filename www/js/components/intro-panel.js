@@ -30,7 +30,8 @@ AFRAME.registerComponent('intro-panel', {
                 'title': 40,
                 'body': 18,
                 'credits': 12,
-                'loading': 12
+                'loading': 12,
+                'link': 16
             },
             separations: {
                 title: 0.2,
@@ -198,16 +199,19 @@ AFRAME.registerComponent('intro-panel', {
         // Add button
 
         self.close = document.createElement("a-entity");
-        self.close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+        self.close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
         self.close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
 
         var component = self.el;
 
         self.close.addEventListener("clicked", function(){
 
-            component.emit("closed", null, false);
+            setTimeout(function() {
 
-            component.parentNode.removeChild(component);
+                component.emit("closed", null, false);
+
+                component.parentNode.removeChild(component);
+            }, 100);
 
         });
 
@@ -215,6 +219,32 @@ AFRAME.registerComponent('intro-panel', {
         self.el.appendChild(self.close);
 
 
+        // Add text
+
+
+        self.loaded_text = document.createElement("a-entity");
+
+        self.loaded_text.setAttribute("text", {
+            value: "ENTER THE SCENE",
+            align: "center",
+            anchor: "center",
+            width: self.width*(1-(self.constants.margin*2)) / 2,
+            wrapCount: self.get_count_from_dmms(self.width*(1-(self.constants.margin*2)) /2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link),
+            color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color,
+            font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font
+
+
+        });
+
+        var label_height = ((self.constants.dmm.link * self.data.distance) / 1000)*3;
+
+
+        self.loaded_text.setAttribute("geometry", {primitive: "plane", width: "auto", height: label_height});
+        self.loaded_text.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
+
+        self.loaded_text.setAttribute("position", {x: 0, y:  - (self.height/2) - self.data.close_button_dmms * self.data.distance / 1000 * 2, z: -self.data.distance * self.constants.overlap_factor});
+
+        self.el.appendChild(self.loaded_text);
     },
 
     // Once all text and loading is drawn, change back_panel height and element positions
@@ -250,6 +280,10 @@ AFRAME.registerComponent('intro-panel', {
         if(self.close) {
 
             self.close.setAttribute("position", {x: 0, y: -(self.height / 2), z: -self.data.distance * self.constants.overlap_factor});
+        }
+
+        if(self.loaded_text) {
+            self.loaded_text.setAttribute("position", {x: 0, y:  - (self.height/2)  - self.data.close_button_dmms * self.data.distance / 1000 * 2 , z: -self.data.distance * self.constants.overlap_factor});
         }
 
         self.el.setAttribute("visible", true);

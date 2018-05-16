@@ -291,6 +291,11 @@ AFRAME.registerComponent('geo-viz', {
 
                 self.first_hover = false;
 
+                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
+
+                sound.play();
+
+
                 // Emit 'clicked' on ring animation end
 
                 self.animation.addEventListener("animationend", function () {
@@ -308,7 +313,9 @@ AFRAME.registerComponent('geo-viz', {
 
                     point.first_hover = true;
 
-                    var sound = new Howl({src: DATAVERSE.paths.click_sound});
+                    setTimeout(function() { self.first_hover = true; }, 500);
+
+                    var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
 
                     sound.play();
 

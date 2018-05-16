@@ -37,6 +37,9 @@ AFRAME.registerComponent('uipack-button', {
 
     this.el.addEventListener('raycaster-intersected', function(event){
 
+
+        console.log("EVENT DETAILS ", event);
+
         // First 'fresh' hover
 
         if(self.first_hover) {
@@ -64,6 +67,11 @@ AFRAME.registerComponent('uipack-button', {
 
             self.first_hover = false;
 
+                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
+
+                sound.play();
+
+
             // Change cursor color and scale
 
 //            self.original_cursor_color = event.detail.el.getAttribute("material").color;
@@ -83,10 +91,9 @@ AFRAME.registerComponent('uipack-button', {
 
                 self.el.emit("clicked", null, false);
 
-                self.first_hover = true;
+                setTimeout(function() { self.first_hover = true; }, 500);
 
-
-                var sound = new Howl({src: DATAVERSE.paths.click_sound});
+                var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
 
                 sound.play();
 

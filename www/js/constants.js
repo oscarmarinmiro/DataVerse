@@ -12,7 +12,7 @@ DATAVERSE.cache = {
 
 DATAVERSE.paths = {
 
-    click_sound: "audio_effects/click.mp3"
-
+    click_sound: "audio_effects/dustyroom_multimedia_select_digital_button.mp3",
+    hover_sound: "audio_effects/soundbits_CSFX-2_Menu-Close_17.mp3"
 };
 
