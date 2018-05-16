@@ -446,6 +446,13 @@ AFRAME.registerComponent('tilemap-viz', {
 
         more.addEventListener("click", function(){
 
+            // Retore trigger as clickable (just in case it is cross-launched)
+
+
+            if (self.el.sceneEl.restore_clickable) {
+                self.el.sceneEl.restore_clickable.classList.add("clickable");
+            }
+
             console.log("CLICK ON THIS", this);
 
             // distance between camera and this
@@ -501,6 +508,12 @@ AFRAME.registerComponent('tilemap-viz', {
             });
 
             self.el.appendChild(self.media_panel);
+
+
+            self.el.sceneEl.restore_clickable = this;
+
+            self.el.sceneEl.restore_clickable.classList.remove("clickable");
+
 
         });
 

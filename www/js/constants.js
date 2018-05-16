@@ -10,3 +10,9 @@ DATAVERSE.cache = {
 
 };
 
+DATAVERSE.paths = {
+
+    click_sound: "audio_effects/click.mp3"
+
+};
+

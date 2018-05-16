@@ -308,6 +308,11 @@ AFRAME.registerComponent('geo-viz', {
 
                     point.first_hover = true;
 
+                    var sound = new Howl({src: DATAVERSE.paths.click_sound});
+
+                    sound.play();
+
+
                 });
             }
           });
@@ -342,6 +347,13 @@ AFRAME.registerComponent('geo-viz', {
         point.addEventListener("clicked", function(event){
 
                 var self = this;
+
+                // Retore trigger as clickable (just in case it is cross-launched)
+
+
+                if (self.el.sceneEl.restore_clickable) {
+                    self.el.sceneEl.restore_clickable.classList.add("clickable");
+                }
 
 
                // distance between camera and this
@@ -401,6 +413,11 @@ AFRAME.registerComponent('geo-viz', {
                 self.sceneEl.media_panel = self.media_panel;
 
                 self.sceneEl.media_panel_id = index;
+
+                self.el.sceneEl.restore_clickable = this;
+
+                self.el.sceneEl.restore_clickable.classList.remove("clickable");
+
 
         });
 

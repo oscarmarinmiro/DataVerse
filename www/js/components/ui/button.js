@@ -85,6 +85,11 @@ AFRAME.registerComponent('uipack-button', {
 
                 self.first_hover = true;
 
+
+                var sound = new Howl({src: DATAVERSE.paths.click_sound});
+
+                sound.play();
+
             });
         }
     });

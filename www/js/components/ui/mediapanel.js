@@ -575,7 +575,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             self.launch_text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color, shader: "flat"});
 
-
             self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) + (self.data.close_button_dmms * self.data.distance / 1000)*2, z: -(self.data.distance * self.constants.overlap_factor)});
 
             self.el.appendChild(self.launch_text);
@@ -936,7 +935,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.panel_video = document.createElement("a-plane");
 
-
         self.panel_video.setAttribute("src", "#" + asset_id);
 
         DATAVERSE_VIZ_AUX.global_tracking.last_media = video_asset;
@@ -1019,6 +1017,13 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             }
 
+            // Restore (if applicable) 'trigger' element with removed 'clickable' class
+
+            if(self.el.sceneEl.restore_clickable) {
+
+                self.el.sceneEl.restore_clickable.classList.add("clickable");
+
+            }
 
             self.el.parentNode.removeChild(self.el);
 
