@@ -29,7 +29,7 @@ AFRAME.registerSystem('timeline-viz', {
                 slide_image: 3
             },
             height: {
-                trigger: 0.4,
+                trigger: 0.35,
                 media_controls: 0.60,
                 legend_date_explain: 0.1,
                 legend_title: -0.1,
@@ -536,6 +536,15 @@ AFRAME.registerComponent('timeline-viz', {
 
             more_button.addEventListener("click", function (event) {
 
+
+                // Retore trigger as clickable (just in case it is cross-launched)
+
+
+                if (self.el.sceneEl.restore_clickable) {
+                    self.el.sceneEl.restore_clickable.classList.add("clickable");
+                }
+
+
                 // distance between camera and this
 
                 var distance = DATAVERSE_VIZ_AUX.get_distance_xz(self.el.sceneEl.camera.el, this);
@@ -563,9 +572,11 @@ AFRAME.registerComponent('timeline-viz', {
                 self.media_panel.setAttribute("position", {x: cam_position.x, y:cam_position.y, z: cam_position.z});
 
 
-                var vertical_offset = distance*Math.tan(THREE.Math.degToRad(self.data.panel_height/2.0)) + self.data.panel_elevation;
+//                var vertical_offset = distance*Math.tan(THREE.Math.degToRad(self.data.panel_height/2.0)) + self.data.panel_elevation;
 
-                self.media_panel.setAttribute("position", {x: cam_position.x, y:cam_position.y + vertical_offset, z: cam_position.z});
+//                var vertical_offset = distance*Math.tan(THREE.Math.degToRad(self.data.panel_height/2.0));
+
+                self.media_panel.setAttribute("position", {x: cam_position.x, y:cam_position.y, z: cam_position.z});
 
 
 
@@ -579,6 +590,7 @@ AFRAME.registerComponent('timeline-viz', {
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,
                     pitch: pitch,
+                    low_height: (self.data.height*2),
                     theme: self.data.theme,
                     height: self.data.panel_height,
                     distance: distance,
@@ -603,6 +615,9 @@ AFRAME.registerComponent('timeline-viz', {
 
                 self.el.sceneEl.media_panel = self.media_panel;
 
+                self.el.sceneEl.restore_clickable = this;
+
+                self.el.sceneEl.restore_clickable.classList.remove("clickable");
 
             });
 
@@ -695,47 +710,48 @@ AFRAME.registerComponent('timeline-viz', {
 
             self.rendered = true;
 
-            // insert a media_panel with datum, distance and yaw
-
-            self.media_panel = document.createElement("a-entity");
-
-            var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
-
-            var vertical_offset = distance*Math.tan(THREE.Math.degToRad(self.data.panel_height/2.0)) + self.data.panel_elevation;
-
-            self.media_panel.setAttribute("position", {x: cam_position.x, y:cam_position.y + vertical_offset, z: cam_position.z});
-
-            self.media_panel.setAttribute("shadow", {cast: true});
-
-            console.log("DATUM!", datum);
-
-            self.media_panel.setAttribute("uipack-mediapanel", {
-                yaw: yaw,
-                height: self.data.panel_height,
-                theme: self.data.theme,
-                distance: distance,
-                title: datum.title,
-                subtitle: "",
-                text: datum.text,
-                media_url: datum.media.url,
-                media_caption: datum.media.caption,
-                media_credit: datum.media.credits,
-                link: datum.original_datum.link,
-                link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.original_datum.link, self.scene_data),
-                link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.original_datum.link, self.scene_data),
-                id: "slide_" + "-1"
-            });
-
-            self.media_panel.addEventListener("link", function(data){
-                self.el.emit("link", {link: data.detail.link}, false);
-
-                console.log("LINKANDO A ", data.detail.link);
-            });
-
-
-            self.el.sceneEl.appendChild(self.media_panel);
-
-            self.el.sceneEl.media_panel = self.media_panel;
+//            // insert a media_panel with datum, distance and yaw
+//
+//            self.media_panel = document.createElement("a-entity");
+//
+//            var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
+//
+//            var vertical_offset = distance*Math.tan(THREE.Math.degToRad(self.data.panel_height/2.0)) + self.data.panel_elevation;
+//
+//            self.media_panel.setAttribute("position", {x: cam_position.x, y:cam_position.y, z: cam_position.z});
+//
+//            self.media_panel.setAttribute("shadow", {cast: true});
+//
+//            console.log("DATUM!", datum);
+//
+//            self.media_panel.setAttribute("uipack-mediapanel", {
+//                yaw: yaw,
+//                height: self.data.panel_height,
+//                theme: self.data.theme,
+//                low_height: (self.data.height*2),
+//                distance: distance,
+//                title: datum.title,
+//                subtitle: "",
+//                text: datum.text,
+//                media_url: datum.media.url,
+//                media_caption: datum.media.caption,
+//                media_credit: datum.media.credits,
+//                link: datum.original_datum.link,
+//                link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.original_datum.link, self.scene_data),
+//                link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.original_datum.link, self.scene_data),
+//                id: "slide_" + "-1"
+//            });
+//
+//            self.media_panel.addEventListener("link", function(data){
+//                self.el.emit("link", {link: data.detail.link}, false);
+//
+//                console.log("LINKANDO A ", data.detail.link);
+//            });
+//
+//
+//            self.el.sceneEl.appendChild(self.media_panel);
+//
+//            self.el.sceneEl.media_panel = self.media_panel;
 
             self.el.emit("dv_loaded", null, false);
 

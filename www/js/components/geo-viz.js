@@ -291,6 +291,11 @@ AFRAME.registerComponent('geo-viz', {
 
                 self.first_hover = false;
 
+                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
+
+                sound.play();
+
+
                 // Emit 'clicked' on ring animation end
 
                 self.animation.addEventListener("animationend", function () {
@@ -307,6 +312,13 @@ AFRAME.registerComponent('geo-viz', {
                     point.emit("clicked", null, false);
 
                     point.first_hover = true;
+
+                    setTimeout(function() { self.first_hover = true; }, 500);
+
+                    var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
+
+                    sound.play();
+
 
                 });
             }
@@ -342,6 +354,13 @@ AFRAME.registerComponent('geo-viz', {
         point.addEventListener("clicked", function(event){
 
                 var self = this;
+
+                // Retore trigger as clickable (just in case it is cross-launched)
+
+
+                if (component.el.sceneEl.restore_clickable) {
+                    component.el.sceneEl.restore_clickable.classList.add("clickable");
+                }
 
 
                // distance between camera and this
@@ -401,6 +420,11 @@ AFRAME.registerComponent('geo-viz', {
                 self.sceneEl.media_panel = self.media_panel;
 
                 self.sceneEl.media_panel_id = index;
+
+                component.el.sceneEl.restore_clickable = this;
+
+                component.el.sceneEl.restore_clickable.classList.remove("clickable");
+
 
         });
 
@@ -464,8 +488,6 @@ AFRAME.registerComponent('geo-viz', {
         self.map_sphere.setAttribute("src", "#skymap");
 
         self.map_sphere.setAttribute("radius", self.data.radius);
-
-        self.map_sphere.setAttribute("opacity", self.data.debug? 1.0 : 0.0);
 
         // Inform to parent
 

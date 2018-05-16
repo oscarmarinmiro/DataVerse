@@ -14,6 +14,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
         'yaw': { type: 'number', default: 0.0},
         'pitch': { type: 'number', default: 0.0},
         'coverage': {type: 'number', default: 60.0},
+        'aspect_ratio': {type: 'number', default: (16/9)},
         'height': {type: 'number', default: 30.0},
         'text_color': { type: 'string', default: 'black'},
         'aux_color': { type: 'string', default: "white"},
@@ -23,6 +24,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
         'backpanel_color': { type: 'string', default: 'black'},
         'media_url': {type: 'string', default: ""},
         'title': {type: 'string', default: ""},
+        'low_height': {type: 'number', default: -1},
         'subtitle': {type: 'string', default: ""},
         'text': {type: 'string', default: ""},
         'media_caption': {type: 'string', default: ""},
@@ -51,7 +53,8 @@ AFRAME.registerComponent('uipack-mediapanel', {
             'photo': self.render_photo,
             'video': self.render_video,
             'audio': self.render_audio,
-            'link': self.render_link
+            'link': self.render_link,
+            'text': self.render_text
         };
 
 
@@ -63,7 +66,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
         self.constants = {
             overlap_factor: 0.99,
             media_dim : 0.90,
-            margin: 0.05,
+            margin: 0.1,
             audio_analyser: {
                 width: 1024,
                 height: 1024
@@ -73,13 +76,36 @@ AFRAME.registerComponent('uipack-mediapanel', {
                 'subtitle': 28,
                 'body': 18,
                 'footnote': 12,
-                'link': 20
+                'link': 16
             },
             heights:{
                 'title': 0.8,
                 'subtitle': 0.40,
                 'body': -0.3,
                 'footnote': -0.8
+            },
+            // This is in % of width
+            media_heights: {
+                player: 0.085,
+                text_box: 0.15
+
+            },
+            separations: {
+                title: 0.2,
+                body: 0.1,
+                credits: 0.1
+            },
+            // This is in % of width from top line of text_box
+            media_text_pos: {
+                title: 0.35,
+                body: 0.15,
+                credits: -0.30
+
+            },
+            media_text_dmms: {
+                title: 16,
+                body: 12,
+                credits: 8
             }
         };
 
@@ -89,8 +115,6 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.el.setAttribute("rotation", {x: self.data.pitch, y: self.data.yaw, z:0});
 
-        // self.el.setAttribute("position", {x:0, y: self.data.elevation, z:0});
-
         // Get a handle for scene assets
 
         self.assets = document.querySelector("a-assets");
@@ -98,18 +122,8 @@ AFRAME.registerComponent('uipack-mediapanel', {
             if(DATAVERSE_VIZ_AUX.global_tracking.last_media !== undefined){
                 DATAVERSE_VIZ_AUX.global_tracking.last_media.pause();
 
-//                        if(self.last_media.tagName === "AUDIO") {
-//                            self.context.close();
-//                        }
-
-//
                 DATAVERSE_VIZ_AUX.global_tracking.last_media = undefined;
             }
-
-
-
-//        self.back_panel = <a-curvedimage src="#my-image" height="3.0" radius="5.7" theta-length="72"
-//                 rotation="0 100 0" scale="0.8 0.8 0.8"></a-curvedimage>
 
     },
 
@@ -186,78 +200,185 @@ AFRAME.registerComponent('uipack-mediapanel', {
     },
 
 
-    draw_text: function() {
+    render_text: function() {
 
         var self = this;
 
-        var z_amount = self.data.distance;
+        self.media_height = 0;
+        self.media_control_height = 0;
 
-        var width = self.width*(1-(self.constants.margin*2));
-        var height = (self.height)*(1-(self.constants.margin*2));
-
-        self.title = document.createElement("a-text");
-
-        self.title.setAttribute("value", self.data.title);
-        self.title.setAttribute("align", "center");
-        self.title.setAttribute("width", width);
-        // console.log("wrapCount", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.title));
-        self.title.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.title));
-        self.title.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-        self.title.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font);
-        self.title.setAttribute("position", {x: (self.media_type || self.data.link) ? width/2:0, y: (height/2)*self.constants.heights.title, z: -(z_amount*self.constants.overlap_factor)});
-
-
-        self.el.appendChild(self.title);
-
-        self.subtitle = document.createElement("a-text");
-
-        self.subtitle.setAttribute("value", self.data.subtitle);
-        self.subtitle.setAttribute("align", "center");
-        self.subtitle.setAttribute("width", width);
-        console.log("wrapCount", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.subtitle));
-        self.subtitle.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.subtitle));
-        self.subtitle.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-        self.subtitle.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-        self.subtitle.setAttribute("position", {x: (self.media_type || self.data.link)? width/2:0, y: (height/2)*self.constants.heights.subtitle, z: -(z_amount*self.constants.overlap_factor)});
-
-        self.el.appendChild(self.subtitle);
-
-        self.text = document.createElement("a-text");
-
-        self.text.setAttribute("value", self.data.text);
-        self.text.setAttribute("align", "center");
-        self.text.setAttribute("anchor", "center");
-        self.text.setAttribute("width", width);
-        self.text.setAttribute("wrap-count", self.get_count_from_dmms(width, z_amount*self.constants.overlap_factor, self.constants.dmm.body));
-        self.text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.text_color);
-        self.text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-        self.text.setAttribute("position", {x: (self.media_type || self.data.link) ? width/2:0, y: (height/2)*self.constants.heights.body, z: -(z_amount*self.constants.overlap_factor)});
-
-
-        self.el.appendChild(self.text);
-
+        self.render_media_texts(true);
 
     },
 
-    render_media_texts: function() {
+    render_media_texts: function(render_link) {
 
         var self = this;
 
-        var text = self.data.media_caption + self.data.media_credit ? "\nCredits: " + self.data.media_credit : "";
+        console.log("RENDERING MEDIA TEXTS");
 
-        self.text = document.createElement("a-text");
+        self.media_box_offset = (self.media_height/2) + self.media_control_height + (self.width * self.constants.media_heights.text_box/2);
 
-        self.text.setAttribute("value", text);
-        self.text.setAttribute("align", "right");
-        self.text.setAttribute("anchor", "right");
-        self.text.setAttribute("width", self.width);
-        self.text.setAttribute("wrap-count", self.get_count_from_dmms(self.width, self.data.distance*self.constants.overlap_factor, self.constants.dmm.footnote));
-        self.text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
-        self.text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-        self.text.setAttribute("position", {x: -self.width/8, y: -self.height/2, z: -(self.data.distance*self.constants.overlap_factor)});
+        self.media_box_offset = self.media_box_offset * (1.02);
 
-        self.el.appendChild(self.text);
+        self.close_button_y = -self.media_box_offset - (self.width * self.constants.media_heights.text_box/2);
 
+        self.media_box_height = self.width * self.constants.media_heights.text_box;
+
+        // Text plane
+
+        self.media_text = document.createElement("a-plane");
+
+        self.media_text.setAttribute("height", self.media_box_height);
+        self.media_text.setAttribute("width", self.width);
+        self.media_text.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
+        self.media_text.setAttribute("position", {x: 0, y: -self.media_box_offset, z: -self.data.distance*self.constants.overlap_factor});
+
+        self.el.appendChild(self.media_text);
+
+        self.media_text_container = document.createElement("a-entity");
+
+        self.media_text.appendChild(self.media_text_container);
+
+        // TITLE
+
+        var text = self.data.subtitle ? (self.data.title + " (" + self.data.subtitle + ")") : self.data.title;
+
+        self.title = document.createElement("a-entity");
+
+        self.title.setAttribute("text", {
+            value: text,
+            align: "left",
+            anchor: "left",
+            baseline: "top",
+            width: self.width * (1 - (self.constants.margin * 2)),
+            wrapCount: self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.title),
+            color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color,
+            font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font
+        });
+
+        self.title.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: self.media_box_height * (0.5 - self.constants.separations.title), z: 0});
+
+        self.title.setAttribute("geometry", {primitive: "plane", width: "auto", height: "auto"});
+        self.title.setAttribute("material", {shader: "flat", "visible": false});
+
+        self.media_text_container.appendChild(self.title);
+
+        self.total_height = (self.media_box_height)*self.constants.separations.title;
+
+        var title_y = self.media_box_height * (0.5 - self.constants.separations.title);
+
+        self.title.addEventListener("textfontset", function(){
+
+            var title_height = self.title.components.geometry.data.height;
+
+            self.total_height+= title_height + (self.total_height) * self.constants.separations.body;
+
+            var body_y = title_y - (self.total_height) * self.constants.separations.body - title_height;
+
+
+            self.body = document.createElement("a-entity");
+
+            self.body.setAttribute("text", {
+
+                value: self.data.text,
+                align: "left",
+                anchor: "left",
+                baseline: "top",
+                width: self.width * (1 - (self.constants.margin)),
+                wrapCount: self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.body),
+                color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color,
+                font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.panel_font
+
+            });
+
+            self.body.setAttribute("geometry", {primitive: "plane", width: "auto", height: "auto"});
+            self.body.setAttribute("material", {shader: "flat", "visible": false});
+
+
+            self.body.setAttribute("position", {x: -(self.width/2 * (1 - self.constants.margin)) , y: body_y, z: 0});
+
+            self.media_text_container.appendChild(self.body);
+
+
+            self.body.addEventListener("textfontset", function () {
+
+                var body_height = self.body.components.geometry.data.height + (self.total_height) * self.constants.separations.credits;
+
+                self.total_height += body_height + (self.total_height) * self.constants.separations.credits;
+
+                var credits_y = body_y - (self.total_height) * self.constants.separations.credits - body_height;
+
+                var text = self.data.media_caption + (self.data.media_credit ? "\nCredits: " + self.data.media_credit : "");
+
+                self.credits = document.createElement("a-entity");
+
+                self.credits.setAttribute("text", {
+                    value: text,
+                    align: "right",
+                    anchor: "right",
+                    width: self.width * (1 - (self.constants.margin * 2)),
+                    wrapCount: self.get_count_from_dmms(self.width * (1 - (self.constants.margin * 2)), self.data.distance*self.constants.overlap_factor, self.constants.media_text_dmms.credits),
+                    color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color,
+                    font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font
+
+                });
+
+                self.credits.setAttribute("position", {x:(self.width/2)*(1-(self.constants.margin)) , y: credits_y, z: 0});
+
+                self.credits.setAttribute("geometry", {primitive: "plane", width: "auto", height: "auto"});
+                self.credits.setAttribute("material", {shader: "flat", "visible": false});
+
+                self.media_text_container.appendChild(self.credits);
+
+                self.credits.addEventListener("textfontset", function() {
+
+                    var credits_height = self.credits.components.geometry.data.height;
+
+                    self.total_height+= credits_height + (self.data.close_button_dmms * self.data.distance / 1000)/2;
+
+                    console.log("TOTAL HEIGHT", self.total_height);
+
+                    self.fix_positions();
+
+                    self.draw_close();
+
+                    if(render_link) {
+
+                        self.render_if_link();
+                    }
+
+
+                });
+
+            });
+
+
+        });
+
+    },
+
+   fix_positions: function() {
+
+        var self = this;
+
+        self.old_height = self.media_box_height;
+
+        self.new_height_margins = self.total_height;
+
+        self.new_height = self.total_height;
+
+        self.media_text.setAttribute("height", self.new_height_margins);
+
+        self.offset_y = (self.new_height - self.old_height)/2;
+
+        self.media_box_offset+= self.offset_y;
+
+        self.media_text.setAttribute("position", {x: 0, y: -self.media_box_offset, z: -self.data.distance*self.constants.overlap_factor});
+
+        self.media_text_container.setAttribute("position", {x:0, y: self.offset_y, z:0});
+
+        self.close_button_y = -self.media_box_offset - (self.total_height/2);
 
     },
 
@@ -313,32 +434,10 @@ AFRAME.registerComponent('uipack-mediapanel', {
                 this.components.material.material.map.offset = {x:0, y:0};
                 this.components.material.material.map.repeat = {x:1.0, y:1.0};
                 this.components.material.material.map.needsUpdate = true;
-
-
-            //
-            //     var width = this.components.material.material.map.image.naturalWidth;
-            //     var height = this.components.material.material.map.image.naturalHeight;
-            //
-            //     if (width >= height) {
-            //         this.components.material.material.map.repeat = {x: height / width, y: 1};
-            //         this.components.material.material.map.offset = {x: (1 - (height / width)) / 2, y: 0.0};
-            //     }
-            //     else {
-            //         this.components.material.material.map.repeat = {x: 1, y: width / height};
-            //         this.components.material.material.map.offset = {x: 0.0, y: (1 - (width / height)) / 2};
-            //     }
-            //
-            //     this.components.material.material.map.needsUpdate = true;
             }
 
         });
 
-
-        var plane_height = (self.height) * (self.constants.media_dim);
-
-        var plane_width = (self.width) * (self.constants.media_dim);
-
-        var plane_aspect_ratio = plane_width / plane_height;
 
         // Get image width and height
 
@@ -351,35 +450,27 @@ AFRAME.registerComponent('uipack-mediapanel', {
                 var width = img.naturalWidth;
                 var height = img.naturalHeight;
 
-                console.log("NATURAL WIDTH", img.naturalWidth);
-                console.log("NATURAL HEIGHT", img.naturalHeight);
+                var aspect_ratio = (width/height);
 
-                var aspect_ratio = width / height;
+                self.media_height = (self.width / aspect_ratio);
 
-                if(aspect_ratio > plane_aspect_ratio){
+                // Width is fixed @ self.width (based on 'coverage). Height is based on width + photo aspect_ratio
 
-                    self.panel_image.setAttribute("width", plane_width);
+                self.panel_image.setAttribute("width", self.width);
 
-                    self.panel_image.setAttribute("height", plane_width / aspect_ratio);
+                self.panel_image.setAttribute("height", self.media_height);
 
-//                    self.panel.setAttribute("")
-
-                }
-                else {
-
-                    self.panel_image.setAttribute("height", plane_height);
-
-                    self.panel_image.setAttribute("width", plane_height * aspect_ratio);
-
-                }
-
-                self.panel_image.setAttribute("position", {x: -self.width/2, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
+                self.panel_image.setAttribute("position", {x:0, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
 
                 self.panel_image.setAttribute("class", "panel_media");
 
                 self.el.appendChild(self.panel_image);
 
-                self.render_media_texts();
+                // No media controls here (for render_media_texts)
+
+                self.media_control_height = 0;
+
+                self.render_media_texts(true);
 
         };
 
@@ -410,248 +501,28 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         var asset_id = "panel_" + self.data.id;
 
-        controls.setAttribute("uipack-mediacontrols", {src : "#" + asset_id, size: (self.width/4)});
+
+        self.media_control_height = (self.width)* self.constants.media_heights.player;
+
+        controls.setAttribute("uipack-mediacontrols", {src : "#" + asset_id, width: (self.width), height: self.media_control_height, button_radius: self.data.close_button_dmms * self.data.distance / 1000, theme: self.data.theme});
 
         controls.setAttribute("class", "panel_media");
 
-        controls.setAttribute("position", {x: -self.width/2 , y: -self.height/2*1.1, z: -(self.data.distance*self.constants.overlap_factor)});
+        controls.setAttribute("position", {x: 0 , y: -(self.media_height/2) - (self.media_control_height/2), z: -(self.data.distance*self.constants.overlap_factor)});
 
         self.el.appendChild(controls);
 
 
     },
+    // Only renders link 'arrow'
 
-    render_link: function(){
+    render_if_link: function(){
 
         var self = this;
 
-        // Only render things if there's not also media. If media: Render media and link button and text
+        console.log("RENDERING IF LINK: ", self.data);
 
-        if(!(self.media_type)) {
-
-
-            console.log("RENDERING LINK");
-
-            var asset_id = "panel_" + self.data.id;
-
-            // Variable to annotate if this is a google street view asset
-
-            var gsv = false;
-
-
-            if (document.getElementById(asset_id) === null) {
-
-                var sv_re = /\s*-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?\s*/i;
-
-                console.log("DATADATA", self.data);
-
-                // console.log("REGEXP",self.data.media_source.search(sv_re));
-
-                if (self.data.link_thumbnail.search(sv_re) !== -1) {
-
-                    gsv = true;
-
-                    var img_asset = document.createElement("img");
-
-                    img_asset.setAttribute("id", asset_id);
-
-                    self.assets.appendChild(img_asset);
-
-                    console.log("LINK TYPE: GSV");
-
-                    var params = self.data.link_thumbnail.trim().split(",");
-
-                    var lat = parseFloat(params[0].trim());
-
-                    var lon = parseFloat(params[1].trim());
-
-                    console.log("LATLONG", lat, lon);
-
-                    // Create a PanoLoader object
-
-                    var loader = new GSVPANO.PanoLoader();
-
-                    loader.setZoom(1);
-
-                    loader.onPanoramaLoad = function () {
-
-                        console.log("ON PANORAMA LOAD");
-
-                        console.log(this.canvas);
-
-                        // var texture = new THREE.Texture(this.canvas);
-
-                        img_asset.src = this.canvas.toDataURL();
-
-
-                        // if (sky.object3D.children[0].material.map === null) {
-                        //     sky.object3D.children[0].material = new THREE.MeshBasicMaterial();
-                        //     sky.object3D.children[0].material.map = texture;
-                        // }
-                        //
-                        // texture.needsUpdate = true;
-
-
-                    };
-
-                    loader.load(new google.maps.LatLng(lat, lon));
-                }
-                else {
-
-                    var img_asset = document.createElement("img");
-
-                    img_asset.setAttribute("id", asset_id);
-                    img_asset.setAttribute("src", self.data.link_thumbnail);
-
-                    self.assets.appendChild(img_asset);
-                }
-
-
-                // dataUrl = canvas.toDataURL(),
-                //     imageFoo = document.createElement('img');
-                // imageFoo.src = dataUrl;
-
-
-            }
-            else {
-                var img_asset = document.getElementById(asset_id);
-            }
-
-
-            self.panel_image = document.createElement("a-plane");
-
-
-            self.panel_image.setAttribute("src", "#" + asset_id);
-            self.panel_image.setAttribute("material", {shader: "flat", repeat: {x: 1, y: 1}, offset: {x: 0, y: 0}});
-
-            // All this is for THREE.js bug that two materials that point to the same image must have the same offset and repeat
-            // So this material comes with other offset and repeat if is used the same image outside
-            // And thus, when closing the panel, restore the old offset and repeat
-
-            self.panel_image.addEventListener("materialtextureloaded", function () {
-
-                console.log("LOADED TEXTURE");
-
-                console.log(self.panel_image.object3D.children[0].material.map);
-
-                if (('material' in this.components.material) && ('material' in this.components.material) && (this.components.material.material.map) && ('image' in this.components.material.material.map)) {
-
-                    console.log(this.components.material.material.map);
-
-
-                    self.old_offset = this.components.material.material.map.offset;
-                    self.old_repeat = this.components.material.material.map.repeat;
-                    self.old_material = this.components.material.material.map;
-
-                    this.components.material.material.map.offset = {x: 0, y: 0};
-                    this.components.material.material.map.repeat = {x: 1.0, y: 1.0};
-                    this.components.material.material.map.needsUpdate = true;
-
-
-                }
-
-            });
-
-
-            var plane_height = (self.height) * (self.constants.media_dim);
-
-            var plane_width = (self.width) * (self.constants.media_dim);
-
-            var plane_aspect_ratio = plane_width / plane_height;
-
-            // Get image width and height
-
-            var img = document.getElementById(asset_id);
-
-            // Aux closure function to render a panel photo, called from 'img' onload event or directly if image is already loaded
-
-            var render_panel_photo = function () {
-
-                var width = img.naturalWidth;
-                var height = img.naturalHeight;
-
-                console.log("NATURAL WIDTH", img.naturalWidth);
-                console.log("NATURAL HEIGHT", img.naturalHeight);
-
-                var aspect_ratio = width / height;
-
-                if (aspect_ratio > plane_aspect_ratio) {
-
-                    self.panel_image.setAttribute("width", plane_width);
-
-                    self.panel_image.setAttribute("height", plane_width / aspect_ratio);
-
-                    //                    self.panel.setAttribute("")
-
-                }
-                else {
-
-                    self.panel_image.setAttribute("height", plane_height);
-
-                    self.panel_image.setAttribute("width", plane_height * aspect_ratio);
-
-                }
-
-                self.panel_image.setAttribute("position", {x: -self.width / 2, y: 0, z: -(self.data.distance * self.constants.overlap_factor)});
-
-                self.panel_image.setAttribute("class", "panel_media");
-
-                self.el.appendChild(self.panel_image);
-
-                // Render button and type of content
-
-                var launch = document.createElement("a-entity");
-                launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-                launch.setAttribute("position", {x: -(self.width / 2), y: -(self.height / 2), z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
-
-                launch.addEventListener("click", function () {
-
-                    self.el.emit("link", {link: self.data.link}, false);
-
-                });
-
-
-                self.el.appendChild(launch);
-
-                // Type of content
-
-                self.launch_text = document.createElement("a-text");
-
-                self.launch_text.setAttribute("value", "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type));
-                self.launch_text.setAttribute("align", "center");
-                self.launch_text.setAttribute("anchor", "center");
-                self.launch_text.setAttribute("width", self.width / 2);
-                self.launch_text.setAttribute("wrap-count", self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link));
-                self.launch_text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
-                self.launch_text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-                self.launch_text.setAttribute("position", {x: -(self.width / 2), y: -(self.height / 2) - (self.data.close_button_dmms * 2 * self.data.distance / 1000), z: -(self.data.distance * self.constants.overlap_factor)});
-
-                self.el.appendChild(self.launch_text);
-
-
-                // self.render_media_texts();
-
-            };
-
-
-            // if naturalWidth == 0, image is not loaded. Assets 'loaded' event is not fired (?), so we cannot use that :-(
-
-            if (img.naturalWidth !== 0) {
-
-                render_panel_photo();
-
-            }
-            else {
-
-                img.onload = function () {
-
-                    render_panel_photo();
-
-                };
-            }
-        }
-        // Link and media, media will be rendered by render_media, so just render the button and the text...
-        else {
+        if(self.data.link) {
 
             // Is it a google street view panorama?
 
@@ -669,7 +540,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             var launch = document.createElement("a-entity");
             launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-            launch.setAttribute("position", {x: -(self.width / 2), y: -(self.height / 2)*1.5, z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
+            launch.setAttribute("position", {x: 0, y: (self.media_height / 2) , z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
 
             launch.addEventListener("click", function () {
 
@@ -682,20 +553,286 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             // Type of content
 
-            self.launch_text = document.createElement("a-text");
+            self.launch_text = document.createElement("a-entity");
 
-            self.launch_text.setAttribute("value", "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type));
-            self.launch_text.setAttribute("align", "center");
-            self.launch_text.setAttribute("anchor", "center");
-            self.launch_text.setAttribute("width", self.width / 2);
-            self.launch_text.setAttribute("wrap-count", self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link));
-            self.launch_text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
-            self.launch_text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
-            self.launch_text.setAttribute("position", {x: -(self.width / 2), y: -(self.height / 2)*1.5 - (self.data.close_button_dmms * 2 * self.data.distance / 1000), z: -(self.data.distance * self.constants.overlap_factor)});
+            self.launch_text.setAttribute("text", {
+
+                value: "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type),
+                align: "center",
+                anchor: "center",
+                width: self.width/2,
+                wrapCount: self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link),
+                color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color,
+                font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font
+
+            });
+
+
+
+            var label_height = ((self.constants.dmm.link * self.data.distance) / 1000)*3;
+
+            self.launch_text.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+
+            self.launch_text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color, shader: "flat"});
+
+            self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) - (self.data.close_button_dmms * self.data.distance / 1000)*2, z: -(self.data.distance * self.constants.overlap_factor * self.constants.overlap_factor)});
 
             self.el.appendChild(self.launch_text);
+        }
+
+    },
+
+    render_link: function(){
+
+        var self = this;
+
+        // Only render things if there's not also media. If media: Render media and link button and text
+
+        if(!(self.media_type)) {
 
 
+            if(self.data.link_thumbnail) {
+
+
+                console.log("RENDERING LINK");
+
+                var asset_id = "panel_" + self.data.id;
+
+                // Variable to annotate if this is a google street view asset
+
+                var gsv = false;
+
+
+                if (document.getElementById(asset_id) === null) {
+
+                    var sv_re = /\s*-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?\s*/i;
+
+                    console.log("DATADATA", self.data);
+
+                    // console.log("REGEXP",self.data.media_source.search(sv_re));
+
+                    if (self.data.link_thumbnail.search(sv_re) !== -1) {
+
+                        gsv = true;
+
+                        var img_asset = document.createElement("img");
+
+                        img_asset.setAttribute("id", asset_id);
+
+                        self.assets.appendChild(img_asset);
+
+                        console.log("LINK TYPE: GSV");
+
+                        var params = self.data.link_thumbnail.trim().split(",");
+
+                        var lat = parseFloat(params[0].trim());
+
+                        var lon = parseFloat(params[1].trim());
+
+                        console.log("LATLONG", lat, lon);
+
+                        // Create a PanoLoader object
+
+                        var loader = new GSVPANO.PanoLoader();
+
+                        loader.setZoom(1);
+
+                        loader.onPanoramaLoad = function () {
+
+                            console.log("ON PANORAMA LOAD");
+
+                            console.log(this.canvas);
+
+                            // var texture = new THREE.Texture(this.canvas);
+
+                            img_asset.src = this.canvas.toDataURL();
+
+
+                            // if (sky.object3D.children[0].material.map === null) {
+                            //     sky.object3D.children[0].material = new THREE.MeshBasicMaterial();
+                            //     sky.object3D.children[0].material.map = texture;
+                            // }
+                            //
+                            // texture.needsUpdate = true;
+
+
+                        };
+
+                        loader.load(new google.maps.LatLng(lat, lon));
+                    }
+                    else {
+
+                        var img_asset = document.createElement("img");
+
+                        img_asset.setAttribute("id", asset_id);
+                        img_asset.setAttribute("src", self.data.link_thumbnail);
+
+                        self.assets.appendChild(img_asset);
+                    }
+
+
+                    // dataUrl = canvas.toDataURL(),
+                    //     imageFoo = document.createElement('img');
+                    // imageFoo.src = dataUrl;
+
+
+                }
+                else {
+                    var img_asset = document.getElementById(asset_id);
+                }
+
+
+                self.panel_image = document.createElement("a-plane");
+
+
+                self.panel_image.setAttribute("src", "#" + asset_id);
+                self.panel_image.setAttribute("material", {shader: "flat", repeat: {x: 1, y: 1}, offset: {x: 0, y: 0}});
+
+                // All this is for THREE.js bug that two materials that point to the same image must have the same offset and repeat
+                // So this material comes with other offset and repeat if is used the same image outside
+                // And thus, when closing the panel, restore the old offset and repeat
+
+                self.panel_image.addEventListener("materialtextureloaded", function () {
+
+                    console.log("LOADED TEXTURE");
+
+                    console.log(self.panel_image.object3D.children[0].material.map);
+
+                    if (('material' in this.components.material) && ('material' in this.components.material) && (this.components.material.material.map) && ('image' in this.components.material.material.map)) {
+
+                        console.log(this.components.material.material.map);
+
+
+                        self.old_offset = this.components.material.material.map.offset;
+                        self.old_repeat = this.components.material.material.map.repeat;
+                        self.old_material = this.components.material.material.map;
+
+                        this.components.material.material.map.offset = {x: 0, y: 0};
+                        this.components.material.material.map.repeat = {x: 1.0, y: 1.0};
+                        this.components.material.material.map.needsUpdate = true;
+
+
+                    }
+
+                });
+
+
+                // Get image width and height
+
+                var img = document.getElementById(asset_id);
+
+                // Aux closure function to render a panel photo, called from 'img' onload event or directly if image is already loaded
+
+                var render_panel_photo = function () {
+
+                    var width = img.naturalWidth;
+                    var height = img.naturalHeight;
+
+                    console.log("NATURAL WIDTH", img.naturalWidth);
+                    console.log("NATURAL HEIGHT", img.naturalHeight);
+
+                    var aspect_ratio = width / height;
+
+                    self.media_height = self.width / aspect_ratio;
+
+                    self.panel_image.setAttribute("height", self.media_height);
+
+                    self.panel_image.setAttribute("width", self.width);
+
+                    self.panel_image.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance * self.constants.overlap_factor)});
+
+                    self.panel_image.setAttribute("class", "panel_media");
+
+                    self.el.appendChild(self.panel_image);
+
+                    // Render button and type of content
+
+                    var launch = document.createElement("a-entity");
+                    launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+                    launch.setAttribute("position", {x: 0, y: (self.media_height / 2), z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
+
+                    launch.addEventListener("click", function () {
+
+                        self.el.emit("link", {link: self.data.link}, false);
+
+                    });
+
+
+                    self.el.appendChild(launch);
+
+                    self.launch_text = document.createElement("a-entity");
+
+                    self.launch_text.setAttribute("text", {
+
+                        value: "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type),
+                        align: "center",
+                        anchor: "center",
+                        width: self.width/2,
+                        wrapCount: self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link),
+                        color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_color : self.data.color,
+                        font: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_title_font : self.data.title_font
+
+                    });
+
+
+
+                    var label_height = ((self.constants.dmm.link * self.data.distance) / 1000)*3;
+
+                    self.launch_text.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+
+                    self.launch_text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color, shader: "flat"});
+
+                    self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) - (self.data.close_button_dmms * self.data.distance / 1000)*2, z: -(self.data.distance * self.constants.overlap_factor * self.constants.overlap_factor)});
+
+                    self.el.appendChild(self.launch_text);
+
+
+//                    // Type of content
+//
+//                    self.launch_text = document.createElement("a-text");
+//
+//                    self.launch_text.setAttribute("value", "Go to immersive " + (gsv ? " streetview panorama " : self.data.link_type));
+//                    self.launch_text.setAttribute("align", "center");
+//                    self.launch_text.setAttribute("anchor", "center");
+//                    self.launch_text.setAttribute("baseline", "bottom");
+//                    self.launch_text.setAttribute("width", self.width / 2);
+//                    self.launch_text.setAttribute("wrap-count", self.get_count_from_dmms(self.width / 2, self.data.distance * self.constants.overlap_factor, self.constants.dmm.link));
+//                    self.launch_text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_aux_color : self.data.aux_color);
+//                    self.launch_text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].panel_font : self.data.text_font);
+//                    self.launch_text.setAttribute("position", {x: 0, y: (self.media_height / 2) + self.data.close_button_dmms * self.data.distance / 1000, z: -(self.data.distance * self.constants.overlap_factor)});
+//
+//                    self.el.appendChild(self.launch_text);
+
+                    // No media controls here (for render_media_texts)
+
+                    self.media_control_height = 0;
+
+                    self.render_media_texts(false);
+
+                };
+
+
+                // if naturalWidth == 0, image is not loaded. Assets 'loaded' event is not fired (?), so we cannot use that :-(
+
+                if (img.naturalWidth !== 0) {
+
+                    render_panel_photo();
+
+                }
+                else {
+
+                    img.onload = function () {
+
+                        render_panel_photo();
+
+                    };
+                }
+            }
+            else {
+                // Link but no thumbnail nor media ====> render_text
+
+                self.media_renderers["text"].bind(self)();
+            }
         }
 
     },
@@ -720,15 +857,11 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.panel_audio = document.createElement("a-plane");
 
-//        self.panel_audio.setAttribute("src", "#" + asset_id);
-//
-//        self.panel_audio.setAttribute("color", "white");
+        var plane_height = (self.width) / self.data.aspect_ratio;
 
-        var plane_height = (self.height) * (self.constants.media_dim);
+        var plane_width = (self.width);
 
-        var plane_width = (self.width) * (self.constants.media_dim);
-
-        var plane_aspect_ratio = plane_width / plane_height;
+        self.media_height = plane_height;
 
         self.panel_audio.setAttribute("width", plane_width);
         self.panel_audio.setAttribute("height", plane_height);
@@ -793,18 +926,15 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.audio_context = self.audio_canvas.getContext('2d');
 
-//        self.audio_texture = new THREE.Texture(self.audio_canvas);
-
-//        self.panel_audio.setAttribute("src", "#" + audio_canvas_id);
         self.panel_audio.setAttribute("src", "#" + audio_canvas_id);
 
-        self.panel_audio.setAttribute("position", {x: - self.width/2, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
+        self.panel_audio.setAttribute("position", {x:0, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
 
         self.el.appendChild(self.audio_canvas);
 
         self.render_media_controls();
 
-        self.render_media_texts();
+        self.render_media_texts(true);
 
         audio_asset.play();
 
@@ -832,14 +962,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.panel_video = document.createElement("a-plane");
 
-
         self.panel_video.setAttribute("src", "#" + asset_id);
-
-        var plane_height = (self.height) * (self.constants.media_dim);
-
-        var plane_width = (self.width) * (self.constants.media_dim);
-
-        var plane_aspect_ratio = plane_width / plane_height;
 
         DATAVERSE_VIZ_AUX.global_tracking.last_media = video_asset;
 
@@ -850,33 +973,19 @@ AFRAME.registerComponent('uipack-mediapanel', {
             var width = video_asset.videoWidth;
             var height = video_asset.videoHeight;
 
-            var aspect_ratio = width/height;
+            var plane_height = (height/width) * self.width;
 
-            if(aspect_ratio > plane_aspect_ratio){
+            self.media_height = plane_height;
 
-                self.panel_video.setAttribute("width", plane_width);
+            // panel_video width is fixed and based in mediapanel "coverage" parameter
 
-                self.panel_video.setAttribute("height", plane_width / aspect_ratio);
+            self.panel_video.setAttribute("width", self.width);
+            self.panel_video.setAttribute("height", plane_height);
 
-//                    self.panel.setAttribute("")
-
-            }
-            else {
-
-                self.panel_video.setAttribute("height", plane_height);
-
-                self.panel_video.setAttribute("width", plane_height * aspect_ratio);
-
-            }
 
             self.panel_video.setAttribute("material", {src: "#" + asset_id});
 
-
-//                var real_width = cur * aspect_ratio;
-
-//                self.panel_image.setAttribute("position", "0 " + (self.height/4) + " 0");
-//                self.panel_image.setAttribute("position", {x:0, y: self.height/4, z: -(self.data.distance*self.constants.overlap_factor)});
-            self.panel_video.setAttribute("position", {x: -self.width/2, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
+            self.panel_video.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
 
             self.panel_video.setAttribute("class", "panel_media");
 
@@ -885,9 +994,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             self.render_media_controls();
 
-            self.render_media_texts();
-
-//          self.render_media_controls(slide_number, datum, timestamp, tetha_length/2);
+            self.render_media_texts(true);
 
             video_asset.play();
 
@@ -907,9 +1014,68 @@ AFRAME.registerComponent('uipack-mediapanel', {
             });
         }
 
+    },
+
+    draw_close: function() {
+
+        var self = this;
+
+       // Close button
 
 
+        var close = document.createElement("a-entity");
+        close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+        close.setAttribute("position", {x: 0, y: self.close_button_y, z:-(self.data.distance*self.constants.overlap_factor*self.constants.overlap_factor)});
+        close.addEventListener("click", function(){
 
+            // Resolve the 'duplicate image with different offset and repeat THREE.js bug
+
+            if(self.old_material){
+                self.old_material.offset = self.old_offset;
+                self.old_material.repeat = self.old_repeat;
+                self.old_material.needsUpdate = true;
+            }
+
+
+            // Stop old video if any
+
+            if(DATAVERSE_VIZ_AUX.global_tracking.last_media !== undefined){
+                DATAVERSE_VIZ_AUX.global_tracking.last_media.pause();
+
+            }
+
+            // Restore (if applicable) 'trigger' element with removed 'clickable' class
+
+            if(self.el.sceneEl.restore_clickable) {
+
+                self.el.sceneEl.restore_clickable.classList.add("clickable");
+
+            }
+
+            var close_this = function(){
+
+                self.el.parentNode.removeChild(self.el);
+
+            };
+
+            setTimeout(function(){self.el.parentNode.removeChild(self.el); }, 100);
+
+        });
+
+        self.el.appendChild(close);
+
+        var close_position = self.close_button_y + self.el.getAttribute("position").y;
+
+        if(self.data.low_height !== -1){
+
+            var offset = (self.data.low_height - close_position);
+
+            var position = self.el.getAttribute("position");
+
+            position.y += offset;
+
+            self.el.setAttribute("position", position);
+        }
 
 
     },
@@ -930,72 +1096,12 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.back_panel = document.createElement("a-plane");
 
-        self.height = 2*self.data.distance*Math.tan(THREE.Math.degToRad(self.data.height/2.0));
         self.width = 2*self.data.distance*Math.tan(THREE.Math.degToRad(self.data.coverage/2.0));
 
+        // This is only valid for 'only' text drawing....
 
-        self.back_panel.setAttribute("height", self.height);
-        self.back_panel.setAttribute("width", self.width);
-        self.back_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
-        self.back_panel.setAttribute("position", {x: (self.media_type || self.data.link) ? self.width/2:0, y: 0, z: -self.data.distance});
+        self.height = (self.width / self.data.aspect_ratio);
 
-
-        self.el.appendChild(self.back_panel);
-
-        if((self.media_type) || (self.data.link)){
-
-            self.background_panel = document.createElement("a-plane");
-            self.background_panel.setAttribute("height", self.height*1.1);
-            self.background_panel.setAttribute("width", self.width*2.2);
-            self.background_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_backpanel: self.data.backpanel_color});
-            self.background_panel.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance+0.01)});
-
-            self.el.appendChild(self.background_panel);
-
-        }
-
-
-        // Close button
-
-
-        var close = document.createElement("a-entity");
-        close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
-        // close.setAttribute("position", {x: self.media_type? self.width/2:0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
-        close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
-
-        close.addEventListener("click", function(){
-
-            // Resolve the 'duplicate image with different offset and repeat THREE.js bug
-
-            if(self.old_material){
-                self.old_material.offset = self.old_offset;
-                self.old_material.repeat = self.old_repeat;
-                self.old_material.needsUpdate = true;
-            }
-
-
-            // Stop old video if any
-
-            if(DATAVERSE_VIZ_AUX.global_tracking.last_media !== undefined){
-                DATAVERSE_VIZ_AUX.global_tracking.last_media.pause();
-
-//                        if(self.last_media.tagName === "AUDIO") {
-//                            self.context.close();
-//                        }
-
-//
-//                self.last_media = undefined;
-            }
-
-
-            self.el.parentNode.removeChild(self.el);
-
-        });
-
-
-        self.el.appendChild(close);
-
-        self.draw_text();
 
         // bind to self, since it is bound to self.media_renderers object...
 
@@ -1008,6 +1114,14 @@ AFRAME.registerComponent('uipack-mediapanel', {
         if (self.media_type) {
 
             self.media_renderers[self.media_type].bind(self)();
+
+        }
+
+        if(!((self.media_type) || (self.data.link))){
+
+            console.log("RENDERING TEXT");
+
+            self.media_renderers["text"].bind(self)();
 
         }
 

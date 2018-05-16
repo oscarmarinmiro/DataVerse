@@ -87,64 +87,64 @@ DATAVERSE.renderer.prototype = {
             self.actual_scene_component.setAttribute("visible", true);
 
 
-            // Iterate through skyspheres
-
-            var myNodeList = document.querySelectorAll('.skyspheres');
-
-            [].forEach.call(myNodeList, function (item) {
-              // :) hooray `item` can be used here
-
-                var element_animation = document.createElement("a-animation");
-
-                element_animation.setAttribute("attribute", "opacity");
-                element_animation.setAttribute("dur", 3000);
-                element_animation.setAttribute("to", 1.0);
-
-                item.appendChild(element_animation);
-
-            });
-
-            // Manual floors and skies
-
-            if(self.floor) {
-
-                var floor_animation = document.createElement("a-animation");
-
-                floor_animation.setAttribute("attribute", "opacity");
-                floor_animation.setAttribute("dur", 3000);
-                floor_animation.setAttribute("to", 1.0);
-
-                self.floor.appendChild(floor_animation);
-            }
-
-            if(self.sky) {
-
-                var sky_animation = document.createElement("a-animation");
-
-                sky_animation.setAttribute("attribute", "opacity");
-                sky_animation.setAttribute("dur", 3000);
-                sky_animation.setAttribute("to", 1.0);
-
-                self.sky.appendChild(sky_animation);
-            }
-            // Else: photosphere sky
-            else {
-
-                var my_sky = document.querySelector("a-sky");
-
-                if(my_sky) {
-
-                    var sky_animation = document.createElement("a-animation");
-
-                    sky_animation.setAttribute("attribute", "opacity");
-                    sky_animation.setAttribute("dur", 3000);
-                    sky_animation.setAttribute("to", 1.0);
-
-                    my_sky.appendChild(sky_animation);
-                }
-
-
-            }
+//            // Iterate through skyspheres
+//
+//            var myNodeList = document.querySelectorAll('.skyspheres');
+//
+//            [].forEach.call(myNodeList, function (item) {
+//              // :) hooray `item` can be used here
+//
+//                var element_animation = document.createElement("a-animation");
+//
+//                element_animation.setAttribute("attribute", "opacity");
+//                element_animation.setAttribute("dur", 3000);
+//                element_animation.setAttribute("to", 1.0);
+//
+//                item.appendChild(element_animation);
+//
+//            });
+//
+//            // Manual floors and skies
+//
+//            if(self.floor) {
+//
+//                var floor_animation = document.createElement("a-animation");
+//
+//                floor_animation.setAttribute("attribute", "opacity");
+//                floor_animation.setAttribute("dur", 3000);
+//                floor_animation.setAttribute("to", 1.0);
+//
+//                self.floor.appendChild(floor_animation);
+//            }
+//
+//            if(self.sky) {
+//
+//                var sky_animation = document.createElement("a-animation");
+//
+//                sky_animation.setAttribute("attribute", "opacity");
+//                sky_animation.setAttribute("dur", 3000);
+//                sky_animation.setAttribute("to", 1.0);
+//
+//                self.sky.appendChild(sky_animation);
+//            }
+//            // Else: photosphere sky
+//            else {
+//
+//                var my_sky = document.querySelector("a-sky");
+//
+//                if(my_sky) {
+//
+//                    var sky_animation = document.createElement("a-animation");
+//
+//                    sky_animation.setAttribute("attribute", "opacity");
+//                    sky_animation.setAttribute("dur", 3000);
+//                    sky_animation.setAttribute("to", 1.0);
+//
+//                    my_sky.appendChild(sky_animation);
+//                }
+//
+//
+//            }
 
 
 
@@ -194,6 +194,8 @@ DATAVERSE.renderer.prototype = {
 
             self.menu.setAttribute("uipack-menu", {
 
+                theme: self.theme,
+
                 icons: icons.icons, buttons: [], media_id: media_id, open: true
 
             });
@@ -202,6 +204,8 @@ DATAVERSE.renderer.prototype = {
         else {
 
             self.menu.setAttribute("uipack-menu", {
+
+                theme: self.theme,
 
                 icons: icons.icons,  buttons: []
 
@@ -417,7 +421,7 @@ DATAVERSE.renderer.prototype = {
 
                 self.floor.classList.add("dataverse-added");
 
-                self.floor.setAttribute("opacity", 0.0);
+//                self.floor.setAttribute("opacity", 0.0);
 
                 self.scene.appendChild(self.floor);
 
@@ -435,7 +439,7 @@ DATAVERSE.renderer.prototype = {
                     self.floor.setAttribute("rotation", {x:-90, y: self.counter_cam_rotation, z:0});
                     self.floor.classList.add("dataverse-added");
 
-                    self.floor.setAttribute("opacity", 0.0);
+//                    self.floor.setAttribute("opacity", 0.0);
 
                     self.scene.appendChild(self.floor);
 
@@ -472,7 +476,7 @@ DATAVERSE.renderer.prototype = {
 
                             self.floor.classList.add("dataverse-added");
 
-                            self.floor.setAttribute("opacity", 0.0);
+//                            self.floor.setAttribute("opacity", 0.0);
 
                             self.scene.appendChild(self.floor);
                         }
@@ -488,7 +492,7 @@ DATAVERSE.renderer.prototype = {
                             self.floor.setAttribute("rotation", {x: -90, y: self.counter_cam_rotation, z: 0});
                             self.floor.classList.add("dataverse-added");
 
-                            self.floor.setAttribute("opacity", 0.0);
+//                            self.floor.setAttribute("opacity", 0.0);
 
                             self.scene.appendChild(self.floor);
                         }
@@ -519,7 +523,7 @@ DATAVERSE.renderer.prototype = {
                 self.sky.setAttribute("src", "#sky_img");
                 self.sky.classList.add("dataverse-added");
 
-                self.sky.setAttribute("opacity", 0.0);
+//                self.sky.setAttribute("opacity", 0.0);
 
 
                 self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
@@ -539,7 +543,7 @@ DATAVERSE.renderer.prototype = {
 
                     self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
-                    self.sky.setAttribute("opacity", 0.0);
+//                    self.sky.setAttribute("opacity", 0.0);
 
                     self.scene.appendChild(self.sky);
                 }
@@ -564,7 +568,7 @@ DATAVERSE.renderer.prototype = {
 
                             self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
-                            self.sky.setAttribute("opacity", 0.0);
+//                            self.sky.setAttribute("opacity", 0.0);
 
                             self.scene.appendChild(self.sky);
 
@@ -577,7 +581,7 @@ DATAVERSE.renderer.prototype = {
 
                             self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
-                            self.sky.setAttribute("opacity", 0.0);
+//                            self.sky.setAttribute("opacity", 0.0);
 
                             self.scene.appendChild(self.sky);
 

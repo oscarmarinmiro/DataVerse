@@ -216,6 +216,12 @@ AFRAME.registerComponent('treemap-viz', {
 
                 more_button.addEventListener("click", function () {
 
+                    // Retore trigger as clickable (just in case it is cross-launched)
+
+
+                    if (self.el.sceneEl.restore_clickable) {
+                        self.el.sceneEl.restore_clickable.classList.add("clickable");
+                    }
 
                     // distance between camera and this
 
@@ -273,6 +279,9 @@ AFRAME.registerComponent('treemap-viz', {
 
                     self.el.sceneEl.media_panel = self.media_panel;
 
+                    self.el.sceneEl.restore_clickable = this;
+
+                    self.el.sceneEl.restore_clickable.classList.remove("clickable");
 
                 });
 

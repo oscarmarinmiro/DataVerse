@@ -87,6 +87,14 @@ AFRAME.registerComponent('video-viz', {
 
             more_button.addEventListener("click", function () {
 
+                // Retore trigger as clickable (just in case it is cross-launched)
+
+
+                if (self.el.sceneEl.restore_clickable) {
+                    self.el.sceneEl.restore_clickable.classList.add("clickable");
+                }
+
+
 
                 // cam yaw rotation
 
@@ -138,6 +146,11 @@ AFRAME.registerComponent('video-viz', {
                 self.el.sceneEl.appendChild(self.media_panel);
 
                 self.el.sceneEl.media_panel = self.media_panel;
+
+
+                self.el.sceneEl.restore_clickable = this;
+
+                self.el.sceneEl.restore_clickable.classList.remove("clickable");
 
 
             });

@@ -65,6 +65,13 @@ AFRAME.registerComponent('photo-viz', {
 
             more_button.addEventListener("click", function () {
 
+                // Retore trigger as clickable (just in case it is cross-launched)
+
+
+                if (self.el.sceneEl.restore_clickable) {
+                    self.el.sceneEl.restore_clickable.classList.add("clickable");
+                }
+
 
                 // cam yaw rotation
 
@@ -117,6 +124,9 @@ AFRAME.registerComponent('photo-viz', {
 
                 self.el.sceneEl.media_panel = self.media_panel;
 
+                self.el.sceneEl.restore_clickable = this;
+
+                self.el.sceneEl.restore_clickable.classList.remove("clickable");
 
             });
 
@@ -260,7 +270,7 @@ AFRAME.registerComponent('photo-viz', {
             console.log("PHOTO TYPE: Photosphere");
 
             document.getElementsByTagName("a-sky")[0].setAttribute("src", self.data.media_source);
-            document.getElementsByTagName("a-sky")[0].setAttribute("opacity", self.data.debug ? 1.0 : 0.0);
+//            document.getElementsByTagName("a-sky")[0].setAttribute("opacity", self.data.debug ? 1.0 : 0.0);
 
 
             document.getElementsByTagName("a-sky")[0].removeAttribute("color");

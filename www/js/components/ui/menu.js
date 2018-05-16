@@ -2,6 +2,7 @@
 AFRAME.registerComponent('uipack-menu', {
     schema: {
         icons: {type: 'array'},
+        theme: {type: 'string', default: "dark"},
         buttons: {type: 'array', default: []},
         media_id: {type: 'string', default: ""},
         pitch: { type: 'number', default: -70},
@@ -212,7 +213,11 @@ AFRAME.registerComponent('uipack-menu', {
 
     if(self.data.media_id != "") {
 
-        self.media_controls.setAttribute("uipack-mediacontrols", {'src': "#" + self.data.media_id, 'size': UIPACK_CONSTANTS.menu_player_width});
+        self.media_controls.setAttribute("uipack-mediacontrols", {'src': "#" + self.data.media_id,
+            width: UIPACK_CONSTANTS.menu_player_width,
+            height: UIPACK_CONSTANTS.menu_player_height,
+            theme: self.data.theme,
+            button_radius: UIPACK_CONSTANTS.menu_player_button_radius});
 
         self.media_controls.setAttribute("position", "0 " + UIPACK_CONSTANTS.offset_player + " 0");
     }

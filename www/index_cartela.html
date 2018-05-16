@@ -6,7 +6,6 @@
 
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/aframe/dist/aframe-master.min.js"></script>
-    <!--<script src="js/third_party/aframe-v0.8.2.min.js"></script>-->
     <script src="bower_components/moment/min/moment-with-locales.min.js"></script>
     <script src="bower_components/howler/dist/howler.min.js"></script>
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
@@ -60,17 +59,14 @@
   <body style="background-color: black">
 
       <a-scene>
+          <a-assets></a-assets>
+          <a-sky color="grey"></a-sky>
 
           <a-camera dataverse-added>
               <a-cursor color="yellow"></a-cursor>
               <!--<a-cursor dataverse-added color="yellow" raycaster="near: 0.0; objects: .clickable" fuse="true" fuse-timeout="1000"></a-cursor>-->
           </a-camera>
 
-          <a-plane position="0 1.6 -4" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
-
-          <a-plane position="-4 1.6 0" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
-          <a-plane position="4 1.6 0" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
-          <a-plane position="0 1.6 4" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
 
       </a-scene>
 
@@ -84,6 +80,66 @@
                 }
             };
 
+            UIPACK_CONSTANTS.icon_path = "themes/dark/icons/";
+
+
+//            var intro = document.createElement("a-entity");
+//
+//            intro.setAttribute("uipack-mediapanel", {credits: "Story: djhdjhd, mandanga: ueieueieuieue, design: jkdjekdjed, developer: jdkdjkdj", title: "If the world were 100 people", theme: "dark",text: "Lorem ipsum dolor sit amet consectetur adipiscing elit donec dictum augue magna cubilia, urna risus morbi mollis viverra mattis facilisi imperdiet suspendisse blandit habitant."});
+//
+//            var scene = document.querySelector("a-scene");
+//
+//            scene.appendChild(intro);
+//
+//
+//            console.log("COMPONENTS", intro.components['intro-panel']);
+//
+//            setTimeout(function(){ console.log("PUTTING LOADED MESSAGE"); intro.components['intro-panel'].loaded(); }, 10000);
+
+                self.media_panel = document.createElement("a-entity");
+
+                var scene = document.querySelector("a-scene");
+
+                var cam_position = scene.camera.el.getAttribute("position");
+
+                self.media_panel.setAttribute("position", {
+                    x: cam_position.x,
+                    y: cam_position.y,
+                    z: cam_position.z
+                });
+
+                // cam yaw rotation
+
+                var yaw = (scene.camera.el.getAttribute("rotation").y) % 360;
+                var pitch = (scene.camera.el.getAttribute("rotation").x) % 360;
+
+
+
+                self.media_panel.setAttribute("uipack-mediapanel", {
+                    yaw: yaw,
+                    pitch: pitch,
+                    theme: "light",
+                    distance: 1.5,
+                    title: "Title Title Title Title",
+                    subtitle: "Subtitle",
+                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                    media_url: "media/videos/AshesToAshes.mp4",
+                    media_caption: "Media caption",
+                    media_credit: "Media credit",
+                    link: "",
+                    link_thumbnail: "",
+                    link_type: "",
+                    id: "cartela-text"
+                });
+
+
+                scene.appendChild(self.media_panel);
+
+
+
+
+
+
 //            UIPACK_CONSTANTS.icon_path = "http://www.pedro.com";
 
             // World 100
@@ -92,7 +148,7 @@
 
             // All vizs example
 
-            var main = new DATAVERSE.main({'debug': false, 'source': "https://docs.google.com/spreadsheets/d/1z2WYbw5ANUJxGVaXQ0POs24Kr5baYmH3sv3TRkm2BEY/edit?usp=sharing"});
+//            var main = new DATAVERSE.main({'debug': false, 'source': "https://docs.google.com/spreadsheets/d/1z2WYbw5ANUJxGVaXQ0POs24Kr5baYmH3sv3TRkm2BEY/edit?usp=sharing"});
 
         </script>
   </body>
