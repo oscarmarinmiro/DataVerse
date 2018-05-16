@@ -358,8 +358,8 @@ AFRAME.registerComponent('geo-viz', {
                 // Retore trigger as clickable (just in case it is cross-launched)
 
 
-                if (self.el.sceneEl.restore_clickable) {
-                    self.el.sceneEl.restore_clickable.classList.add("clickable");
+                if (component.el.sceneEl.restore_clickable) {
+                    component.el.sceneEl.restore_clickable.classList.add("clickable");
                 }
 
 
@@ -421,9 +421,9 @@ AFRAME.registerComponent('geo-viz', {
 
                 self.sceneEl.media_panel_id = index;
 
-                self.el.sceneEl.restore_clickable = this;
+                component.el.sceneEl.restore_clickable = this;
 
-                self.el.sceneEl.restore_clickable.classList.remove("clickable");
+                component.el.sceneEl.restore_clickable.classList.remove("clickable");
 
 
         });
@@ -488,8 +488,6 @@ AFRAME.registerComponent('geo-viz', {
         self.map_sphere.setAttribute("src", "#skymap");
 
         self.map_sphere.setAttribute("radius", self.data.radius);
-
-        self.map_sphere.setAttribute("opacity", self.data.debug? 1.0 : 0.0);
 
         // Inform to parent
 
