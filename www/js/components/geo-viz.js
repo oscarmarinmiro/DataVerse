@@ -291,9 +291,9 @@ AFRAME.registerComponent('geo-viz', {
 
                 self.first_hover = false;
 
-                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
-
-                sound.play();
+//                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
+//
+//                sound.play();
 
 
                 // Emit 'clicked' on ring animation end
@@ -483,11 +483,16 @@ AFRAME.registerComponent('geo-viz', {
 
         self.map_sphere.classList.add("skyspheres");
 
-        self.map_sphere.setAttribute("scale", "1.0 1.0 -1.0");
+                self.map_sphere.setAttribute("geometry", {primitive: "sphere", radius:self.data.radius, segmentsWidth: 64, segmentsHeight:64});
+                self.map_sphere.setAttribute("material", {shader: "flat", src: "#skymap", side: "back"});
+                self.map_sphere.setAttribute("scale", "1 1 -1");
 
-        self.map_sphere.setAttribute("src", "#skymap");
 
-        self.map_sphere.setAttribute("radius", self.data.radius);
+//        self.map_sphere.setAttribute("scale", "1.0 1.0 -1.0");
+//
+//        self.map_sphere.setAttribute("src", "#skymap");
+//
+//        self.map_sphere.setAttribute("radius", self.data.radius);
 
         // Inform to parent
 

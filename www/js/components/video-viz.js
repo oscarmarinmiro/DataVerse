@@ -270,7 +270,8 @@ AFRAME.registerComponent('video-viz', {
                 self.stereo_left_sphere.setAttribute("class", "videospheres");
 
                 self.stereo_left_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
-                self.stereo_left_sphere.setAttribute("material", "shader: flat; src: #" + video_id);
+
+                self.stereo_left_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.stereo_left_sphere.setAttribute("scale", "-1 1 1");
 
                 AFRAME.utils.entity.setComponentProperty(self.stereo_left_sphere, "stereo", {'eye': 'left', 'mode': self.video_type.mode, 'split': self.video_type.split});
@@ -282,7 +283,7 @@ AFRAME.registerComponent('video-viz', {
                 self.stereo_right_sphere.setAttribute("class", "videospheres");
 
                 self.stereo_right_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
-                self.stereo_right_sphere.setAttribute("material", "shader: flat; src: #" + video_id);
+                self.stereo_right_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.stereo_right_sphere.setAttribute("scale", "-1 1 1");
 
                 self.stereo_right_sphere.addEventListener("materialvideoloadeddata", function(){
@@ -329,7 +330,7 @@ AFRAME.registerComponent('video-viz', {
                 self.mono_sphere.setAttribute("class", "videospheres");
 
                 self.mono_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
-                self.mono_sphere.setAttribute("material", "shader: flat; src: #" + video_id);
+                self.mono_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.mono_sphere.setAttribute("scale", "-1 1 1");
 
                 self.mono_sphere.addEventListener("materialvideoloadeddata", function(){

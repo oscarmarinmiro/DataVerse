@@ -237,22 +237,11 @@ AFRAME.registerComponent('photo-viz', {
 
                 console.log(this.canvas);
 
-                var texture = new THREE.Texture(this.canvas);
+                var texture = new THREE.CanvasTexture(this.canvas);
 
                 var sky = document.getElementsByTagName("a-sky")[0];
 
-
-
-                if(sky.object3D.children[0].material.map === null) {
-                    sky.object3D.children[0].material = new THREE.MeshBasicMaterial();
-                    sky.object3D.children[0].material.map = texture;
-//                    sky.object3D.children[0].material.opacity = 0.0;
-
-                    console.log("SKYSKY", sky.object3D.children[0].material);
-                }
-
-                texture.needsUpdate = true;
-
+                sky.getOrCreateObject3D('mesh').material = new THREE.MeshBasicMaterial({map: texture, side: THREE.BackSide});
 
                 self.el.emit("dv_loaded", null, false);
 
