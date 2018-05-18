@@ -26,13 +26,13 @@ AFRAME.registerComponent('video-viz', {
 
         console.log("INIT COMPONENT", self);
 
-        // Create a sky if there is none present
-
-        if(document.getElementsByTagName("a-sky").length == 0){
-
-            document.getElementsByTagName("a-scene")[0].appendChild(document.createElement("a-sky"));
-
-        }
+//        // Create a sky if there is none present
+//
+//        if(document.getElementsByTagName("a-sky").length == 0){
+//
+//            document.getElementsByTagName("a-scene")[0].appendChild(document.createElement("a-sky"));
+//
+//        }
 
         // Default types
 
