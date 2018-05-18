@@ -12,6 +12,10 @@ DATAVERSE.main = function(options) {
 
     $(document).ready(function () {
 
+        // Hide scene
+
+        document.querySelector("a-scene").style.display = "none";
+
         // Insert interstitial
 
         var body = document.querySelector("body");
@@ -24,28 +28,42 @@ DATAVERSE.main = function(options) {
 
         document.getElementById("dataverse-interstitial").addEventListener("click", function(){
 
-            console.log("INTERSTITIAL CLICK");
-
             var scene = document.querySelector("a-scene");
 
             scene.style.display = "block";
 
             this.parentNode.removeChild(this);
 
-//            var inter = document.getElementById("dataverse-interstitial");
-//
-//            inter.parentNode.removeChild(inter);
-
-//            console.log("EL THIS", this, this.parentNode, inter, inter.parentNode);
-
-//            this.parentNode.removeChild(this);
-//
-//            body.removeChild(self.interstitial);
-
         });
 
 
         // Insert loading symbols
+
+        var loading_defs = [
+            [ [0, 1.6, -4], [-4, 1.6, 0], [4, 1.6, 0], [0, 1.6, 4]],
+            [ [0, 0, 0], [0, 90, 0], [0, -90, 0], [0, -180, 0]]
+        ];
+
+        for(var i=0; i< loading_defs[0].length; i++){
+
+            var loading = document.createElement("a-plane");
+
+            loading.classList.add("dataverse-added");
+            loading.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1], z: loading_defs[0][i][2]});
+            loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
+            loading.setAttribute("width", 1);
+            loading.setAttribute("height", 1);
+            loading.setAttribute("material", {
+                shader: "gif",
+                src: "url(img/loading.gif)",
+                opacity: 1.0
+
+            });
+
+            document.querySelector("a-scene").appendChild(loading);
+
+        }
+
 
         console.log('APP TEST READY!!');
 
