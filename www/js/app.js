@@ -9,7 +9,43 @@ DATAVERSE.main = function(options) {
     console.log('INIT DATAVERSE.main');
     console.log(self.options);
 
+
     $(document).ready(function () {
+
+        // Insert interstitial
+
+        var body = document.querySelector("body");
+
+        var interstitial = document.createElement("div");
+        interstitial.setAttribute("id", "dataverse-interstitial");
+        interstitial.classList.add("dataverse-added");
+
+        body.appendChild(interstitial);
+
+        document.getElementById("dataverse-interstitial").addEventListener("click", function(){
+
+            console.log("INTERSTITIAL CLICK");
+
+            var scene = document.querySelector("a-scene");
+
+            scene.style.display = "block";
+
+            this.parentNode.removeChild(this);
+
+//            var inter = document.getElementById("dataverse-interstitial");
+//
+//            inter.parentNode.removeChild(inter);
+
+//            console.log("EL THIS", this, this.parentNode, inter, inter.parentNode);
+
+//            this.parentNode.removeChild(this);
+//
+//            body.removeChild(self.interstitial);
+
+        });
+
+
+        // Insert loading symbols
 
         console.log('APP TEST READY!!');
 

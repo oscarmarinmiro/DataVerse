@@ -959,7 +959,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
             video_asset.setAttribute("id", asset_id);
             video_asset.setAttribute("src", self.data.media_url);
 //            video_asset.setAttribute("preload", "metadata");
-            video_asset.setAttribute("autoplay", "true");
+//            video_asset.setAttribute("autoplay", "true");
 
             self.assets.appendChild(video_asset);
 
@@ -1021,7 +1021,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
             console.log("LANZANDO EVENTO LOADED DATA");
 
 
-            video_asset.addEventListener('loadedmetadata', function () {
+            video_asset.addEventListener('loadeddata', function () {
 
                 console.log("LOADED DATA");
 

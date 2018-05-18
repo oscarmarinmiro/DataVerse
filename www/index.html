@@ -15,6 +15,7 @@
     <script src="bower_components/leaflet-image/leaflet-image.js"></script>
 
     <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="css/main.css">
 
     <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
     <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
@@ -59,15 +60,15 @@
 
   <body style="background-color: black">
 
+      <!--<div id="dataverse-interstitial"></div>-->
+
       <a-scene stats>
 
-          <a-camera dataverse-added>
-              <a-cursor color="yellow"></a-cursor>
-              <!--<a-cursor dataverse-added color="yellow" raycaster="near: 0.0; objects: .clickable" fuse="true" fuse-timeout="1000"></a-cursor>-->
+          <a-camera>
+              <a-cursor></a-cursor>
           </a-camera>
 
           <a-plane class="dataverse-added" position="0 1.6 -4" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
-
           <a-plane class="dataverse-added" position="-4 1.6 0" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
           <a-plane class="dataverse-added" position="4 1.6 0" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
           <a-plane class="dataverse-added" position="0 1.6 4" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
@@ -89,6 +90,7 @@
             // World 100
 
 //            var main = new DATAVERSE.main({'debug': false, 'source': "https://docs.google.com/spreadsheets/d/13QLqRWDrg5EC2q-zWZW4svLlb5RzvzTqRnVOdbytu5c/edit?usp=sharing"});
+
 
             // All vizs example
 
