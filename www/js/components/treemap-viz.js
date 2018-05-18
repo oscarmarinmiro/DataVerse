@@ -252,6 +252,8 @@ AFRAME.registerComponent('treemap-viz', {
 
                     var datum = self.data.treemap_data;
 
+                    self.media_panel.classList.add("dataverse-added");
+
                     self.media_panel.setAttribute("uipack-mediapanel", {
                         yaw: yaw,
                         pitch: pitch,

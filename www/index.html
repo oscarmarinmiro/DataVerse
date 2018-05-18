@@ -66,11 +66,11 @@
               <!--<a-cursor dataverse-added color="yellow" raycaster="near: 0.0; objects: .clickable" fuse="true" fuse-timeout="1000"></a-cursor>-->
           </a-camera>
 
-          <a-plane position="0 1.6 -4" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
+          <a-plane class="dataverse-added" position="0 1.6 -4" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
 
-          <a-plane position="-4 1.6 0" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
-          <a-plane position="4 1.6 0" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
-          <a-plane position="0 1.6 4" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
+          <a-plane class="dataverse-added" position="-4 1.6 0" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
+          <a-plane class="dataverse-added" position="4 1.6 0" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
+          <a-plane class="dataverse-added" position="0 1.6 4" rotation="0 0 0" width="1" height="1" material="shader:gif;src:url(img/loading.gif);opacity:.8" ></a-plane>
 
       </a-scene>
 
@@ -78,11 +78,11 @@
 
             // This is to force reload on 'artificially inserted' history entries...
 
-            window.onpopstate = function(event) {
-                if(event && event.state) {
-                    location.reload();
-                }
-            };
+//            window.onpopstate = function(event) {
+//                if(event && event.state) {
+//                    location.reload();
+//                }
+//            };
 
 //            UIPACK_CONSTANTS.icon_path = "http://www.pedro.com";
 

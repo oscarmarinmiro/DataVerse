@@ -31,7 +31,11 @@ AFRAME.registerComponent('photo-viz', {
 
         if(document.getElementsByTagName("a-sky").length == 0){
 
-            document.getElementsByTagName("a-scene")[0].appendChild(document.createElement("a-sky"));
+            var sky = document.createElement("a-sky");
+
+            sky.classList.add("dataverse-added");
+
+            document.getElementsByTagName("a-scene")[0].appendChild(sky);
 
         }
 
@@ -96,6 +100,7 @@ AFRAME.registerComponent('photo-viz', {
                     z: cam_position.z
                 });
 
+                self.media_panel.classList.add("dataverse-added");
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,

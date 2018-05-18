@@ -47,7 +47,7 @@ AFRAME.registerComponent('intro-panel', {
 
         console.log("INIT INTRO PANEL", self.data);
 
-        self.el.setAttribute("class", "intro-panel clickable");
+        self.el.classList.add("intro-panel", "clickable");
 
         self.el.setAttribute("rotation", {x: self.data.pitch, y: self.data.yaw, z:0});
 

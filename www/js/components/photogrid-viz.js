@@ -182,6 +182,8 @@ AFRAME.registerComponent('photogrid-viz', {
 
                 console.log("RENDERING THIS DATUM", thumbnail, self.scene_data);
 
+                self.media_panel.classList.add("dataverse-added");
+
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,
                     pitch: pitch,

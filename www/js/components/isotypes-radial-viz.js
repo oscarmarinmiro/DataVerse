@@ -234,6 +234,7 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                     self.media_panel.setAttribute("position", {x: cam_position.x, y:cam_position.y, z: cam_position.z});
 
+                    self.media_panel.classList.add("dataverse-added");
 
                     self.media_panel.setAttribute("uipack-mediapanel", {
                         yaw: yaw,

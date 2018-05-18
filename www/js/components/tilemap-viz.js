@@ -485,6 +485,8 @@ AFRAME.registerComponent('tilemap-viz', {
 
             self.media_panel.setAttribute("shadow", {cast:true});
 
+            self.media_panel.classList.add("dataverse-added");
+
             self.media_panel.setAttribute("uipack-mediapanel", {
                 yaw: yaw,
                 pitch: 0,

@@ -119,6 +119,7 @@ AFRAME.registerComponent('video-viz', {
                     z: cam_position.z
                 });
 
+                self.media_panel.classList.add("dataverse-added");
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,
@@ -267,7 +268,7 @@ AFRAME.registerComponent('video-viz', {
 
                 self.stereo_left_sphere = document.createElement("a-entity");
 
-                self.stereo_left_sphere.setAttribute("class", "videospheres");
+                self.stereo_left_sphere.setAttribute("class", "videospheres dataverse-added");
 
                 self.stereo_left_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
 
@@ -280,7 +281,7 @@ AFRAME.registerComponent('video-viz', {
 
                 self.stereo_right_sphere = document.createElement("a-entity");
 
-                self.stereo_right_sphere.setAttribute("class", "videospheres");
+                self.stereo_right_sphere.setAttribute("class", "videospheres dataverse-added");
 
                 self.stereo_right_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
                 self.stereo_right_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
@@ -327,7 +328,7 @@ AFRAME.registerComponent('video-viz', {
 
                 self.mono_sphere = document.createElement("a-entity");
 
-                self.mono_sphere.setAttribute("class", "videospheres");
+                self.mono_sphere.setAttribute("class", "videospheres dataverse-added");
 
                 self.mono_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
                 self.mono_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});

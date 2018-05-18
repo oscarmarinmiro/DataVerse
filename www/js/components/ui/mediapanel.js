@@ -111,7 +111,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         // Class the element
 
-        self.el.setAttribute("class", "uipack uipack-mediapanel clickable");
+        self.el.classList.add("uipack", "uipack-mediapanel", "clickable");
 
         self.el.setAttribute("rotation", {x: self.data.pitch, y: self.data.yaw, z:0});
 
@@ -946,15 +946,24 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         var asset_id = "panel_" + self.data.id;
 
+
+        console.log("RENDERING VIDEO");
+
         if(document.getElementById(asset_id) === null) {
+
+            console.log("APPENDING ASSET");
 
             var video_asset = document.createElement("video");
 
 
             video_asset.setAttribute("id", asset_id);
             video_asset.setAttribute("src", self.data.media_url);
+//            video_asset.setAttribute("preload", "metadata");
+            video_asset.setAttribute("autoplay", "true");
 
             self.assets.appendChild(video_asset);
+
+            console.log("ASSET APPENDED");
         }
         else {
             var video_asset = document.getElementById(asset_id);
@@ -1002,12 +1011,19 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         if(video_asset.videoWidth !== 0){
 
+            console.log("VIDEO WIDTH EXISTE COMO TERUEL");
+
             render_panel_video();
 
         }
         else {
 
-            video_asset.addEventListener('loadeddata', function () {
+            console.log("LANZANDO EVENTO LOADED DATA");
+
+
+            video_asset.addEventListener('loadedmetadata', function () {
+
+                console.log("LOADED DATA");
 
                 render_panel_video();
 

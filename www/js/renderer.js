@@ -69,6 +69,9 @@ DATAVERSE.renderer.prototype = {
         // Insert intro panel
 
         self.intro_panel = document.createElement("a-entity");
+
+        self.intro_panel.classList.add("dataverse-added");
+
         self.intro_panel.setAttribute("intro-panel", {
             theme: self.theme,
             credits: self.actual_scene_data.credits ? self.actual_scene_data.credits: "",
@@ -229,9 +232,9 @@ DATAVERSE.renderer.prototype = {
                 // Push scene in history, and point to home scene
 
                 self.main.state.state.scene_history.push(self.main.state.state.actual_scene);
-
-                var obj = { Title: "", Url: window.location.origin + window.location.pathname + "?scene=" + self.main.state.state.actual_scene};
-                history.pushState(obj, obj.Title, obj.Url);
+//
+//                var obj = { Title: "", Url: window.location.origin + window.location.pathname + "?scene=" + self.main.state.state.actual_scene};
+//                history.pushState(obj, obj.Title, obj.Url);
 
 
                 self.main.state.state.actual_scene = self.main.state.state.home_scene;
@@ -271,8 +274,8 @@ DATAVERSE.renderer.prototype = {
 
         self.main.state.state.scene_history.push(self.main.state.state.actual_scene);
 
-         var obj = { Title: "", Url: window.location.origin + window.location.pathname + "?scene=" + self.main.state.state.actual_scene};
-         history.pushState(obj, obj.Title, obj.Url);
+//         var obj = { Title: "", Url: window.location.origin + window.location.pathname + "?scene=" + self.main.state.state.actual_scene};
+//         history.pushState(obj, obj.Title, obj.Url);
 
         self.main.state.state.actual_scene = destination;
 
@@ -324,10 +327,16 @@ DATAVERSE.renderer.prototype = {
 
             var child = self.scene.children[i];
 
-                if (!((child.hasAttribute("data-aframe-canvas")=== true)|| (child.hasAttribute("aframe-injected")=== true) || (child.hasAttribute("dataverse-added")))){
+            if(child.classList.contains("dataverse-added"))
+
+//                // Maybe insert class webvr-polyfill-fullscreen-wrapper with child.classList.contains()
+//
+//                if (!((child.hasAttribute("data-aframe-canvas")=== true)|| (child.hasAttribute("aframe-injected")=== true) || (child.hasAttribute("dataverse-added")))){
                     to_delete.push(child);
-                }
+//                }
         }
+
+        console.log("TO DELETE ELEMENTS ", to_delete);
 
         to_delete.forEach(function(child){
             self.scene.removeChild(child);

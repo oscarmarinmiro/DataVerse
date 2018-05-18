@@ -32,7 +32,8 @@ AFRAME.registerComponent('uipack-menu', {
 
     // Class the element
 
-    self.el.setAttribute("class", "uipack uipack-menu");
+    self.el.classList.add("uipack");
+    self.el.classList.add("uipack-menu");
 
     self.container = document.createElement("a-entity");
 

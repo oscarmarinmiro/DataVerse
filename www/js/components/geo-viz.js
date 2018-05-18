@@ -394,6 +394,8 @@ AFRAME.registerComponent('geo-viz', {
 
                 console.log("DATUM!", datum);
 
+                self.media_panel.classList.add("dataverse-added");
+
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,
                     pitch: pitch,
