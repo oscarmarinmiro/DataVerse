@@ -253,6 +253,8 @@ AFRAME.registerComponent('video-viz', {
                 self.video.setAttribute("src", self.data.media_source);
                 self.video.setAttribute("id", video_id);
                 self.video.setAttribute("loop", false);
+                self.video.setAttribute("autoplay", "true");
+
 
 //                self.video.addEventListener("canplay", function(){
 //
@@ -315,6 +317,8 @@ AFRAME.registerComponent('video-viz', {
                 self.video.setAttribute("src", self.data.media_source);
                 self.video.setAttribute("id", video_id);
                 self.video.setAttribute("loop", false);
+                self.video.setAttribute("autoplay", "true");
+
 
 //                self.video.addEventListener("canplay", function(){
 //
