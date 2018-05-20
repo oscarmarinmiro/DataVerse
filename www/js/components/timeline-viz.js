@@ -29,10 +29,10 @@ AFRAME.registerSystem('timeline-viz', {
                 slide_image: 3
             },
             height: {
-                trigger: 0.35,
+                trigger: 0.25,
                 media_controls: 0.60,
-                legend_date_explain: 0.1,
-                legend_title: -0.1,
+                legend_date_explain: -0.01,
+                legend_title: -0.15,
                 slide_image: 2.5,
                 slide_title: 3.8,
                 slide_supertitle: 3.5,
@@ -272,10 +272,9 @@ AFRAME.registerComponent('timeline-viz', {
         trigger_color:{type: 'string', default: "black"},
         active_trigger_color: {type: 'string', default: "red"},
         size: {type: 'float', default: 5.0},
-        height: {type: 'float', default: 1.0},
+        height: {type: 'float', default: 1.1},
         title: {type: 'string', default: ""},
         explain: {type: 'string', default: ""},
-        general_button_dmms: {type: 'int', default: 20},
         panel_elevation: {type: 'float', default: 2.0},
         panel_height: {type: 'float', default: 30.0}
     },
@@ -480,7 +479,7 @@ AFRAME.registerComponent('timeline-viz', {
 
             explain_date.setAttribute("rotation", geom_data.rotation);
 
-            var explain_width = (self.data.sublegend_dmms * (self.data.size) * (self.get_date_explain(datum).length + 4)) / 1000;
+            var explain_width = (DATAVERSE.dmms.subtitle * (self.data.size) * (self.get_date_explain(datum).length + 4)) / 1000;
 
             explain_date.setAttribute("value", self.get_date_explain(datum));
             explain_date.setAttribute("align", "center");
@@ -505,7 +504,7 @@ AFRAME.registerComponent('timeline-viz', {
 
             title.setAttribute("rotation", geom_data.rotation);
 
-            var title_width = (self.data.legend_dmms * (self.data.size) * (datum.title.length + 4 )) / 1000;
+            var title_width = (DATAVERSE.dmms.label * (self.data.size) * (datum.title.length + 4 )) / 1000;
 
             title.setAttribute("value", datum.title);
             title.setAttribute("align", "center");
@@ -526,7 +525,7 @@ AFRAME.registerComponent('timeline-viz', {
 
             var more_button = document.createElement("a-entity");
 
-            more_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: 'plus.png', radius: (self.data.general_button_dmms * self.data.size) / 1000});
+            more_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: 'plus.png', radius: (DATAVERSE.dmms.plus_button * self.data.size) / 1000});
 
             more_button.setAttribute("position", geom_data.position);
             more_button.setAttribute("rotation", geom_data.rotation);
@@ -592,7 +591,7 @@ AFRAME.registerComponent('timeline-viz', {
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,
                     pitch: pitch,
-                    low_height: (self.data.height*2),
+                    low_height: (self.data.height*2.0),
                     theme: self.data.theme,
                     height: self.data.panel_height,
                     distance: distance,

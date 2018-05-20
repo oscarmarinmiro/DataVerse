@@ -430,7 +430,7 @@ AFRAME.registerComponent('tilemap-viz', {
 
         button_row.setAttribute("rotation", {x:-45, y: 0, z:0});
 
-        var icon_radius = (self.data.general_button_dmms * (self.data.size/2)) / 1000;
+        var icon_radius = ((DATAVERSE.dmms.plus_button/2) * (self.data.size/2)) / 1000;
 
 
         var more = document.createElement("a-entity");

@@ -38,9 +38,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
         text_font: {type: 'string', default: 'roboto'},
         legend_height: {type: 'float', default: 2.0},
         sublegend_height: {type: 'float', default: 1.0},
-        legend_dmms: {type: 'float', default: 20},
-        sublegend_dmms: {type: 'float', default: 16},
-        general_button_dmms : {type: 'int', default: 20},
         theme: {'type': 'string', default: ""},
         size: {type: 'float', default: 5.0},
         title: {type: 'string', default: ""},
@@ -193,11 +190,11 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                 var more_button = document.createElement("a-entity");
 
-                var icon_radius = (self.data.general_button_dmms * self.data.size) / 1000;
+                var icon_radius = (DATAVERSE.dmms.plus_button * self.data.size) / 1000;
 
-                more_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: 'plus.png', radius: (self.data.general_button_dmms * self.data.size) / 1000});
+                more_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: 'plus.png', radius: (DATAVERSE.dmms.plus_button * self.data.size) / 1000});
 
-                more_button.setAttribute("position", {x: 0, y: label_height, z: 0});
+                more_button.setAttribute("position", {x: 0, y: label_height/2 + (icon_radius * 1.5), z: 0});
 
                 parent.appendChild(more_button);
 
@@ -552,11 +549,11 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                     console.log("TITLE DATUM", datum);
 
-                    var text_width = (self.data.legend_dmms * self.data.size * (title.length + 4)) / 1000;
+                    var text_width = (DATAVERSE.dmms.label * self.data.size * (title.length + 4)) / 1000;
 
                     object.setAttribute('text', {value: title, align: "center", font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.text_font,color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.text_color, width: text_width, wrapCount: title.length + 4, zOffset: 0.01});
 
-                    var label_height = ((self.data.legend_dmms * self.data.size) / 1000)*3;
+                    var label_height = ((DATAVERSE.dmms.label * self.data.size) / 1000)*3;
 
                     object.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
 
@@ -594,9 +591,9 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                     console.log("SUBTITLE DATUM", datum, arc);
 
-                    var text_width = (self.data.sublegend_dmms * self.data.size * (title.length + 4)) / 1000;
+                    var text_width = (DATAVERSE.dmms.sublabel * self.data.size * (title.length + 4)) / 1000;
 
-                    var label_height = ((self.data.sublegend_dmms * self.data.size) / 1000)*3;
+                    var label_height = ((DATAVERSE.dmms.sublabel * self.data.size) / 1000)*3;
 
                     object.setAttribute('text', {value: title, font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.text_font, align: "center", color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.text_color, width: text_width, wrapCount: title.length + 4, zOffset:0.01});
 

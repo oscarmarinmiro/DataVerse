@@ -12,11 +12,9 @@ AFRAME.registerComponent('video-viz', {
         title: {type: 'string', default: ""},
         explain: {type: 'string', default: ""},
         label_distance: {type: 'number', default: 10},
-        label_dmms: {type: 'int', default: 20},
         label_height: {type: 'number', default: 1.6},
         label_background: {type: 'string', default: "black"},
         label_color: {type: 'string', default: "white"},
-        general_button_dmms : {type: 'int', default: 20},
         label_font: {type: 'string', default: "roboto"}
     },
 
@@ -73,15 +71,16 @@ AFRAME.registerComponent('video-viz', {
 
             var more_button = document.createElement("a-entity");
 
-            var icon_radius = (self.data.general_button_dmms * self.data.label_distance) / 1000;
+
+            var icon_radius = (DATAVERSE.dmms.plus_button * self.data.label_distance) / 1000;
 
             more_button.setAttribute("uipack-button", {
                 'theme': self.data.theme,
                 icon_name: 'plus.png',
-                radius: (self.data.general_button_dmms * self.data.label_distance) / 1000
+                radius: icon_radius
             });
 
-            more_button.setAttribute("position", {x: 0, y: label_height, z: 0});
+            more_button.setAttribute("position", {x: 0, y: (label_height / 2) + (icon_radius * 1.5), z: 0});
 
             parent.appendChild(more_button);
 
@@ -185,7 +184,7 @@ AFRAME.registerComponent('video-viz', {
 
                     var title = datum.headline;
 
-                    var text_width = (self.data.label_dmms * self.data.label_distance * (title.length + 4)) / 1000;
+                    var text_width = (DATAVERSE.dmms.label * self.data.label_distance * (title.length + 4)) / 1000;
 
                     object.setAttribute('text', {value: title, align: "center",
                                                 color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.label_color,
@@ -193,7 +192,7 @@ AFRAME.registerComponent('video-viz', {
                                                 width: text_width,
                                                 wrapCount: title.length + 4, zOffset: 0.01});
 
-                    var label_height = (self.data.label_dmms * self.data.label_distance / 1000)*3;
+                    var label_height = (DATAVERSE.dmms.label * self.data.label_distance / 1000)*3;
 
                     object.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
 

@@ -36,10 +36,7 @@ AFRAME.registerComponent('photogrid-viz', {
         rows: {type: 'int', default: 3},
         distance: {type: 'float', default: 10.0},
         form_factor_x: {type: 'float', default: 1.25},
-        form_factor_y: {type: 'float', default: 1.5},
-        general_text_dmms : {type: 'int', default: 30},
-        general_button_dmms : {type: 'int', default: 20}
-
+        form_factor_y: {type: 'float', default: 1.6}
     },
 
     init: function () {
@@ -126,6 +123,10 @@ AFRAME.registerComponent('photogrid-viz', {
         label.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.text_color);
         label.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.text_font);
 
+        // width of one character * 3 ~= height
+
+        var label_height = ((params.thumbnail_size * self.data.form_factor_x) / max_title_length)*3;
+
 
         thumbnail_component.appendChild(label);
 
@@ -136,9 +137,11 @@ AFRAME.registerComponent('photogrid-viz', {
 
             var more_button = document.createElement("a-entity");
 
-            more_button.setAttribute("uipack-button", { theme: self.data.theme, icon_name: 'plus.png', radius: (self.data.general_button_dmms * self.data.distance) / 1000});
+            var radius = (DATAVERSE.dmms.plus_button * self.data.distance) / 1000;
 
-            more_button.setAttribute("position", {x: 0, y: params.thumbnail_size * 0.8, z: 0});
+            more_button.setAttribute("uipack-button", { theme: self.data.theme, icon_name: 'plus.png', radius: radius});
+
+            more_button.setAttribute("position", {x: 0, y: ((params.thumbnail_size * self.data.form_factor_y) / 2) * 1.05, z: 0});
 
             thumbnail_component.appendChild(more_button);
 
