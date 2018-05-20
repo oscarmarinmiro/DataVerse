@@ -26,3 +26,8 @@ DATAVERSE.dmms = {
     'min_text': 8
 };
 
+DATAVERSE.animation = {
+    geo: 300,
+    button: 1000
+};
+

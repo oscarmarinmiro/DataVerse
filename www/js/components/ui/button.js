@@ -11,6 +11,7 @@ AFRAME.registerComponent('uipack-button', {
         distance: { type: 'number', default: UIPACK_CONSTANTS.button_distance},
         absolute_pos: { type: 'boolean', default: false},
         radius: {type: 'number', default: UIPACK_CONSTANTS.button_radius},
+        arc_color: {type: 'string', default: "red"},
         theme: {type: 'string', default: ""}
     },
 
@@ -47,7 +48,7 @@ AFRAME.registerComponent('uipack-button', {
             self.ring = document.createElement("a-ring");
             self.ring.setAttribute("radius-inner", self.data.radius * 1.0);
             self.ring.setAttribute("radius-outer", self.data.radius * 1.2);
-            self.ring.setAttribute("material", "color:" + UIPACK_CONSTANTS.arc_color);
+            self.ring.setAttribute("material", "color:" + (self.data.theme ? DATAVERSE.themes[self.data.theme].arc_color : self.data.arc_color));
             self.ring.setAttribute("visible", true);
 
             // Create animation
@@ -55,7 +56,7 @@ AFRAME.registerComponent('uipack-button', {
             self.animation = document.createElement("a-animation");
             self.animation.setAttribute("easing", "linear");
             self.animation.setAttribute("attribute", "geometry.thetaLength");
-            self.animation.setAttribute("dur", UIPACK_CONSTANTS.button_hover);
+            self.animation.setAttribute("dur", DATAVERSE.animation.button);
             self.animation.setAttribute("from", "0");
             self.animation.setAttribute("to", "360");
 
@@ -83,17 +84,16 @@ AFRAME.registerComponent('uipack-button', {
 
             self.animation.addEventListener("animationend", function () {
 
-                self.ring.parentNode.removeChild(self.ring);
-
-//                event.detail.el.setAttribute("visible", "false");
-
-                self.el.emit("clicked", null, false);
-
                 setTimeout(function() { self.first_hover = true; }, 500);
 
                 var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
 
                 sound.play();
+
+                self.el.emit("clicked", null, false);
+
+                self.ring.parentNode.removeChild(self.ring);
+
 
             });
         }

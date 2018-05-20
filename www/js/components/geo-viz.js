@@ -36,8 +36,9 @@ AFRAME.registerComponent('geo-viz', {
         tab: {type: 'string', default: ""},
         theme: {'type': 'string', default: ""},
         point_radius: {type: 'number', default: -1},
-        point_radius_max: {type: 'number', default: 1.0},
-        point_radius_min: {type: 'number', default: 0.5},
+        point_radius_max: {type: 'number', default: 3.0},
+        point_radius_min: {type: 'number', default: 1.0},
+        arc_color: {type: 'string', default: "red"},
         point_color: {type: 'string', default: ""},
         radius: {'type': 'number', default: 50.0},
         legend_dmms: {'type': 'number', default: 12.0},
@@ -254,10 +255,13 @@ AFRAME.registerComponent('geo-viz', {
             self.el.appendChild(legend);
         }
 
+
         console.log("El radio del circulo es de", point.getAttribute("radius"), lat_offset);
 
 
         point.first_hover = true;
+
+        var comp_data = self.data;
 
             point.addEventListener('raycaster-intersected', function(event){
 
@@ -270,9 +274,9 @@ AFRAME.registerComponent('geo-viz', {
                 // Insert ring for animation on hover
 
                 self.ring = document.createElement("a-ring");
-                self.ring.setAttribute("radius-inner", self.getAttribute("radius") * 1.1);
+                self.ring.setAttribute("radius-inner", self.getAttribute("radius") * 1.0);
                 self.ring.setAttribute("radius-outer", self.getAttribute("radius") * 1.2);
-                self.ring.setAttribute("material", "color: red");
+                self.ring.setAttribute("material", "color:" + (comp_data.theme ? DATAVERSE.themes[comp_data.theme].arc_color : self.data.arc_color));
                 self.ring.setAttribute("visible", true);
 
                 self.appendChild(self.ring);
@@ -282,11 +286,13 @@ AFRAME.registerComponent('geo-viz', {
                 self.animation = document.createElement("a-animation");
                 self.animation.setAttribute("easing", "linear");
                 self.animation.setAttribute("attribute", "geometry.thetaLength");
-                self.animation.setAttribute("dur", 1000);
+                self.animation.setAttribute("dur", DATAVERSE.animation.geo);
                 self.animation.setAttribute("from", "0");
                 self.animation.setAttribute("to", "360");
     //
                 self.ring.appendChild(self.animation);
+
+                var component = self.el;
 
 
                 self.first_hover = false;
@@ -304,20 +310,15 @@ AFRAME.registerComponent('geo-viz', {
 
                     var point = ring.parentNode;
 
-                    point.removeChild(self.ring);
-
-
-    //                event.detail.el.setAttribute("visible", "false");
-
-                    point.emit("clicked", null, false);
-
-                    point.first_hover = true;
-
                     setTimeout(function() { self.first_hover = true; }, 500);
 
                     var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
 
                     sound.play();
+
+                    point.emit("clicked", null, false);
+
+                    point.removeChild(self.ring);
 
 
                 });
