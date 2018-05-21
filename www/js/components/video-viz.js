@@ -12,11 +12,9 @@ AFRAME.registerComponent('video-viz', {
         title: {type: 'string', default: ""},
         explain: {type: 'string', default: ""},
         label_distance: {type: 'number', default: 10},
-        label_dmms: {type: 'int', default: 20},
         label_height: {type: 'number', default: 1.6},
         label_background: {type: 'string', default: "black"},
         label_color: {type: 'string', default: "white"},
-        general_button_dmms : {type: 'int', default: 20},
         label_font: {type: 'string', default: "roboto"}
     },
 
@@ -26,13 +24,13 @@ AFRAME.registerComponent('video-viz', {
 
         console.log("INIT COMPONENT", self);
 
-        // Create a sky if there is none present
-
-        if(document.getElementsByTagName("a-sky").length == 0){
-
-            document.getElementsByTagName("a-scene")[0].appendChild(document.createElement("a-sky"));
-
-        }
+//        // Create a sky if there is none present
+//
+//        if(document.getElementsByTagName("a-sky").length == 0){
+//
+//            document.getElementsByTagName("a-scene")[0].appendChild(document.createElement("a-sky"));
+//
+//        }
 
         // Default types
 
@@ -73,15 +71,16 @@ AFRAME.registerComponent('video-viz', {
 
             var more_button = document.createElement("a-entity");
 
-            var icon_radius = (self.data.general_button_dmms * self.data.label_distance) / 1000;
+
+            var icon_radius = (DATAVERSE.dmms.plus_button * self.data.label_distance) / 1000;
 
             more_button.setAttribute("uipack-button", {
                 'theme': self.data.theme,
                 icon_name: 'plus.png',
-                radius: (self.data.general_button_dmms * self.data.label_distance) / 1000
+                radius: icon_radius
             });
 
-            more_button.setAttribute("position", {x: 0, y: label_height, z: 0});
+            more_button.setAttribute("position", {x: 0, y: (label_height / 2) + (icon_radius * 1.5), z: 0});
 
             parent.appendChild(more_button);
 
@@ -119,6 +118,7 @@ AFRAME.registerComponent('video-viz', {
                     z: cam_position.z
                 });
 
+                self.media_panel.classList.add("dataverse-added");
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,
@@ -184,7 +184,7 @@ AFRAME.registerComponent('video-viz', {
 
                     var title = datum.headline;
 
-                    var text_width = (self.data.label_dmms * self.data.label_distance * (title.length + 4)) / 1000;
+                    var text_width = (DATAVERSE.dmms.label * self.data.label_distance * (title.length + 4)) / 1000;
 
                     object.setAttribute('text', {value: title, align: "center",
                                                 color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.label_color,
@@ -192,7 +192,7 @@ AFRAME.registerComponent('video-viz', {
                                                 width: text_width,
                                                 wrapCount: title.length + 4, zOffset: 0.01});
 
-                    var label_height = (self.data.label_dmms * self.data.label_distance / 1000)*3;
+                    var label_height = (DATAVERSE.dmms.label * self.data.label_distance / 1000)*3;
 
                     object.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
 
@@ -252,6 +252,8 @@ AFRAME.registerComponent('video-viz', {
                 self.video.setAttribute("src", self.data.media_source);
                 self.video.setAttribute("id", video_id);
                 self.video.setAttribute("loop", false);
+                self.video.setAttribute("autoplay", "true");
+
 
 //                self.video.addEventListener("canplay", function(){
 //
@@ -267,12 +269,19 @@ AFRAME.registerComponent('video-viz', {
 
                 self.stereo_left_sphere = document.createElement("a-entity");
 
-                self.stereo_left_sphere.setAttribute("class", "videospheres");
+                self.stereo_left_sphere.setAttribute("class", "videospheres dataverse-added");
 
                 self.stereo_left_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
 
                 self.stereo_left_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.stereo_left_sphere.setAttribute("scale", "-1 1 1");
+
+                // Sync rotation with 'camera landing rotation'
+
+                self.stereo_left_sphere.setAttribute("rotation", {x:0, y: self.el.getAttribute("rotation").y, z:0});
+
+
+
 
                 AFRAME.utils.entity.setComponentProperty(self.stereo_left_sphere, "stereo", {'eye': 'left', 'mode': self.video_type.mode, 'split': self.video_type.split});
 
@@ -280,11 +289,16 @@ AFRAME.registerComponent('video-viz', {
 
                 self.stereo_right_sphere = document.createElement("a-entity");
 
-                self.stereo_right_sphere.setAttribute("class", "videospheres");
+                self.stereo_right_sphere.setAttribute("class", "videospheres dataverse-added");
 
                 self.stereo_right_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
                 self.stereo_right_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.stereo_right_sphere.setAttribute("scale", "-1 1 1");
+
+                // Sync rotation with 'camera landing rotation'
+
+                self.stereo_right_sphere.setAttribute("rotation", {x:0, y: self.el.getAttribute("rotation").y, z:0});
+
 
                 self.stereo_right_sphere.addEventListener("materialvideoloadeddata", function(){
 
@@ -314,6 +328,8 @@ AFRAME.registerComponent('video-viz', {
                 self.video.setAttribute("src", self.data.media_source);
                 self.video.setAttribute("id", video_id);
                 self.video.setAttribute("loop", false);
+                self.video.setAttribute("autoplay", "true");
+
 
 //                self.video.addEventListener("canplay", function(){
 //
@@ -327,11 +343,16 @@ AFRAME.registerComponent('video-viz', {
 
                 self.mono_sphere = document.createElement("a-entity");
 
-                self.mono_sphere.setAttribute("class", "videospheres");
+                self.mono_sphere.setAttribute("class", "videospheres dataverse-added");
 
                 self.mono_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
                 self.mono_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.mono_sphere.setAttribute("scale", "-1 1 1");
+
+                // Sync rotation with 'camera landing rotation'
+
+                self.mono_sphere.setAttribute("rotation", {x:0, y: self.el.getAttribute("rotation").y, z:0});
+
 
                 self.mono_sphere.addEventListener("materialvideoloadeddata", function(){
 

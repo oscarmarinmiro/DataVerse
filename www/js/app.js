@@ -9,7 +9,61 @@ DATAVERSE.main = function(options) {
     console.log('INIT DATAVERSE.main');
     console.log(self.options);
 
+
     $(document).ready(function () {
+
+        // Hide scene
+
+        document.querySelector("a-scene").style.display = "none";
+
+        // Insert interstitial
+
+        var body = document.querySelector("body");
+
+        var interstitial = document.createElement("div");
+        interstitial.setAttribute("id", "dataverse-interstitial");
+        interstitial.classList.add("dataverse-added");
+
+        body.appendChild(interstitial);
+
+        document.getElementById("dataverse-interstitial").addEventListener("click", function(){
+
+            var scene = document.querySelector("a-scene");
+
+            scene.style.display = "block";
+
+            this.parentNode.removeChild(this);
+
+        });
+
+
+        // Insert loading symbols
+
+        var loading_defs = [
+            [ [0, 1.6, -4], [-4, 1.6, 0], [4, 1.6, 0], [0, 1.6, 4]],
+            [ [0, 0, 0], [0, 90, 0], [0, -90, 0], [0, -180, 0]]
+        ];
+
+        for(var i=0; i< loading_defs[0].length; i++){
+
+            var loading = document.createElement("a-plane");
+
+            loading.classList.add("dataverse-added");
+            loading.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1], z: loading_defs[0][i][2]});
+            loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
+            loading.setAttribute("width", 1);
+            loading.setAttribute("height", 1);
+            loading.setAttribute("material", {
+                shader: "gif",
+                src: "url(img/loading.gif)",
+                opacity: 1.0
+
+            });
+
+            document.querySelector("a-scene").appendChild(loading);
+
+        }
+
 
         console.log('APP TEST READY!!');
 

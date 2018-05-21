@@ -14,7 +14,6 @@ AFRAME.registerComponent('intro-panel', {
         'title': {type: 'string', default: ""},
         'text': {type: 'string', default: ""},
         'credits':{type: 'string', default: ""},
-        'close_button_dmms': {type: 'number', default: 40},
         'on_loading_message': {type: 'string', default: "Please wait while scene is loading..."},
         'loaded_message': {type: 'string', default: "Scene loaded!"},
         'loading_gif': {type: 'string', default: "img/loading.gif"}
@@ -47,7 +46,7 @@ AFRAME.registerComponent('intro-panel', {
 
         console.log("INIT INTRO PANEL", self.data);
 
-        self.el.setAttribute("class", "intro-panel clickable");
+        self.el.classList.add("intro-panel", "clickable");
 
         self.el.setAttribute("rotation", {x: self.data.pitch, y: self.data.yaw, z:0});
 
@@ -199,7 +198,7 @@ AFRAME.registerComponent('intro-panel', {
         // Add button
 
         self.close = document.createElement("a-entity");
-        self.close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
+        self.close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': DATAVERSE.dmms.close_button * self.data.distance / 1000});
         self.close.setAttribute("position", {x: 0, y: - (self.height/2), z:-self.data.distance*self.constants.overlap_factor});
 
         var component = self.el;
@@ -242,7 +241,7 @@ AFRAME.registerComponent('intro-panel', {
         self.loaded_text.setAttribute("geometry", {primitive: "plane", width: "auto", height: label_height});
         self.loaded_text.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
 
-        self.loaded_text.setAttribute("position", {x: 0, y:  - (self.height/2) - self.data.close_button_dmms * self.data.distance / 1000 * 2, z: -self.data.distance * self.constants.overlap_factor});
+        self.loaded_text.setAttribute("position", {x: 0, y:  - (self.height/2) - DATAVERSE.dmms.close_button * self.data.distance / 1000 * 2, z: -self.data.distance * self.constants.overlap_factor});
 
         self.el.appendChild(self.loaded_text);
     },
@@ -283,7 +282,7 @@ AFRAME.registerComponent('intro-panel', {
         }
 
         if(self.loaded_text) {
-            self.loaded_text.setAttribute("position", {x: 0, y:  - (self.height/2)  - self.data.close_button_dmms * self.data.distance / 1000 * 2 , z: -self.data.distance * self.constants.overlap_factor});
+            self.loaded_text.setAttribute("position", {x: 0, y:  - (self.height/2)  - DATAVERSE.dmms.close_button * self.data.distance / 1000 * 2 , z: -self.data.distance * self.constants.overlap_factor});
         }
 
         self.el.setAttribute("visible", true);
@@ -300,7 +299,7 @@ AFRAME.registerComponent('intro-panel', {
 
             self.loading_panel = document.createElement("a-circle");
 
-            self.loading_panel.setAttribute("radius", self.data.close_button_dmms * self.data.distance / 1000);
+            self.loading_panel.setAttribute("radius", DATAVERSE.dmms.close_button * self.data.distance / 1000);
 
             self.loading_panel.setAttribute("position", {x: 0, y: self.loading_position, z: -self.data.distance * self.constants.overlap_factor});
 
@@ -311,7 +310,7 @@ AFRAME.registerComponent('intro-panel', {
             self.text_panel.appendChild(self.loading_panel);
         }
 
-        self.total_height += (self.data.close_button_dmms * self.data.distance / 1000) * 3;
+        self.total_height += (DATAVERSE.dmms.close_button * self.data.distance / 1000) * 3;
 
         self.fix_positions();
 

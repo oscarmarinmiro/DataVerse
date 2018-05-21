@@ -176,6 +176,9 @@ AFRAME.registerComponent('uipack-mediacontrols', {
     console.log("BACKGROUND BACK ", self.data.theme, DATAVERSE.themes, DATAVERSE.themes[self.data.theme]);
     this.bar.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].player_background : self.data.backgroundColor);
 
+    this.real_bar_width = this.data.width - ((this.data.button_radius*5));
+
+
     // On transport bar click, get point clicked, infer % of new pointer, and make video seek to that point
 
     this.bar.addEventListener('click', function (event) {
@@ -186,7 +189,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
         var x_offset = this.object3D.worldToLocal(point).x;
 
-        var unit_offset = (x_offset/self.data.width)+0.5;
+        var unit_offset = (x_offset/self.real_bar_width)+0.5;
 
         // Update current step for coherence between point+click and key methods
 
@@ -227,8 +230,9 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     var self = this;
 
+
     self.bar.setAttribute("height", this.data.height/2);
-    self.bar.setAttribute("width", this.data.width - ((self.data.button_radius*5)));
+    self.bar.setAttribute("width", self.real_bar_width);
     self.bar.setAttribute("position", {x: self.data.button_radius*2, y: 0, z:0.01});
 
     self.back_plane.setAttribute("height", this.data.height);

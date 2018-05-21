@@ -139,10 +139,30 @@ DATAVERSE_VIZ_AUX = {
                    }
                    else {
                        if (entry.media_source) {
-                           return entry.media_source;
+
+                           // If not thumbnail, and video or photo, return DATAVERSE thumbnail
+
+                           if(entry.type === "video-viz"){
+                               return DATAVERSE.paths.video_thumbnail;
+                           }
+                           else {
+                               if (entry.type === "photo-viz") {
+
+                                    var sv_re = /\s*-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?\s*/i;
+
+                                   // But if Google Street View, then return media source and thus a snapshot can be rendered
+
+                                   if(entry.media_source.search(sv_re) !== -1){
+                                       return entry.media_source;
+                                   }
+                                   else {
+                                       return DATAVERSE.paths.photo_thumbnail;
+                                   }
+                               }
+                           }
                        }
                        else {
-                           return "";
+                           return DATAVERSE.paths.viz_thumbnail;
                        }
                    }
                }
