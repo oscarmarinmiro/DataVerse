@@ -329,6 +329,8 @@ AFRAME.registerComponent('intro-panel', {
 
         var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
 
+        console.log("USER POSITION", cam_position);
+
         self.el.setAttribute("position", {x:cam_position.x, y: DATAVERSE.height, z:cam_position.z});
 
 

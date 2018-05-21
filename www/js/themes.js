@@ -53,7 +53,3 @@ DATAVERSE.themes =
     }
 };
 
-
-DATAVERSE.floor_vizs = ['isotypes-radial-viz', 'timeline-viz'];
-
-DATAVERSE.sky_vizs = ['isotypes-radial-viz', 'timeline-viz', 'photogrid-viz', 'small-treemap-viz', 'tilemap-viz'];

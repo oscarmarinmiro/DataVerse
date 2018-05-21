@@ -542,7 +542,9 @@ AFRAME.registerComponent('uipack-mediapanel', {
             launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
             launch.setAttribute("position", {x: 0, y: (self.media_height / 2) , z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
 
-            launch.addEventListener("click", function () {
+            launch.addEventListener("clicked", function () {
+
+                console.log("EMITIENDO CLICK");
 
                 self.el.emit("link", {link: self.data.link}, false);
 
@@ -686,7 +688,9 @@ AFRAME.registerComponent('uipack-mediapanel', {
                             launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
                             launch.setAttribute("position", {x: 0, y: (self.media_height / 2), z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
 
-                            launch.addEventListener("click", function () {
+                            launch.addEventListener("clicked", function () {
+
+                                console.log("EMITIENDO CLICK");
 
                                 self.el.emit("link", {link: self.data.link}, false);
 
@@ -792,7 +796,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
                         launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
                         launch.setAttribute("position", {x: 0, y: (self.media_height / 2), z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
 
-                        launch.addEventListener("click", function () {
+                        launch.addEventListener("clicked", function () {
 
                             self.el.emit("link", {link: self.data.link}, false);
 
@@ -910,7 +914,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
                         launch.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
                         launch.setAttribute("position", {x: 0, y: (self.media_height / 2), z: -self.data.distance * (self.constants.overlap_factor * self.constants.overlap_factor)});
 
-                        launch.addEventListener("click", function () {
+                        launch.addEventListener("clicked", function () {
 
                             self.el.emit("link", {link: self.data.link}, false);
 
@@ -1201,7 +1205,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
         var close = document.createElement("a-entity");
         close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': self.data.close_button_dmms * self.data.distance / 1000});
         close.setAttribute("position", {x: 0, y: self.close_button_y, z:-(self.data.distance*self.constants.overlap_factor*self.constants.overlap_factor)});
-        close.addEventListener("click", function(){
+        close.addEventListener("clicked", function(){
 
             // Resolve the 'duplicate image with different offset and repeat THREE.js bug
 

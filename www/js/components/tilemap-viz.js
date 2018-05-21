@@ -444,7 +444,7 @@ AFRAME.registerComponent('tilemap-viz', {
         more.setAttribute("position", {x: -icon_radius*2, y:  self.data.marker_size/4 + (label_height*1.5), z:0});
 
 
-        more.addEventListener("click", function(){
+        more.addEventListener("clicked", function(){
 
             // Retore trigger as clickable (just in case it is cross-launched)
 
@@ -542,13 +542,17 @@ AFRAME.registerComponent('tilemap-viz', {
         link.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': icon_radius});
         link.setAttribute("position", {x: icon_radius*2, y: self.data.marker_size/4 + (label_height*1.5), z:0});
 
-        link.addEventListener("click", function(){
+        link.addEventListener("clicked", function(){
+
+            var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
+
+//            console.log("CAM POSITION", self.el.sceneEl.camera.el.getAttribute("position"));
 
             var new_position = DATAVERSE_VIZ_AUX.cam_destination_to_object(self.el.sceneEl.camera.el, marker, 0.5);
 
-            console.log("NEW POSITION", new_position);
-
             self.el.sceneEl.camera.el.setAttribute("position", new_position);
+
+            console.log("NEW POSITION", cam_position, new_position, self.el.sceneEl.camera.el.getAttribute("position"));
 
         });
 

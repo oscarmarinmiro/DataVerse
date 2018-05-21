@@ -38,3 +38,8 @@ DATAVERSE.animation = {
 
 DATAVERSE.height = 1.6;
 
+
+DATAVERSE.floor_vizs = ['isotypes-radial-viz', 'timeline-viz'];
+
+DATAVERSE.sky_vizs = ['isotypes-radial-viz', 'timeline-viz', 'photogrid-viz', 'small-treemap-viz', 'tilemap-viz'];
+
