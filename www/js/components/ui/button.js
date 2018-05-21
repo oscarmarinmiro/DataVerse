@@ -84,6 +84,8 @@ AFRAME.registerComponent('uipack-button', {
 
             self.animation.addEventListener("animationend", function () {
 
+                console.log("CLICK!!");
+
                 setTimeout(function() { self.first_hover = true; }, 500);
 
                 var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
@@ -91,6 +93,8 @@ AFRAME.registerComponent('uipack-button', {
                 sound.play();
 
                 self.el.emit("clicked", null, false);
+
+                console.log("EMITIDO CLICK!");
 
                 self.ring.parentNode.removeChild(self.ring);
 
