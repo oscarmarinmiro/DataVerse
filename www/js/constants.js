@@ -35,3 +35,6 @@ DATAVERSE.animation = {
     button: 1000
 };
 
+
+DATAVERSE.height = 1.6;
+
