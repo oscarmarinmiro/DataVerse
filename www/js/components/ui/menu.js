@@ -290,8 +290,11 @@ AFRAME.registerComponent('uipack-menu', {
         // Emulate 'look into menu' if open on init
 
         if(self.data.open) {
+
+            console.log("camera rotation", camera_rotation, camera_yaw);
+
             self.y_position = UIPACK_CONSTANTS.menu_distance * Math.sin(this.data.pitch * Math.PI / 180.0);
-            self.x_position = UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch / 180.0) * Math.cos(camera_yaw * Math.PI / 180.0);
+            self.x_position = UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.cos(camera_yaw * Math.PI / 180.0);
             self.z_position = -UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.sin(camera_yaw * Math.PI / 180.0);
 
             this.container.setAttribute("position", [self.x_position, self.y_position, self.z_position].join(" "));

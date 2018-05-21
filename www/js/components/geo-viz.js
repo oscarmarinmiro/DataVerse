@@ -485,10 +485,16 @@ AFRAME.registerComponent('geo-viz', {
         self.map_sphere = document.createElement("a-sphere");
 
         self.map_sphere.classList.add("skyspheres");
+        self.map_sphere.classList.add("dataverse-added");
 
-                self.map_sphere.setAttribute("geometry", {primitive: "sphere", radius:self.data.radius, segmentsWidth: 64, segmentsHeight:64});
-                self.map_sphere.setAttribute("material", {shader: "flat", src: "#skymap", side: "back"});
-                self.map_sphere.setAttribute("scale", "1 1 -1");
+        self.map_sphere.setAttribute("geometry", {primitive: "sphere", radius:self.data.radius, segmentsWidth: 64, segmentsHeight:64});
+        self.map_sphere.setAttribute("material", {shader: "flat", src: "#skymap", side: "back"});
+        self.map_sphere.setAttribute("scale", "1 1 -1");
+
+        // Get rotation from parent element (for cam syncing on landing)
+
+        self.map_sphere.setAttribute("rotation", {x:0, y: self.el.getAttribute("rotation").y, z:0});
+
 
 
 //        self.map_sphere.setAttribute("scale", "1.0 1.0 -1.0");
