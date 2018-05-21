@@ -176,8 +176,6 @@ AFRAME.registerComponent('tilemap-viz', {
         text_color: {type: 'string', default: "white"},
         text_font: {type: 'string', default: "roboto"},
         text_background: {type: 'string', default: "black"},
-        legend_dmms: {type: 'float', default: 12},
-        general_button_dmms : {type: 'int', default: 20},
         map_y: {type: 'float', default: 0.0}
     },
 
@@ -186,6 +184,11 @@ AFRAME.registerComponent('tilemap-viz', {
         var self = this;
 
         console.log("INIT COMPONENT", self);
+
+        // Undo rotation from renderer :) TODO: It's super problematic here, how to ammend instead of removing it???
+
+        self.el.setAttribute("rotation", {x:0, y:0, z:0});
+
 
         // Load data and 'prepare' it for rendering
 
@@ -392,7 +395,7 @@ AFRAME.registerComponent('tilemap-viz', {
         var text = document.createElement("a-entity");
 
 
-        var text_width = (self.data.legend_dmms * (self.data.size/2) * (datum.headline.length + 4)) / 1000;
+        var text_width = (DATAVERSE.dmms.subtitle * (self.data.size/2) * (datum.headline.length + 4)) / 1000;
 
 //        .setAttribute('text', {value: title, align: "center", color: self.data.text_color, width: text_width, wrapCount: title.length + 4, zOffset: 0.01});
 
@@ -403,7 +406,7 @@ AFRAME.registerComponent('tilemap-viz', {
             width: text_width, wrapCount: datum.headline.length + 4, zOffset: 0.01});
 
 
-        var label_height = (self.data.legend_dmms * (self.data.size/2) / 1000)*3;
+        var label_height = (DATAVERSE.dmms.subtitle * (self.data.size/2) / 1000)*3;
 
         text.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
 
@@ -480,7 +483,18 @@ AFRAME.registerComponent('tilemap-viz', {
 
             self.media_panel = document.createElement("a-entity");
 
-            self.media_panel.setAttribute("position", self.el.sceneEl.camera.el.getAttribute("position"));
+            // Have to take into account element position b/c we change it when clicking on 'arrows' to get near markers (instead of moving
+            // the camera b/c of Vive problems with updating camera position
+
+            self.media_panel_position = {
+
+                x: self.el.sceneEl.camera.el.getAttribute("position").x - self.el.getAttribute("position").x,
+                y: self.el.sceneEl.camera.el.getAttribute("position").y - self.el.getAttribute("position").y,
+                z: self.el.sceneEl.camera.el.getAttribute("position").z - self.el.getAttribute("position").z
+
+            };
+
+            self.media_panel.setAttribute("position", self.media_panel_position);
 
 
             self.media_panel.setAttribute("shadow", {cast:true});
@@ -495,6 +509,7 @@ AFRAME.registerComponent('tilemap-viz', {
                 title: datum.headline,
                 subtitle: "subtitle",
                 text: datum.text,
+                low_height: 1,
                 media_url: datum.media,
                 media_caption: datum['media_caption'],
                 media_credit: datum['media_credit'],
@@ -546,13 +561,36 @@ AFRAME.registerComponent('tilemap-viz', {
 
             var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
 
+            console.log("NEW POSITION 1", cam_position.x, cam_position.y, cam_position.z);
+
 //            console.log("CAM POSITION", self.el.sceneEl.camera.el.getAttribute("position"));
 
             var new_position = DATAVERSE_VIZ_AUX.cam_destination_to_object(self.el.sceneEl.camera.el, marker, 0.5);
 
-            self.el.sceneEl.camera.el.setAttribute("position", new_position);
+            var differences = {x: new_position.x - cam_position.x, y: new_position.y - cam_position.y, z: new_position.z - cam_position.z};
 
-            console.log("NEW POSITION", cam_position, new_position, self.el.sceneEl.camera.el.getAttribute("position"));
+            // Move element instead of moving camera....
+
+            var component_position = self.el.getAttribute("position");
+
+            self.el.setAttribute("position", {x: component_position.x - differences.x, y: component_position.y - differences.y, z: component_position.z - differences.z});
+
+//            console.log("NEW POSITION 2", new_position.x, new_position.y, new_position.z);
+//
+//            self.el.sceneEl.camera.el.setAttribute("position", new_position);
+//
+//            var final_position = self.el.sceneEl.camera.el.getAttribute("position");
+//
+////            self.el.sceneEl.camera.el.object3D.worldToLocal(new_position);
+//
+//
+////            self.el.sceneEl.camera.el.object3D.matrixWorldNeedsUpdate = true;
+////
+////            self.el.sceneEl.camera.el.object3D.updateMatrixWorld();
+//
+//            console.log("NEW POSITION 3", final_position.x, final_position.y, final_position.z);
+//
+//            console.log("NEW POSITION 4", self.el.sceneEl.camera, self.el.sceneEl.camera.el.object3D, self.el.sceneEl.camera.el.object3D.position);
 
         });
 
@@ -589,6 +627,8 @@ AFRAME.registerComponent('tilemap-viz', {
             // Regenerating new geometry
 
             console.log("REGENERATING NEW GEOMETRY ...");
+
+//            self.rotation_undo =  - self.el.getAttribute("rotation").y;
 
             // Whatever needs to do to render...
 
