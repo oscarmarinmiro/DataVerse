@@ -43,6 +43,8 @@ AFRAME.registerComponent('uipack-menu', {
 
     self.open_icon = document.createElement("a-entity");
 
+    self.open_icon.classList.add("non_click_while_loading");
+
     self.open_icon.setAttribute("uipack-button", {icon_name: "bars.png"});
 
     self.container.appendChild(self.open_icon);
@@ -82,6 +84,8 @@ AFRAME.registerComponent('uipack-menu', {
         var my_icon = document.createElement("a-entity");
 
         my_icon.icon_index = i;
+
+        my_icon.classList.add("non_click_while_loading");
 
         my_icon.addEventListener("clicked", function(){
             if(self.open_menu && (!self.hidden)) {

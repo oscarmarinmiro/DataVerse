@@ -27,7 +27,7 @@ DATAVERSE.themes =
         'loading_gif': 'themes/dark/textures/loading.gif'
     },
     'light': {
-        'color_scale': 'category10',
+        'color_scale': 'category20c',
         'default_color': '#333333',
         'cursor_color': '#F91100',
         'arc_color': '#F91100',
