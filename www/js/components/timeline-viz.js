@@ -265,8 +265,6 @@ AFRAME.registerComponent('timeline-viz', {
         degrees: {type: 'float', default: 220},
         margins: {type: 'float', default: 20},
         legend_height: {type: 'float', default: 2.0},
-        legend_dmms: {type: 'float', default: 20},
-        sublegend_dmms: {type: 'float', default: 12},
         sublegend_height: {type: 'float', default: 1.0},
         color: {type: 'string', default: "#333355"},
         trigger_color:{type: 'string', default: "black"},
@@ -504,7 +502,7 @@ AFRAME.registerComponent('timeline-viz', {
 
             title.setAttribute("rotation", geom_data.rotation);
 
-            var title_width = (DATAVERSE.dmms.label * (self.data.size) * (datum.title.length + 4 )) / 1000;
+            var title_width = (DATAVERSE.dmms.sublabel * (self.data.size) * (datum.title.length + 4 )) / 1000;
 
             title.setAttribute("value", datum.title);
             title.setAttribute("align", "center");
