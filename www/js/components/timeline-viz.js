@@ -533,7 +533,7 @@ AFRAME.registerComponent('timeline-viz', {
             self.el.appendChild(more_button);
 
 
-            more_button.addEventListener("click", function (event) {
+            more_button.addEventListener("clicked", function (event) {
 
 
                 // Retore trigger as clickable (just in case it is cross-launched)

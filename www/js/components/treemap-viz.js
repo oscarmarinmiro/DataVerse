@@ -214,7 +214,7 @@ AFRAME.registerComponent('treemap-viz', {
                 button_row.appendChild(more_button);
 
 
-                more_button.addEventListener("click", function () {
+                more_button.addEventListener("clicked", function () {
 
                     // Retore trigger as clickable (just in case it is cross-launched)
 
@@ -297,7 +297,7 @@ AFRAME.registerComponent('treemap-viz', {
 
             button_row.appendChild(zoom_button);
 
-            zoom_button.addEventListener("click", function () {
+            zoom_button.addEventListener("clicked", function () {
 
                 // parentNode.parentNode is self.el
 
@@ -689,7 +689,7 @@ AFRAME.registerComponent('small-treemap-viz', {
 
         self.el.appendChild(self.close_button);
 
-        self.close_button.addEventListener("click", function(){
+        self.close_button.addEventListener("clicked", function(){
 
             self.el.removeChild(self.big_treemap);
 
@@ -897,7 +897,7 @@ AFRAME.registerComponent('small-treemap-viz', {
 
             self.proportional = false;
 
-            propor_button.addEventListener("click", function(){
+            propor_button.addEventListener("clicked", function(){
 
                 console.log("CLICK");
 

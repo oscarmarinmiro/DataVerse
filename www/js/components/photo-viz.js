@@ -65,7 +65,7 @@ AFRAME.registerComponent('photo-viz', {
 
             parent.appendChild(more_button);
 
-            more_button.addEventListener("click", function () {
+            more_button.addEventListener("clicked", function () {
 
                 // Retore trigger as clickable (just in case it is cross-launched)
 
