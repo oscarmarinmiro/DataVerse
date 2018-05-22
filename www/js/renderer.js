@@ -63,7 +63,10 @@ DATAVERSE.renderer.prototype = {
         self.cursor.setAttribute("color", self.theme_data.cursor_color);
         self.cursor.setAttribute("fuse-timeout", 1000);
         self.cursor.setAttribute("fuse", true);
-        self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+
+        // To avoid clicks while loading and intro panel is present
+
+        self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".non_click_while_loading"});
 
         // REMOVE COMMENTS
         // Insert intro panel
@@ -84,6 +87,10 @@ DATAVERSE.renderer.prototype = {
             // Set sky opacity
 
             // Set floor opacity
+
+            // Make things clickable again
+
+            self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
 
             // Set component visibility
 
@@ -607,6 +614,7 @@ DATAVERSE.renderer.prototype = {
             // Set position and rotation from params, and delete from entity-specific params
 
             if("position" in my_params){
+                console.log("SETTING POSITION", my_params.position);
                 self.actual_scene_component.setAttribute("position", my_params.position);
                 delete(my_params.position);
             }

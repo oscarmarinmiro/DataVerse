@@ -736,8 +736,11 @@ AFRAME.registerComponent('small-treemap-viz', {
 
             // Move parent entity to eye level
 
-            self.el.setAttribute("position", {x: 0, y: self.el.sceneEl.camera.el.getAttribute("position").y, z:0});
+            // If position is tweaked from data sheet, add it
 
+            var position_from_outside = self.el.getAttribute("position");
+
+            self.el.setAttribute("position", {x: position_from_outside.x, y: self.el.sceneEl.camera.el.getAttribute("position").y + position_from_outside.y, z:position_from_outside.z});
 
             // Store scale
 

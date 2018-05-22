@@ -30,7 +30,7 @@ AFRAME.registerComponent('uipack-button', {
 
     // Class the element
 
-    this.el.setAttribute("class", "uipack uipack-button clickable");
+    this.el.classList.add("uipack", "uipack-button", "clickable");
 
     // Hover flag and events...
 
