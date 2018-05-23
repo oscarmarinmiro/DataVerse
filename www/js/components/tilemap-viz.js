@@ -200,7 +200,7 @@ AFRAME.registerComponent('tilemap-viz', {
 
                     self.prepared_data = data;
 
-                    self.scene_data = data;
+                    self.scene_data = scene_data;
 
                     // insert leaflet div
 
@@ -507,7 +507,6 @@ AFRAME.registerComponent('tilemap-viz', {
                 theme: self.data.theme,
                 distance: 1.5,
                 title: datum.headline,
-                subtitle: "subtitle",
                 text: datum.text,
                 low_height: 1,
                 media_url: datum.media,

@@ -244,6 +244,14 @@ AFRAME.registerComponent('photo-viz', {
 
                 var sky = document.getElementsByTagName("a-sky")[0];
 
+                sky.setAttribute("scale", "1 1 1");
+
+                // Rotate 180 degrees since we are reversing y direction with latest statement
+
+                var sky_rotation = sky.getAttribute("rotation");
+
+                sky.setAttribute("rotation", {x: sky_rotation.x, y: sky_rotation.y + 180, z: sky_rotation.z});
+
                 sky.getOrCreateObject3D('mesh').material = new THREE.MeshBasicMaterial({map: texture, side: THREE.BackSide});
 
                 self.el.emit("dv_loaded", null, false);
