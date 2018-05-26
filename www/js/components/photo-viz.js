@@ -151,7 +151,7 @@ AFRAME.registerComponent('photo-viz', {
 
                     // TODO: CHANGE label_height to that of camera...
 
-                    var arc = datum.yaw * THREE.Math.DEG2RAD;
+                    var arc = (datum.yaw + 180) * THREE.Math.DEG2RAD;
 
                     console.log("ARC", arc);
 
