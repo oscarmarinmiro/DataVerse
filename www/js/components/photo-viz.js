@@ -143,46 +143,53 @@ AFRAME.registerComponent('photo-viz', {
 
         var self = this;
 
+        console.log("SCENE NUMBER", DATAVERSE.scene_number);
+
         console.log("RENDERING TAB", self.prepared_data);
 
         self.prepared_data.forEach(function(datum, i){
 
-                    var object = document.createElement("a-entity");
+                    // Insert label if it belongs to this scene
 
-                    // TODO: CHANGE label_height to that of camera...
+                    if(datum.scene === DATAVERSE.scene_number) {
 
-                    var arc = (datum.yaw + 180) * THREE.Math.DEG2RAD;
+                        var object = document.createElement("a-entity");
 
-                    console.log("ARC", arc);
+                        // TODO: CHANGE label_height to that of camera...
 
-                    object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
+                        var arc = (datum.yaw + 180) * THREE.Math.DEG2RAD;
 
-                    // Face the center
+                        console.log("ARC", arc);
 
-                    object.setAttribute('rotation', {x: 0, y: (arc / Math.PI) * 180 > 180 ? (arc / Math.PI) * 180 - 180 : 180 + (arc / Math.PI) * 180, z: 0});
+                        object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
 
-                    var title = datum.headline;
+                        // Face the center
 
-                    var text_width = (DATAVERSE.dmms.label * self.data.label_distance * (title.length + 4)) / 1000;
+                        object.setAttribute('rotation', {x: 0, y: (arc / Math.PI) * 180 > 180 ? (arc / Math.PI) * 180 - 180 : 180 + (arc / Math.PI) * 180, z: 0});
 
-                    object.setAttribute('text', {value: title, align: "center",
-                                                color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.label_color,
-                                                font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.label_font,
-                                                width: text_width,
-                                                wrapCount: title.length + 4, zOffset: 0.01});
+                        var title = datum.headline;
 
-                    var label_height = (DATAVERSE.dmms.label * self.data.label_distance / 1000)*3;
+                        var text_width = (DATAVERSE.dmms.label * self.data.label_distance * (title.length + 4)) / 1000;
 
-                    object.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+                        object.setAttribute('text', {value: title, align: "center",
+                            color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.label_color,
+                            font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.label_font,
+                            width: text_width,
+                            wrapCount: title.length + 4, zOffset: 0.01});
 
-                    object.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.label_background, shader: "flat"});
+                        var label_height = (DATAVERSE.dmms.label * self.data.label_distance / 1000) * 3;
+
+                        object.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+
+                        object.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.label_background, shader: "flat"});
 
 
-                    // self.add_more_button(object, datum, sequence);
+                        // self.add_more_button(object, datum, sequence);
 
-                    self.add_more_button(object, datum, i, label_height);
+                        self.add_more_button(object, datum, i, label_height);
 
-                    self.el.appendChild(object);
+                        self.el.appendChild(object);
+                    }
 
         });
 
