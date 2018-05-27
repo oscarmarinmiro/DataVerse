@@ -36,6 +36,10 @@ DATAVERSE.animation = {
     button: 1000
 };
 
+DATAVERSE.distances = {
+    close: 1.75
+};
+
 
 DATAVERSE.height = 1.6;
 
