@@ -735,18 +735,33 @@ AFRAME.registerComponent('small-treemap-viz', {
         var name = self.treemap_list[index];
         var treemap = jQuery.extend(true, {}, self.parsed_data_deepcopy.data[name]);
 
+        var yaw = (self.el.sceneEl.camera.el.getAttribute("rotation").y) % 360;
+
+
+        self.big_treemap_container = document.createElement("a-entity");
+
+        self.big_treemap_container.setAttribute("rotation", {x:0, y:yaw, z: 0});
+
+        self.big_treemap_container.classList.add("bigtreemap");
+
+        var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
+
+        self.big_treemap_container.setAttribute("position", {x: cam_position.x, y:0, z: cam_position.z});
+
+        self.el.appendChild(self.big_treemap_container);
+
+
         console.log("DRAWING BIG TREEMAP FOR index ", index, name, self.parsed_data_deepcopy, treemap);
 
         self.big_treemap_background = document.createElement("a-plane");
-
-        self.big_treemap_background.classList.add("bigtreemap");
 
         self.big_treemap_background.setAttribute("width", self.data.width/2);
         self.big_treemap_background.setAttribute("height", self.data.width/2);
         self.big_treemap_background.setAttribute("color", "black");
         self.big_treemap_background.setAttribute("position", {x:0, y:0, z: -(DATAVERSE.distances.close * 1.01)});
 
-        self.el.appendChild(self.big_treemap_background);
+
+        self.big_treemap_container.appendChild(self.big_treemap_background);
 
 
         var treemap_component = document.createElement("a-entity");
@@ -764,29 +779,21 @@ AFRAME.registerComponent('small-treemap-viz', {
 
         self.big_treemap = treemap_component;
 
-        treemap_component.classList.add("bigtreemap");
-
-        self.el.appendChild(treemap_component);
+        self.big_treemap_container.appendChild(treemap_component);
 
         var button_radius = (DATAVERSE.dmms.plus_button * (self.data.distance)) / 1000;
 
         self.close_button = document.createElement("a-entity");
 
-        self.close_button.classList.add("bigtreemap");
-
         self.close_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: 'times.png', radius: button_radius});
 
         self.close_button.setAttribute("position", {x: 0, y: (self.data.width/2)*0.5 + (button_radius), z: -DATAVERSE.distances.close});
 
-        self.el.appendChild(self.close_button);
+        self.big_treemap_container.appendChild(self.close_button);
 
         self.close_button.addEventListener("clicked", function(){
 
-            self.el.removeChild(self.big_treemap);
-
-            self.el.removeChild(self.close_button);
-
-            self.el.removeChild(self.big_treemap_background);
+            self.el.removeChild(self.big_treemap_container);
 
         });
 
