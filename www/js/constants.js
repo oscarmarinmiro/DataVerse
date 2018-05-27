@@ -27,7 +27,7 @@ DATAVERSE.dmms = {
     'big_label': 30,
     'sublabel': 16,
     'subtitle': 12,
-    'min_text': 8,
+    'min_text': 1,
     'map_label': 8
 };
 

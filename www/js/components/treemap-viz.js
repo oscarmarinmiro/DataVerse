@@ -20,6 +20,7 @@ AFRAME.registerComponent('treemap-viz', {
         buttons: {type: 'boolean', default: true},
         theme: {'type': 'string', default: ""},
         text_color: {type: 'string', default: 'white'},
+        text_color_float: {type: 'string', default: 'black'},
         text_font: {type: 'string', default: 'roboto'},
         other: {'type': 'boolean', default: false},
         unique_color_scale: {type: 'boolean', default: true},
@@ -46,7 +47,7 @@ AFRAME.registerComponent('treemap-viz', {
 
         if((datum.depth == self.data.depth) || (self.data.other && (datum.depth === 1))) {
 
-            if((datum.dx > 0) && (datum.dy > 0)) {
+            if ((datum.dx > 0) && (datum.dy > 0)) {
 
                 var plank = document.createElement("a-plane");
 
@@ -55,7 +56,9 @@ AFRAME.registerComponent('treemap-viz', {
                 var width = (datum.dx - padding) / 1000;
                 var height = (datum.dy - padding) / 1000;
 
-                var name_label = datum.depth == 1 ? datum.name : datum.name + "/" + datum.parent.name;
+//                var name_label = datum.depth == 1 ? datum.name : datum.name + "/" + datum.parent.name;
+//
+                var name_label = datum.name;
 
                 var number_label = self.data.show_numbers ? (" (" + DATAVERSE_VIZ_AUX.pretty_print_number(datum.value) + ")") : "";
 
@@ -64,7 +67,7 @@ AFRAME.registerComponent('treemap-viz', {
                 plank.setAttribute("width", width);
                 plank.setAttribute("height", height);
                 //            plank.setAttribute("color", "white");
-                plank.setAttribute("color", datum.depth == 1 ? self.color_scale([datum.name]): self.color_scale([datum.parent.name]));
+                plank.setAttribute("color", datum.depth == 1 ? self.color_scale([datum.name]) : self.color_scale([datum.parent.name]));
                 //v(d.x+ d.dx/2) - (width/2) + " " + ((d.y+ d.dy/2)-(height/2))
                 //            plank.setAttribute("position", {x: (datum.x+ (datum.dx + padding)/2)/1000 + self.data.width/2, y:  (datum.y + (datum.dy - padding) /2)/1000 + self.data.height/2, z: 0});
                 plank.setAttribute("position", {x: (datum.x + (datum.dx + padding) / 2) / 1000 - self.data.width / 2, y: (datum.y + (datum.dy - padding) / 2) / 1000 - self.data.height / 2, z: 0});
@@ -86,9 +89,9 @@ AFRAME.registerComponent('treemap-viz', {
 
                     if (width / height < 7) {
 
-                        var dmms = ((width / (name_label.length + 4)) / (self.data.distance))*1000;
+                        var dmms = ((width / (name_label.length + 4)) / (self.data.distance)) * 1000;
 
-                        if(dmms > DATAVERSE.dmms.min_text) {
+                        if (dmms > DATAVERSE.dmms.min_text) {
 
                             console.log("DMMS", dmms);
 
@@ -105,9 +108,9 @@ AFRAME.registerComponent('treemap-viz', {
 
                     if (height / width < 7) {
 
-                        var dmms = ((height / (name_label.length + 4)) / (self.data.distance))*1000;
+                        var dmms = ((height / (name_label.length + 4)) / (self.data.distance)) * 1000;
 
-                        if(dmms > DATAVERSE.dmms.min_text) {
+                        if (dmms > DATAVERSE.dmms.min_text) {
 
                             label.setAttribute("width", height);
 
@@ -120,6 +123,79 @@ AFRAME.registerComponent('treemap-viz', {
 
                     }
                 }
+            }
+        }
+        else{
+
+            // When depth = 2 but comes a depth = 1: Just draw centered label of level 1. Only applies to big treemaps when depth === 2. Normal treemaps are hardcoded to depth = 1
+
+            // Draw only label in this circumstance
+
+            if((datum.depth == 1) && (self.data.depth == 2)) {
+
+
+                if ((datum.dx > 0) && (datum.dy > 0)) {
+
+                    var width = (datum.dx - padding) / 1000;
+                    var height = (datum.dy - padding) / 1000;
+
+                    var name_label = datum.name;
+
+                    var number_label = self.data.show_numbers ? (" (" + DATAVERSE_VIZ_AUX.pretty_print_number(datum.value) + ")") : "";
+
+                    name_label += number_label;
+
+                    var label = document.createElement("a-text");
+
+                    label.setAttribute("value", name_label);
+
+                    label.setAttribute("align", "center");
+
+                    label.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.text_color_float);
+                    label.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.text_font);
+
+                    label.setAttribute("position", {x: (datum.x + (datum.dx + padding) / 2) / 1000 - self.data.width / 2, y: (datum.y + (datum.dy - padding) / 2) / 1000 - self.data.height / 2, z: 0.2});
+
+                    if (width >= height) {
+
+                        if (width / height < 7) {
+
+                            var dmms = ((width / (name_label.length + 4)) / (self.data.distance)) * 1000;
+
+                            if (dmms > DATAVERSE.dmms.min_text) {
+
+                                console.log("DMMS", dmms);
+
+                                label.setAttribute("width", width);
+
+                                label.setAttribute("wrap-count", name_label.length + 4);
+
+                                self.treemap_container.appendChild(label);
+                            }
+
+                        }
+                    }
+                    else {
+
+                        if (height / width < 7) {
+
+                            var dmms = ((height / (name_label.length + 4)) / (self.data.distance)) * 1000;
+
+                            if (dmms > DATAVERSE.dmms.min_text) {
+
+                                label.setAttribute("width", height);
+
+                                label.setAttribute("wrap-count", name_label.length + 4);
+
+                                label.setAttribute("rotation", {x: 0, y: 0, z: 90});
+
+                                self.treemap_container.appendChild(label);
+                            }
+
+                        }
+                    }
+                }
+
             }
         }
 
@@ -610,7 +686,7 @@ AFRAME.registerComponent('small-treemap-viz', {
         text_font: {type: 'string', default: 'roboto'},
         unique_color_scale: {type: 'boolean', default: true},
         form_factor_x: {type: 'float', default: 1.25},
-        form_factor_y: {type: 'float', default: 1.6},
+        form_factor_y: {type: 'float', default: 1.8},
         other_treemap: {type: 'boolean', default: true},
         general_text_dmms : {type: 'int', default: 30},
         general_button_dmms : {type: 'int', default: 20}
