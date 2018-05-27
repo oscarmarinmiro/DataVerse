@@ -735,7 +735,7 @@ AFRAME.registerComponent('small-treemap-viz', {
         var name = self.treemap_list[index];
         var treemap = jQuery.extend(true, {}, self.parsed_data_deepcopy.data[name]);
 
-        var yaw = (self.el.sceneEl.camera.el.getAttribute("rotation").y) % 360;
+        var yaw = (self.el.sceneEl.camera.el.getAttribute("rotation").y - self.el.getAttribute("rotation").y) % 360;
 
 
         self.big_treemap_container = document.createElement("a-entity");
@@ -803,6 +803,9 @@ AFRAME.registerComponent('small-treemap-viz', {
     update: function (oldData) {
 
         var self = this;
+
+
+        console.log("EL ELEMENTO TIENE DE ROTACION", self.el.getAttribute("rotation"));
 
 
         if(self.parsed_data && self.parsed_data_deepcopy && typeof self.treemaps === "undefined") {
