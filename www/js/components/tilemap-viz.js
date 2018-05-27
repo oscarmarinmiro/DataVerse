@@ -511,9 +511,8 @@ AFRAME.registerComponent('tilemap-viz', {
 
             self.media_panel.setAttribute("uipack-mediapanel", {
                 yaw: yaw,
-                pitch: 0,
+                distance: DATAVERSE.distances.panel,
                 theme: self.data.theme,
-                distance: 1.5,
                 title: datum.headline,
                 text: datum.text,
                 low_height: 1,

@@ -122,9 +122,8 @@ AFRAME.registerComponent('video-viz', {
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,
-                    pitch: pitch,
                     theme: self.data.theme,
-                    distance: 1.5,
+                    distance: DATAVERSE.distances.panel,
                     title: info.headline,
                     subtitle: "",
                     text: info.text,

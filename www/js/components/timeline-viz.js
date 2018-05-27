@@ -590,11 +590,10 @@ AFRAME.registerComponent('timeline-viz', {
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,
-                    pitch: pitch,
                     low_height: (self.data.height*2.0),
                     theme: self.data.theme,
                     height: self.data.panel_height,
-                    distance: distance,
+                    distance: DATAVERSE.distances.panel,
                     title: datum.title,
                     subtitle: self.get_date_explain(datum),
                     text: datum.text,

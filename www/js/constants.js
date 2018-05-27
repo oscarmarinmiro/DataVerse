@@ -37,7 +37,8 @@ DATAVERSE.animation = {
 };
 
 DATAVERSE.distances = {
-    close: 1.75
+    close: 1.75,
+    panel: 3.0
 };
 
 

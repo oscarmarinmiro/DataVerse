@@ -399,8 +399,8 @@ AFRAME.registerComponent('geo-viz', {
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,
-                    pitch: pitch,
                     theme: theme,
+                    distance: DATAVERSE.distances.panel,
                     title: datum.headline,
                     text: datum.text,
                     media_url: datum.media,

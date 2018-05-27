@@ -154,7 +154,7 @@ AFRAME.registerComponent('treemap-viz', {
                     label.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.text_color_float);
                     label.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.text_font);
 
-                    label.setAttribute("position", {x: (datum.x + (datum.dx + padding) / 2) / 1000 - self.data.width / 2, y: (datum.y + (datum.dy - padding) / 2) / 1000 - self.data.height / 2, z: 0.2});
+                    label.setAttribute("position", {x: (datum.x + (datum.dx + padding) / 2) / 1000 - self.data.width / 2, y: (datum.y + (datum.dy - padding) / 2) / 1000 - self.data.height / 2, z: 0.1});
 
                     if (width >= height) {
 
@@ -334,9 +334,8 @@ AFRAME.registerComponent('treemap-viz', {
 
                     self.media_panel.setAttribute("uipack-mediapanel", {
                         yaw: yaw,
-                        pitch: pitch,
                         theme: self.data.theme,
-                        distance: 1.0,
+                        distance: DATAVERSE.distances.panel,
                         title: datum.headline,
                         subtitle: "subtitle",
                         text: datum.text,
@@ -377,7 +376,9 @@ AFRAME.registerComponent('treemap-viz', {
 
             zoom_button.addEventListener("clicked", function () {
 
-                // parentNode.parentNode is self.el
+                // Remove old big treemap component if exists
+
+                d3.selectAll(".bigtreemap").remove();
 
                 console.log("ZOOM BUTTON CLICKED", self.el.parentNode.components["small-treemap-viz"]);
 
@@ -738,6 +739,8 @@ AFRAME.registerComponent('small-treemap-viz', {
 
         self.big_treemap_background = document.createElement("a-plane");
 
+        self.big_treemap_background.classList.add("bigtreemap");
+
         self.big_treemap_background.setAttribute("width", self.data.width/2);
         self.big_treemap_background.setAttribute("height", self.data.width/2);
         self.big_treemap_background.setAttribute("color", "black");
@@ -761,11 +764,15 @@ AFRAME.registerComponent('small-treemap-viz', {
 
         self.big_treemap = treemap_component;
 
+        treemap_component.classList.add("bigtreemap");
+
         self.el.appendChild(treemap_component);
 
         var button_radius = (DATAVERSE.dmms.plus_button * (self.data.distance)) / 1000;
 
         self.close_button = document.createElement("a-entity");
+
+        self.close_button.classList.add("bigtreemap");
 
         self.close_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: 'times.png', radius: button_radius});
 
@@ -782,7 +789,6 @@ AFRAME.registerComponent('small-treemap-viz', {
             self.el.removeChild(self.big_treemap_background);
 
         });
-
 
 
     },
