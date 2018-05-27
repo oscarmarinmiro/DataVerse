@@ -161,7 +161,7 @@ AFRAME.registerComponent('photo-viz', {
 
                         console.log("ARC", arc);
 
-                        object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
+                        object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: (('height' in datum) && (typeof(datum.height) === "number")) ? datum.height : self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
 
                         // Face the center
 

@@ -168,42 +168,45 @@ AFRAME.registerComponent('video-viz', {
 
         self.prepared_data.forEach(function(datum, i){
 
-                    var object = document.createElement("a-entity");
+                    if(datum.scene === DATAVERSE.scene_number) {
 
-                    // TODO: CHANGE label_height to that of camera...
+                        var object = document.createElement("a-entity");
 
-                    var arc = datum.yaw * THREE.Math.DEG2RAD;
+                        // TODO: CHANGE label_height to that of camera...
 
-                    console.log("ARC", arc);
+                        var arc = datum.yaw * THREE.Math.DEG2RAD;
 
-                    object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
+                        console.log("ARC", arc);
 
-                    // Face the center
+                        object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: (('height' in datum) && (typeof(datum.height) === "number")) ? datum.height : self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
 
-                    object.setAttribute('rotation', {x: 0, y: (arc / Math.PI) * 180 > 180 ? (arc / Math.PI) * 180 - 180 : 180 + (arc / Math.PI) * 180, z: 0});
+                        // Face the center
 
-                    var title = datum.headline;
+                        object.setAttribute('rotation', {x: 0, y: (arc / Math.PI) * 180 > 180 ? (arc / Math.PI) * 180 - 180 : 180 + (arc / Math.PI) * 180, z: 0});
 
-                    var text_width = (DATAVERSE.dmms.label * self.data.label_distance * (title.length + 4)) / 1000;
+                        var title = datum.headline;
 
-                    object.setAttribute('text', {value: title, align: "center",
-                                                color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.label_color,
-                                                font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.label_font,
-                                                width: text_width,
-                                                wrapCount: title.length + 4, zOffset: 0.01});
+                        var text_width = (DATAVERSE.dmms.label * self.data.label_distance * (title.length + 4)) / 1000;
 
-                    var label_height = (DATAVERSE.dmms.label * self.data.label_distance / 1000)*3;
+                        object.setAttribute('text', {value: title, align: "center",
+                            color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.label_color,
+                            font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.label_font,
+                            width: text_width,
+                            wrapCount: title.length + 4, zOffset: 0.01});
 
-                    object.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+                        var label_height = (DATAVERSE.dmms.label * self.data.label_distance / 1000) * 3;
 
-                    object.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.label_background, shader: "flat"});
+                        object.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+
+                        object.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.label_background, shader: "flat"});
 
 
-                    // self.add_more_button(object, datum, sequence);
+                        // self.add_more_button(object, datum, sequence);
 
-                    self.add_more_button(object, datum, i, label_height);
+                        self.add_more_button(object, datum, i, label_height);
 
-                    self.el.appendChild(object);
+                        self.el.appendChild(object);
+                    }
 
         });
 
