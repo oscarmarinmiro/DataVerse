@@ -27,12 +27,18 @@ DATAVERSE.dmms = {
     'big_label': 30,
     'sublabel': 16,
     'subtitle': 12,
-    'min_text': 8
+    'min_text': 1,
+    'map_label': 8
 };
 
 DATAVERSE.animation = {
     geo: 300,
     button: 1000
+};
+
+DATAVERSE.distances = {
+    close: 1.75,
+    panel: 3.0
 };
 
 

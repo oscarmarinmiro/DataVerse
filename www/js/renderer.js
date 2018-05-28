@@ -378,6 +378,9 @@ DATAVERSE.renderer.prototype = {
 
             self.theme_data = DATAVERSE.themes[self.theme];
 
+            DATAVERSE.scene_number = self.main.state.state.actual_scene;
+
+
             // Redefine icon path
 
             UIPACK_CONSTANTS.icon_path = self.theme_data.icon_path;
@@ -394,7 +397,13 @@ DATAVERSE.renderer.prototype = {
             my_params.title = self.actual_scene_data.title;
             my_params.explain = self.actual_scene_data.explain;
             my_params.source = self.main.state.state.scenes_data_source;
-            my_params.tab = self.actual_scene_data.tab;
+
+            if ((self.actual_scene_data.type === "photo-viz") || (self.actual_scene_data.type === "video-viz")){
+                my_params.tab = "labels";
+            }
+            else {
+                my_params.tab = self.actual_scene_data.tab;
+            }
 
             // If theme exists, fill it in params
 

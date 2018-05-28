@@ -6,7 +6,7 @@ DATAVERSE.themes =
         'cursor_color': '#F91100',
         'arc_color': '#F91100',
         'floor': '#313037',
-        'sky': '#808290',
+        'sky': 'themes/dark/ground-bg.png',
         'icon_path': 'themes/dark/icons',
         'text_color': '#E5E8F2',
         'text_background': '#313037',

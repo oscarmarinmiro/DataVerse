@@ -172,7 +172,7 @@ AFRAME.registerComponent('tilemap-viz', {
         zoom: {type: 'number', default: 18},
         size: {type: 'number', default: 10},
         canvas_size: {type: 'number', default: 2048},
-        marker_size: {type: 'number', default: 0.5},
+        marker_size: {type: 'number', default: 0.25},
         text_color: {type: 'string', default: "white"},
         text_font: {type: 'string', default: "roboto"},
         text_background: {type: 'string', default: "black"},
@@ -236,57 +236,57 @@ AFRAME.registerComponent('tilemap-viz', {
 
 //                    https://stackoverflow.com/questions/28873713/leaflet-event-on-tiles-loading?rq=1
 
-//                        self.layer.on("load", function() {
-//
-//                            html2canvas(document.getElementById("map"), {
-//                                useCORS: true,
-//                                onrendered: function (canvas) {
-//
-//                                    self.el.appendChild(canvas);
-//
-//                                    console.log("RENDERED");
-//
-//                                    self.map_img = document.createElement('img');
-//                                    self.map_img.setAttribute("id", "map_img");
-//                                    var dimensions = self.map.getSize();
-//                                    self.map_img.width = dimensions.x;
-//                                    self.map_img.height = dimensions.y;
-//                                    self.map_img.src = canvas.toDataURL();
-//
-//                                    var assets = document.querySelector("a-assets");
-//
-//                                    assets.appendChild(self.map_img);
-//
-//                                    self.update();
-//
-//
-//                                    //                            document.getElementById('images').innerHTML = '';
-//                                    //                            document.getElementById('images').appendChild(img);
-//
-//                                }
-//                            });
-//                        });
+                        self.layer.on("load", function() {
 
+                            html2canvas(document.getElementById("map"), {
+                                useCORS: true,
+                                onrendered: function (canvas) {
 
-                            leafletImage(self.map, function(err, canvas) {
+                                    self.el.appendChild(canvas);
 
+                                    console.log("RENDERED");
 
-                                    var map_img = document.createElement('img');
-                                    map_img.setAttribute("id", "map_img");
+                                    self.map_img = document.createElement('img');
+                                    self.map_img.setAttribute("id", "map_img");
                                     var dimensions = self.map.getSize();
-                                    map_img.width = dimensions.x;
-                                    map_img.height = dimensions.y;
-                                    map_img.src = canvas.toDataURL();
+                                    self.map_img.width = dimensions.x;
+                                    self.map_img.height = dimensions.y;
+                                    self.map_img.src = canvas.toDataURL();
 
                                     var assets = document.querySelector("a-assets");
 
-                                    assets.appendChild(map_img);
-
-                                    self.map_img = map_img;
+                                    assets.appendChild(self.map_img);
 
                                     self.update();
-                            });
 
+
+                                    //                            document.getElementById('images').innerHTML = '';
+                                    //                            document.getElementById('images').appendChild(img);
+
+                                }
+                            });
+                        });
+
+
+//                            leafletImage(self.map, function(err, canvas) {
+//
+//
+//                                    var map_img = document.createElement('img');
+//                                    map_img.setAttribute("id", "map_img");
+//                                    var dimensions = self.map.getSize();
+//                                    map_img.width = dimensions.x;
+//                                    map_img.height = dimensions.y;
+//                                    map_img.src = canvas.toDataURL();
+//
+//                                    var assets = document.querySelector("a-assets");
+//
+//                                    assets.appendChild(map_img);
+//
+//                                    self.map_img = map_img;
+//
+//                                    self.update();
+//                            });
+//
 
 //                    var interval_function = function() {
 //
@@ -374,28 +374,34 @@ AFRAME.registerComponent('tilemap-viz', {
 
         }
 
+        var marker_jump = (self.data.marker_size / 4);
+
 
         var sphere = document.createElement("a-sphere");
 
-        sphere.setAttribute("position", {x:0, y: -(self.data.marker_size/3)*2, z:0});
+        sphere.setAttribute("position", {x:0, y: -marker_jump, z:0});
 
         sphere.setAttribute("color", element_color);
-        sphere.setAttribute("radius", self.data.marker_size/8);
+        sphere.setAttribute("radius", marker_jump);
 
         var cone = document.createElement("a-cone");
 
-        cone.setAttribute("height", self.data.marker_size);
+        cone.setAttribute("height", marker_jump*3);
         cone.setAttribute("color", element_color);
-        cone.setAttribute("position", {x:0, y: -self.data.marker_size/2, z:0});
-        cone.setAttribute("radius-top", (self.data.marker_size/6));
+        cone.setAttribute("position", {x:0, y: -(marker_jump) * 2.5, z:0});
+        cone.setAttribute("radius-top", marker_jump);
         cone.setAttribute("radius-bottom", 0);
+
+
+        var icon_radius = ((DATAVERSE.dmms.plus_button/2) * (self.data.size/2)) / 1000;
+
 
 //        cone.setAttribute("shadow", {cast: true});
 
         var text = document.createElement("a-entity");
 
 
-        var text_width = (DATAVERSE.dmms.subtitle * (self.data.size/2) * (datum.headline.length + 4)) / 1000;
+        var text_width = (DATAVERSE.dmms.map_label * (self.data.size/2) * (datum.headline.length + 2)) / 1000;
 
 //        .setAttribute('text', {value: title, align: "center", color: self.data.text_color, width: text_width, wrapCount: title.length + 4, zOffset: 0.01});
 
@@ -406,15 +412,16 @@ AFRAME.registerComponent('tilemap-viz', {
             width: text_width, wrapCount: datum.headline.length + 4, zOffset: 0.01});
 
 
-        var label_height = (DATAVERSE.dmms.subtitle * (self.data.size/2) / 1000)*3;
+        var label_height = (DATAVERSE.dmms.map_label * (self.data.size/2) / 1000)*3;
 
         text.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
 
-        text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.text_background, shader: "flat"});
+        text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.text_background, shader: "flat", opacity: 0.2, transparent: true});
 
+//        text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.text_background, shader: "flat", opacity: 0.2, transparent: true});
 
-        text.setAttribute("position", {x:0, y: self.data.marker_size/4, z:0});
-        text.setAttribute("rotation", {x:-45, y: 0, z:0});
+        text.setAttribute("position", {x:0, y: (self.data.marker_size / 2) + (text_width / 2) + icon_radius*2, z:0});
+        text.setAttribute("rotation", {x:0, y: 0, z:90});
 
 //        text.setAttribute("scale", {x:2.0, y:2.0, z:2.0});
         text.setAttribute("face-camera", "");
@@ -429,11 +436,11 @@ AFRAME.registerComponent('tilemap-viz', {
 
         var button_row = document.createElement("a-entity");
 
+        button_row.setAttribute("position", {x:0, y: 0, z:0});
+
         button_row.setAttribute("face-camera", "");
 
-        button_row.setAttribute("rotation", {x:-45, y: 0, z:0});
-
-        var icon_radius = ((DATAVERSE.dmms.plus_button/2) * (self.data.size/2)) / 1000;
+        button_row.setAttribute("rotation", {x:0, y: 0, z:0});
 
 
         var more = document.createElement("a-entity");
@@ -444,7 +451,8 @@ AFRAME.registerComponent('tilemap-viz', {
         more.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'plus.png', 'radius': icon_radius});
 
 
-        more.setAttribute("position", {x: -icon_radius*2, y:  self.data.marker_size/4 + (label_height*1.5), z:0});
+//        more.setAttribute("position", {x: -icon_radius*2, y:  self.data.marker_size/4 + (label_height*1.5), z:0});
+        more.setAttribute("position", {x: 0, y:  icon_radius*1.5, z:0});
 
 
         more.addEventListener("clicked", function(){
@@ -503,9 +511,8 @@ AFRAME.registerComponent('tilemap-viz', {
 
             self.media_panel.setAttribute("uipack-mediapanel", {
                 yaw: yaw,
-                pitch: 0,
+                distance: DATAVERSE.distances.panel,
                 theme: self.data.theme,
-                distance: 1.5,
                 title: datum.headline,
                 text: datum.text,
                 low_height: 1,
@@ -554,7 +561,9 @@ AFRAME.registerComponent('tilemap-viz', {
 
         var link = document.createElement("a-entity");
         link.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': icon_radius});
-        link.setAttribute("position", {x: icon_radius*2, y: self.data.marker_size/4 + (label_height*1.5), z:0});
+//        link.setAttribute("position", {x: icon_radius*2, y: self.data.marker_size/4 + (label_height*1.5), z:0});
+
+        link.setAttribute("position", {x: 0, y: icon_radius*4.0, z:0});
 
         link.addEventListener("clicked", function(){
 
@@ -599,7 +608,7 @@ AFRAME.registerComponent('tilemap-viz', {
         marker.appendChild(text);
         button_row.appendChild(more);
 //        button_row.appendChild(media);
-        button_row.appendChild(link);
+//        button_row.appendChild(link);
 
         marker.appendChild(button_row);
 
