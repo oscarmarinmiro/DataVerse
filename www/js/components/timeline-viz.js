@@ -593,7 +593,7 @@ AFRAME.registerComponent('timeline-viz', {
                     low_height: (self.data.height*2.0),
                     theme: self.data.theme,
                     height: self.data.panel_height,
-                    distance: DATAVERSE.distances.panel,
+                    distance: distance,
                     title: datum.title,
                     subtitle: self.get_date_explain(datum),
                     text: datum.text,

@@ -10,4 +10,8 @@ html {
     bottom: 0!important;
     position: fixed!important;
     background-color: black;
+    background: url(../img/splashscreen-horizontal.png);
+    background-repeat: no-repeat;
+    background-size: 512px 512px;
+    background-position: center;
 }
