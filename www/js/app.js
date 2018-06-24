@@ -62,6 +62,20 @@ DATAVERSE.main = function(options) {
 
             document.querySelector("a-scene").appendChild(loading);
 
+            var text = document.createElement("a-text");
+
+            text.classList.add("dataverse-added");
+            text.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1] - 0.75, z: loading_defs[0][i][2]});
+            text.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
+            text.setAttribute("width", 5);
+            text.setAttribute("font", "exo2bold");
+            text.setAttribute("anchor", "center");
+            text.setAttribute("align", "center");
+            text.setAttribute("value", "Loading sheet data");
+
+            document.querySelector("a-scene").appendChild(text);
+
+
         }
 
 
