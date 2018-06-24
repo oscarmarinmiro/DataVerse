@@ -680,6 +680,7 @@ AFRAME.registerComponent('small-treemap-viz', {
         rows: {type: 'int', default: 3},
         depth: {type: 'int', default: 2},
         show_numbers: {type: 'boolean', default: false},
+        show_proportional: {type: 'boolean', default: true},
         max_items: {type: 'int', default: 9},
         distance: {type: 'float', default: 3.0},
         theme: {'type': 'string', default: ""},
@@ -977,71 +978,73 @@ AFRAME.registerComponent('small-treemap-viz', {
             }
 
 
-            // Proportional sizes text and button
+            // Proportional sizes text and button, if applicable
 
-            var button_radius = (DATAVERSE.dmms.plus_button * self.data.distance) / 1000;
+            if(self.data.show_proportional) {
 
-
-            var propor_text = document.createElement("a-text");
-
-            var text = "See proportional sizes";
-
-            var width = (DATAVERSE.dmms.big_label * self.data.distance * (text.length)) / 1000;
+                var button_radius = (DATAVERSE.dmms.plus_button * self.data.distance) / 1000;
 
 
-            propor_text.setAttribute("value", text);
-            propor_text.setAttribute("align", "center");
-            propor_text.setAttribute("baseline", "top");
-            propor_text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.text_color);
-            propor_text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.text_font);
-            propor_text.setAttribute("wrapCount", text.length);
-            propor_text.setAttribute("width", width);
-            propor_text.setAttribute("position", {x:0, y: params.vertical_scale(self.data.rows-0.35) - button_radius*0.5, z: -self.data.distance});
+                var propor_text = document.createElement("a-text");
 
-            self.el.appendChild(propor_text);
+                var text = "See proportional sizes";
 
-            // button
+                var width = (DATAVERSE.dmms.big_label * self.data.distance * (text.length)) / 1000;
 
-            var propor_button = document.createElement("a-entity");
-            propor_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: "toggle-off.png", radius: button_radius});
-            propor_button.setAttribute("position", {x: 0, y: params.vertical_scale(self.data.rows - 0.35) + button_radius, z: -self.data.distance});
+                propor_text.setAttribute("value", text);
+                propor_text.setAttribute("align", "center");
+                propor_text.setAttribute("baseline", "top");
+                propor_text.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.text_color);
+                propor_text.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.text_font);
+                propor_text.setAttribute("wrapCount", text.length);
+                propor_text.setAttribute("width", width);
+                propor_text.setAttribute("position", {x: 0, y: params.vertical_scale(self.data.rows - 0.35) - button_radius * 0.5, z: -self.data.distance});
 
-            self.el.appendChild(propor_button);
+                self.el.appendChild(propor_text);
 
-            self.proportional = false;
+                // button
 
-            propor_button.addEventListener("clicked", function(){
+                var propor_button = document.createElement("a-entity");
+                propor_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: "toggle-off.png", radius: button_radius});
+                propor_button.setAttribute("position", {x: 0, y: params.vertical_scale(self.data.rows - 0.35) + button_radius, z: -self.data.distance});
 
-                console.log("CLICK");
+                self.el.appendChild(propor_button);
 
-                self.proportional = !self.proportional;
+                self.proportional = false;
 
-                if(self.proportional){
-                    propor_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: "toggle-on.png", radius: (DATAVERSE.dmms.plus_button * self.data.distance) / 1000});
+                propor_button.addEventListener("clicked", function () {
 
-                    self.treemaps.forEach(function(d,i){
+                    console.log("CLICK");
 
-                        var scale = Math.sqrt(d.components["treemap-viz"].data.treemap_data.value / d3.max(self.value_treemaps));
+                    self.proportional = !self.proportional;
+
+                    if (self.proportional) {
+                        propor_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: "toggle-on.png", radius: (DATAVERSE.dmms.plus_button * self.data.distance) / 1000});
+
+                        self.treemaps.forEach(function (d, i) {
+
+                            var scale = Math.sqrt(d.components["treemap-viz"].data.treemap_data.value / d3.max(self.value_treemaps));
 
 //                        console.log(d.components["treemap-viz"], d.components["treemap-viz"].data.treemap_data, d.components["treemap-viz"].data.treemap_data.value, scale, self.value_treemaps, self.parsed_data.treemap_counts);
 
-                        d.components["treemap-viz"].re_scale(scale);
+                            d.components["treemap-viz"].re_scale(scale);
 
-                    });
-                }
-                else {
-                    propor_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: "toggle-off.png", radius: (DATAVERSE.dmms.plus_button * self.data.distance) / 1000});
+                        });
+                    }
+                    else {
+                        propor_button.setAttribute("uipack-button", {'theme': self.data.theme, icon_name: "toggle-off.png", radius: (DATAVERSE.dmms.plus_button * self.data.distance) / 1000});
 
-                    self.treemaps.forEach(function(d,i){
+                        self.treemaps.forEach(function (d, i) {
 
-                        d.components["treemap-viz"].re_scale(1.0);
+                            d.components["treemap-viz"].re_scale(1.0);
 
-                    });
+                        });
 
-                }
+                    }
 
 
-            });
+                });
+            }
 
 
             self.el.emit("dv_loaded", null, false);
