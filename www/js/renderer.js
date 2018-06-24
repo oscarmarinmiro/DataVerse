@@ -80,7 +80,8 @@ DATAVERSE.renderer.prototype = {
             credits: self.actual_scene_data.credits ? self.actual_scene_data.credits: "",
             title: self.actual_scene_data.title,
             text: self.actual_scene_data.explain,
-            yaw: self.counter_cam_rotation
+            yaw: self.counter_cam_rotation,
+            auto_hide: ('autohide_intro' in self.actual_scene_data) ? (self.actual_scene_data.autohide_intro === "yes") : false
         });
 
         self.intro_panel.addEventListener("closed", function(){
