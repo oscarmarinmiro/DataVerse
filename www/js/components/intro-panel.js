@@ -207,12 +207,48 @@ AFRAME.registerComponent('intro-panel', {
 
         self.close.addEventListener("clicked", function(){
 
-            setTimeout(function() {
+            var sphere_animation = document.createElement("a-animation");
 
-                component.emit("closed", null, false);
+            sphere_animation.setAttribute("attribute", "opacity");
+            sphere_animation.setAttribute("dur", 3000);
+            sphere_animation.setAttribute("from", 1.0);
+            sphere_animation.setAttribute("to", 0.0);
+
+            self.back_sphere.appendChild(sphere_animation);
+
+            self.back_panel.parentNode.removeChild(self.back_panel);
+
+            self.text_panel.parentNode.removeChild(self.text_panel);
+
+            self.loaded_text.parentNode.removeChild(self.loaded_text);
+            self.close.parentNode.removeChild(self.close);
+
+
+//            var panel_animation = document.createElement("a-animation");
+//
+//            sphere_animation.setAttribute("attribute", "opacity");
+//            sphere_animation.setAttribute("dur", 3000);
+//            sphere_animation.setAttribute("from", 1.0);
+//            sphere_animation.setAttribute("to", 0.0);
+//
+//            self.back_sphere.appendChild(sphere_animation);
+
+
+            component.emit("closed", null, false);
+
+            sphere_animation.addEventListener("animationend", function() {
 
                 component.parentNode.removeChild(component);
-            }, 100);
+
+            });
+
+
+//            setTimeout(function() {
+//
+//                component.emit("closed", null, false);
+//
+//                component.parentNode.removeChild(component);
+//            }, 100);
 
         });
 
@@ -323,6 +359,14 @@ AFRAME.registerComponent('intro-panel', {
         var self = this;
 
         console.log("UPDATE INTRO PANEL", self.data);
+
+        self.back_sphere = document.createElement("a-sphere");
+
+        self.back_sphere.setAttribute("material", {shader: "flat", side: "back", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
+
+        self.back_sphere.setAttribute("radius", self.data.distance*1.5);
+
+        self.el.appendChild(self.back_sphere);
 
         self.back_panel = document.createElement("a-plane");
 

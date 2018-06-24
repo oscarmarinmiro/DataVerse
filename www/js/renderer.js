@@ -96,6 +96,25 @@ DATAVERSE.renderer.prototype = {
 
             self.actual_scene_component.setAttribute("visible", true);
 
+            // Set sky visibility
+
+            if(self.sky){
+                self.sky.setAttribute("visible", true);
+            }
+
+            if(self.floor){
+                self.floor.setAttribute("visible", true);
+            }
+
+
+            var myNodeList = document.querySelectorAll('.skyspheres');
+
+            [].forEach.call(myNodeList, function (item) {
+
+                item.setAttribute("visible", true);
+            });
+
+
 
 //            // Iterate through skyspheres
 //
@@ -178,7 +197,7 @@ DATAVERSE.renderer.prototype = {
         // self.camera.appendChild(self.cursor);
 
         // self.scene.appendChild(self.camera);
-        self.scene.appendChild(self.vive_controls);
+//        self.scene.appendChild(self.vive_controls);
         self.scene.appendChild(self.directional_light);
         self.scene.appendChild(self.ambient_light);
         self.scene.appendChild(self.intro_panel);
@@ -446,6 +465,9 @@ DATAVERSE.renderer.prototype = {
 
                 self.floor.classList.add("dataverse-added");
 
+                self.floor.setAttribute("visible", false);
+
+
 //                self.floor.setAttribute("opacity", 0.0);
 
                 self.scene.appendChild(self.floor);
@@ -463,6 +485,9 @@ DATAVERSE.renderer.prototype = {
                     self.floor.setAttribute("repeat", "100 100");
                     self.floor.setAttribute("rotation", {x:-90, y: self.counter_cam_rotation, z:0});
                     self.floor.classList.add("dataverse-added");
+
+                    self.floor.setAttribute("visible", false);
+
 
 //                    self.floor.setAttribute("opacity", 0.0);
 
@@ -501,6 +526,9 @@ DATAVERSE.renderer.prototype = {
 
                             self.floor.classList.add("dataverse-added");
 
+                            self.floor.setAttribute("visible", false);
+
+
 //                            self.floor.setAttribute("opacity", 0.0);
 
                             self.scene.appendChild(self.floor);
@@ -516,6 +544,8 @@ DATAVERSE.renderer.prototype = {
                             self.floor.setAttribute("repeat", "100 100");
                             self.floor.setAttribute("rotation", {x: -90, y: self.counter_cam_rotation, z: 0});
                             self.floor.classList.add("dataverse-added");
+
+                            self.floor.setAttribute("visible", false);
 
 //                            self.floor.setAttribute("opacity", 0.0);
 
@@ -554,6 +584,9 @@ DATAVERSE.renderer.prototype = {
                 self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
 
+                self.sky.setAttribute("visible", false);
+
+
                 self.scene.appendChild(self.sky);
 
 
@@ -567,6 +600,8 @@ DATAVERSE.renderer.prototype = {
                     self.sky.classList.add("dataverse-added");
 
                     self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
+
+                    self.sky.setAttribute("visible", false);
 
 //                    self.sky.setAttribute("opacity", 0.0);
 
@@ -595,6 +630,8 @@ DATAVERSE.renderer.prototype = {
 
 //                            self.sky.setAttribute("opacity", 0.0);
 
+                            self.sky.setAttribute("visible", false);
+
                             self.scene.appendChild(self.sky);
 
                         }
@@ -607,6 +644,8 @@ DATAVERSE.renderer.prototype = {
                             self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
 //                            self.sky.setAttribute("opacity", 0.0);
+
+                            self.sky.setAttribute("visible", false);
 
                             self.scene.appendChild(self.sky);
 

@@ -40,6 +40,9 @@ AFRAME.registerComponent('photo-viz', {
         // Match component rotation to sky...
 
         document.getElementsByTagName("a-sky")[0].setAttribute("rotation", {x:0, y: self.el.getAttribute("rotation").y, z:0});
+        document.getElementsByTagName("a-sky")[0].classList.add("skyspheres");
+//        document.getElementsByTagName("a-sky")[0].setAttribute("visible", false);
+
 
     },
 

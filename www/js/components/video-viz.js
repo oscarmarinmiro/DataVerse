@@ -271,12 +271,13 @@ AFRAME.registerComponent('video-viz', {
 
                 self.stereo_left_sphere = document.createElement("a-entity");
 
-                self.stereo_left_sphere.setAttribute("class", "videospheres dataverse-added");
+                self.stereo_left_sphere.setAttribute("class", "videospheres dataverse-added skyspheres");
 
                 self.stereo_left_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
 
                 self.stereo_left_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.stereo_left_sphere.setAttribute("scale", "-1 1 1");
+                self.stereo_left_sphere.setAttribute("visible", false);
 
                 // Sync rotation with 'camera landing rotation'
 
@@ -291,11 +292,14 @@ AFRAME.registerComponent('video-viz', {
 
                 self.stereo_right_sphere = document.createElement("a-entity");
 
-                self.stereo_right_sphere.setAttribute("class", "videospheres dataverse-added");
+                self.stereo_right_sphere.setAttribute("class", "videospheres dataverse-added skyspheres");
 
                 self.stereo_right_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
                 self.stereo_right_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.stereo_right_sphere.setAttribute("scale", "-1 1 1");
+
+                self.stereo_right_sphere.setAttribute("visible", false);
+
 
                 // Sync rotation with 'camera landing rotation'
 
@@ -345,11 +349,13 @@ AFRAME.registerComponent('video-viz', {
 
                 self.mono_sphere = document.createElement("a-entity");
 
-                self.mono_sphere.setAttribute("class", "videospheres dataverse-added");
+                self.mono_sphere.setAttribute("class", "videospheres dataverse-added skyspheres");
 
                 self.mono_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
                 self.mono_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.mono_sphere.setAttribute("scale", "-1 1 1");
+
+                self.mono_sphere.setAttribute("visible", false);
 
                 // Sync rotation with 'camera landing rotation'
 
