@@ -210,26 +210,47 @@ AFRAME.registerComponent('tilemap-viz', {
 
                         self.layer.on("load", function() {
 
+                            console.log("LOAD DISPARADO 1");
+
                             html2canvas(document.getElementById("map"), {
+
                                 useCORS: true,
                                 onrendered: function (canvas) {
 
-                                    self.el.appendChild(canvas);
+                                    console.log("LOAD DISPARADO 2");
+
+//                                    self.el.appendChild(canvas);
 
                                     console.log("RENDERED");
 
-                                    self.map_img = document.createElement('img');
-                                    self.map_img.setAttribute("id", "map_img");
-                                    var dimensions = self.map.getSize();
-                                    self.map_img.width = dimensions.x;
-                                    self.map_img.height = dimensions.y;
-                                    self.map_img.src = canvas.toDataURL();
+//                                    self.map_img = document.createElement('img');
+//                                    self.map_img.setAttribute("id", "map_img");
+//                                    var dimensions = self.map.getSize();
+//                                    self.map_img.width = dimensions.x;
+//                                    self.map_img.height = dimensions.y;
+//                                    self.map_img.src = canvas.toDataURL();
+//
+//                                    var assets = document.querySelector("a-assets");
+//
+//                                    assets.appendChild(self.map_img);
 
-                                    var assets = document.querySelector("a-assets");
+                                    var interval_function = function() {
 
-                                    assets.appendChild(self.map_img);
+                                        self.map_texture = new THREE.CanvasTexture(canvas);
 
-                                    self.update();
+
+                                        self.update();
+
+                                    };
+
+
+                                    setTimeout(interval_function, 1000);
+
+
+//                                    self.map_texture = new THREE.CanvasTexture(canvas);
+//
+//
+//                                    self.update();
 
 
                                     //                            document.getElementById('images').innerHTML = '';
@@ -243,6 +264,9 @@ AFRAME.registerComponent('tilemap-viz', {
 //                            leafletImage(self.map, function(err, canvas) {
 //
 //
+//                                    console.log("MAPIN 1");
+//
+//
 //                                    var map_img = document.createElement('img');
 //                                    map_img.setAttribute("id", "map_img");
 //                                    var dimensions = self.map.getSize();
@@ -250,15 +274,21 @@ AFRAME.registerComponent('tilemap-viz', {
 //                                    map_img.height = dimensions.y;
 //                                    map_img.src = canvas.toDataURL();
 //
+//                                    console.log("MAPIN 2");
+//
+//
 //                                    var assets = document.querySelector("a-assets");
 //
 //                                    assets.appendChild(map_img);
 //
 //                                    self.map_img = map_img;
 //
+//                                    console.log("MAPIN 3");
+//
+//
 //                                    self.update();
 //                            });
-//
+
 
 //                    var interval_function = function() {
 //
@@ -598,7 +628,7 @@ AFRAME.registerComponent('tilemap-viz', {
         console.log("UPDATING COMPONENT", self, self.data, self.prepared_data);
 
 
-        if((self.prepared_data !== undefined) && (typeof(self.map_img) !== "undefined")) {
+        if((self.prepared_data !== undefined) && (typeof(self.map_texture) !== "undefined")) {
 
             // Iterate through objects and titles and delete them
 
@@ -656,15 +686,30 @@ AFRAME.registerComponent('tilemap-viz', {
 //            self.plane.setAttribute("width", self.data.size);
 //            self.plane.setAttribute("height", self.data.size);
             self.plane.setAttribute("radius", self.data.size/2);
-            self.plane.setAttribute("shader", "flat");
 
-            self.plane.setAttribute("src", "#map_img");
+//            self.plane.setAttribute("shader", "flat");
+//
+//            self.plane.setAttribute("src", "#map_img");
 
-            self.plane.setAttribute("shadow", {receive: true});
+//            self.plane.setAttribute("shadow", {receive: true});
 
 //            self.plane.setAttribute.src="#map_img";
 
             self.el.appendChild(self.plane);
+
+            console.log("ANTES DE LOADED");
+
+            self.plane.addEventListener("loaded", function(evt){
+
+                self.plane.getObject3D('mesh').material = new THREE.MeshBasicMaterial({ map: self.map_texture});
+
+//                self.map_texture.needsUpdate = true;
+
+//                self.plane.getOrCreateObject3D('mesh').material = new THREE.MeshBasicMaterial({map: self.map_texture});
+
+            });
+
+            console.log("DESPUES DE LOADED");
 
             self.el.emit("dv_loaded", null, false);
 
@@ -675,7 +720,11 @@ AFRAME.registerComponent('tilemap-viz', {
         var self = this;
 
         self.map_div.parentNode.removeChild(self.map_div);
-        self.map_img.parentNode.removeChild(self.map_img);
+
+        if(self.map_texture){
+//            console.log("DISPOSING TEXTURE");
+//            self.map_texture.dispose();
+        }
 
     }
 });

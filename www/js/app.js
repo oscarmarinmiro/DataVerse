@@ -26,6 +26,13 @@ DATAVERSE.main = function(options) {
 
         body.appendChild(interstitial);
 
+        var interstitial_image = document.createElement("div");
+
+        interstitial_image.setAttribute("id", "dataverse-interstitial-image");
+        interstitial_image.classList.add("dataverse-added");
+
+        body.appendChild(interstitial_image);
+
         document.getElementById("dataverse-interstitial").addEventListener("click", function(){
 
             var scene = document.querySelector("a-scene");
@@ -34,7 +41,23 @@ DATAVERSE.main = function(options) {
 
             this.parentNode.removeChild(this);
 
+            interstitial_image.parentNode.removeChild(interstitial_image);
+
         });
+
+        document.getElementById("dataverse-interstitial-image").addEventListener("click", function(){
+
+            var scene = document.querySelector("a-scene");
+
+            scene.style.display = "block";
+
+            this.parentNode.removeChild(this);
+
+            interstitial.parentNode.removeChild(interstitial);
+
+
+        });
+
 
 
         // Insert loading symbols

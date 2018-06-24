@@ -10,6 +10,22 @@ html {
     bottom: 0!important;
     position: fixed!important;
     background-color: black;
+    /*background: url(../img/splashscreen-horizontal.png);*/
+    background-repeat: no-repeat;
+    background-size: 512px 512px;
+    background-position: center;
+}
+
+
+#dataverse-interstitial-image {
+    width: 100%!important;
+    height: 100%!important;
+    top: 0!important;
+    left: 0!important;
+    right: 0!important;
+    bottom: 0!important;
+    position: fixed!important;
+    background-color: black;
     background: url(../img/splashscreen-horizontal.png);
     background-repeat: no-repeat;
     background-size: 512px 512px;
