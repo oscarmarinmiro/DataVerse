@@ -2,51 +2,6 @@
  * Created by Oscar on 11/03/17.
  */
 
-AFRAME.registerComponent("info-panel", {
-    schema: {
-        jsonData:{
-            parse: JSON.parse,
-            stringify: JSON.stringify
-        },
-        position: {type: "vec3", default: {x:0, y:0, z:0}
-
-        }
-    }
-});
-
-AFRAME.registerComponent("dimmify", {
-
-    schema:{
-
-    },
-
-    init: function(){
-
-    },
-    update: function(){
-
-    },
-    tick: function(){
-        var self = this;
-
-        // Get distance to camera ...
-
-//        var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
-//        var el_position = self.el.getAttribute("position");
-//
-//        var distance = new THREE.Vector3(cam_position.x, cam_position.y, cam_position.z).distanceTo(new THREE.Vector3(el_position.x, el_position.y, el_position.z));
-
-
-        var distance = DATAVERSE_VIZ_AUX.get_distance(self.el.sceneEl.camera.el, self.el);
-
-        // And adjust scale
-
-        self.el.setAttribute("scale", {x: 0.001*distance, y: 0.001*distance, z: 0.001*distance});
-
-
-    }
-
-});
 
 AFRAME.registerComponent("face-camera",{
 
@@ -167,6 +122,8 @@ AFRAME.registerComponent('tilemap-viz', {
         tab: {type: 'string', default: ""},
         theme: {'type': 'string', default: ""},
         provider: {type: 'string', default: "CartoDB.Positron"},
+        // This is just an adjustment to always have an unmutable reference to default provider
+        default_provider: {type: 'string', default: "CartoDB.Positron"},
         lat: {type: 'float', default: 51.4825757},
         long: {type: 'float', default: -0.0164351},
         zoom: {type: 'number', default: 18},
@@ -228,7 +185,22 @@ AFRAME.registerComponent('tilemap-viz', {
                     console.log("LATLONG", self.data.lat, self.data.long, self.data.zoom);
 
                     self.map = L.map('map').setView([self.data.lat, self.data.long], self.data.zoom);
-                    self.layer = L.tileLayer.provider(self.data.theme ? DATAVERSE.themes[self.data.theme].map_provider : self.data.provider);
+
+                    // If provider comes thorught sheet params ==> self.data.theme && self.data.provider !== "CartoDB.Positron"
+
+                    if(self.data.theme && self.data.provider !== self.data.default_provider){
+
+                        self.layer = L.tileLayer.provider(self.data.provider, {crossOrigin: true});
+
+                    }
+                    else {
+
+                        self.layer = L.tileLayer.provider(self.data.theme ? DATAVERSE.themes[self.data.theme].map_provider : self.data.provider, {crossOrigin: true});
+                    }
+
+                    console.log("CROSSORIGIN", self.layer.options.crossOrigin, self.data.provider);
+
+
 
                     self.layer.addTo(self.map);
 
