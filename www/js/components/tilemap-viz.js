@@ -133,6 +133,7 @@ AFRAME.registerComponent('tilemap-viz', {
         text_color: {type: 'string', default: "white"},
         text_font: {type: 'string', default: "roboto"},
         text_background: {type: 'string', default: "black"},
+        text_attribution_color: {type: 'string', default: "#48a4cd"},
         map_y: {type: 'float', default: 0.0}
     },
 
@@ -199,6 +200,9 @@ AFRAME.registerComponent('tilemap-viz', {
                     }
 
                     console.log("CROSSORIGIN", self.layer.options.crossOrigin, self.data.provider);
+
+
+                    console.log("TILELAYER", self.layer.options.attribution);
 
 
 
@@ -618,6 +622,53 @@ AFRAME.registerComponent('tilemap-viz', {
 
     },
 
+    put_attribution: function(){
+
+        var self = this;
+
+        console.log("SETTING ATTRIBUTION", self.layer.options.attribution);
+
+        var attr_string = self.layer.options.attribution;
+
+        // Convert copyright to (c)
+
+        attr_string = attr_string.replace(/&copy;/gi, "(c)");
+        attr_string = attr_string.replace(/&mdash;/gi, "--");
+
+        // Remove links
+
+        attr_string = attr_string.replace(/<.*?>/gi, "");
+
+        console.log("ATTR 1", attr_string);
+
+
+        var text = document.createElement("a-entity");
+
+
+        var text_width = (DATAVERSE.dmms.map_attribution * (1.6) * (attr_string.length + 2)) / 1000;
+
+
+        text.setAttribute("text", {value: attr_string, align: "center",
+            color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_attribution_color : self.data.text_attribution_color,
+            font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.label_font,
+            width: text_width, wrapCount: attr_string.length + 2, zOffset: 0.01});
+
+
+        var label_height = (DATAVERSE.dmms.map_attribution * (1.6) / 1000)*3;
+
+        text.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+
+        text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.text_background, shader: "flat", opacity: 0.5, transparent: true});
+
+
+
+        text.setAttribute("position", {x:0, y: 0.1, z:0});
+        text.setAttribute("rotation", {x:-90, y: 0, z:0});
+
+        self.el.appendChild(text);
+
+    },
+
 
     // Create or update geometry
 
@@ -708,6 +759,10 @@ AFRAME.registerComponent('tilemap-viz', {
 //                self.plane.getOrCreateObject3D('mesh').material = new THREE.MeshBasicMaterial({map: self.map_texture});
 
             });
+
+            // Set attribution text
+
+            self.put_attribution();
 
             console.log("DESPUES DE LOADED");
 

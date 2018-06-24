@@ -28,7 +28,8 @@ DATAVERSE.dmms = {
     'sublabel': 16,
     'subtitle': 12,
     'min_text': 1,
-    'map_label': 8
+    'map_label': 8,
+    'map_attribution': 20
 };
 
 DATAVERSE.animation = {

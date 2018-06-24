@@ -12,6 +12,7 @@ DATAVERSE.themes =
         'text_background': '#313037',
 //https://aframe.io/docs/0.8.0/components/text.html
         'text_font': 'exo2bold',
+        'text_attribution_color': '#48a4cd',
         'map_provider': 'CartoDB.DarkMatter',
         'earth_texture': 'themes/dark/textures/8081-earthmap10k.new.jpg',
         'timeline_color': '#313037',
@@ -36,6 +37,7 @@ DATAVERSE.themes =
         'icon_path': 'themes/light/icons',
         'text_color': '#313037',
         'text_background': '#E5E8F2',
+        'text_attribution_color': '#48a4cd',
         'text_font': 'exo2bold',
         'map_provider': 'CartoDB.Positron',
         'earth_texture': 'themes/light/textures/8081-earthmap10k.new.jpg',
