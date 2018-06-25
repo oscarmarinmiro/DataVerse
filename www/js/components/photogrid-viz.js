@@ -36,7 +36,7 @@ AFRAME.registerComponent('photogrid-viz', {
         rows: {type: 'int', default: 3},
         distance: {type: 'float', default: 10.0},
         form_factor_x: {type: 'float', default: 1.25},
-        form_factor_y: {type: 'float', default: 1.6}
+        form_factor_y: {type: 'float', default: 1.8}
     },
 
     init: function () {
@@ -118,7 +118,7 @@ AFRAME.registerComponent('photogrid-viz', {
 
         label.setAttribute("wrap-count", max_title_length);
 
-        label.setAttribute("position", {x: 0, y: params.thumbnail_size*0.6, z:0});
+        label.setAttribute("position", {x: 0, y: -params.thumbnail_size*0.6, z:0});
 
         label.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.text_color);
         label.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.text_font);
@@ -141,7 +141,7 @@ AFRAME.registerComponent('photogrid-viz', {
 
             more_button.setAttribute("uipack-button", { theme: self.data.theme, icon_name: 'plus.png', radius: radius});
 
-            more_button.setAttribute("position", {x: 0, y: ((params.thumbnail_size * self.data.form_factor_y) / 2) * 1.05, z: 0});
+            more_button.setAttribute("position", {x: 0, y: ((params.thumbnail_size) / 2)  + (radius*1.5) , z: 0});
 
             thumbnail_component.appendChild(more_button);
 
@@ -191,7 +191,6 @@ AFRAME.registerComponent('photogrid-viz', {
                     yaw: yaw,
                     distance: DATAVERSE.distances.panel,
                     theme: self.data.theme,
-                    distance: 1.5,
                     title: thumbnail.headline,
                     subtitle: "",
                     text: thumbnail.text,
