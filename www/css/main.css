@@ -31,3 +31,16 @@ html {
     background-size: 512px 512px;
     background-position: center;
 }
+
+#dataverse-interstitial-message {
+    width: 100% !important;
+    text-align: center;
+    top: 66% !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    position: fixed !important;
+    color: red;
+    background-color: black;
+    font-family: Arial;
+}

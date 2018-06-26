@@ -165,6 +165,39 @@ DATAVERSE.main.prototype = {
         console.log("CROAK");
         console.log(message);
 
+        // Insert interstitial
+
+        var body = document.querySelector("body");
+
+        var interstitial = document.createElement("div");
+        interstitial.setAttribute("id", "dataverse-interstitial");
+        interstitial.classList.add("dataverse-added");
+
+        body.appendChild(interstitial);
+
+        var interstitial_image = document.createElement("div");
+
+        interstitial_image.setAttribute("id", "dataverse-interstitial-image");
+        interstitial_image.classList.add("dataverse-added");
+
+        body.appendChild(interstitial_image);
+
+
+        var interstitial_message = document.createElement("div");
+
+        interstitial_message.setAttribute("id", "dataverse-interstitial-message");
+        interstitial_message.classList.add("dataverse-added");
+
+        interstitial_message.innerHTML = "Error => " + message;
+
+        body.appendChild(interstitial_message);
+
+
+        var scene = document.querySelector("a-scene");
+
+        scene.style.display = "none";
+
+
     }
 };
 

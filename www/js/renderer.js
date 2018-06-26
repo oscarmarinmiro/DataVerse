@@ -237,7 +237,7 @@ DATAVERSE.renderer.prototype = {
 
                 theme: self.theme,
 
-                icons: icons.icons,  buttons: []
+                icons: icons.icons,  buttons: [], open:true
 
             });
 
@@ -384,9 +384,9 @@ DATAVERSE.renderer.prototype = {
 
         // Check that component is registered, else.. croack
 
-        if(!(self.actual_scene_data.type in AFRAME.components)){
+        if((self.actual_scene_data === undefined) || (!(self.actual_scene_data.type in AFRAME.components))){
 
-            self.main.croak("Invalid type of scene in row " + (self.main.state.state.actual_scene + 2) + ": " + self.actual_scene_data.type);
+            self.main.croak("Invalid type of scene in row or nonexistent scene: " + (self.main.state.state.actual_scene));
 
         }
         else {
