@@ -75,13 +75,17 @@ DATAVERSE.renderer.prototype = {
 
         self.intro_panel.classList.add("dataverse-added");
 
+        var already_visited_scene = self.main.state.state.actual_scene in self.main.state.state.visited_scenes;
+
+        console.log("ALREADY VISITED", already_visited_scene);
+
         self.intro_panel.setAttribute("intro-panel", {
             theme: self.theme,
             credits: self.actual_scene_data.credits ? self.actual_scene_data.credits: "",
             title: self.actual_scene_data.title,
             text: self.actual_scene_data.explain,
             yaw: self.counter_cam_rotation,
-            auto_hide: ('autohide_intro' in self.actual_scene_data) ? (self.actual_scene_data.autohide_intro === "yes") : false
+            auto_hide: already_visited_scene ? true : (('autohide_intro' in self.actual_scene_data) ? (self.actual_scene_data.autohide_intro === "yes") : false)
         });
 
         self.intro_panel.addEventListener("closed", function(){
@@ -739,6 +743,11 @@ DATAVERSE.renderer.prototype = {
             // Set scene
 
             self.main.urls.set_params({scene: self.main.state.state.actual_scene});
+
+
+            self.main.state.state.visited_scenes[self.main.state.state.actual_scene] = true;
+
+            console.log("VISITED SCENES", self.main.state.state.visited_scenes);
 
             // React on 'link'
 
