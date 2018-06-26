@@ -65,7 +65,7 @@ AFRAME.registerSystem('timeline-viz', {
         self.audio_analyser = {
             width: 1024,
             height: 1024
-        }
+        };
 
     },
 
@@ -282,6 +282,8 @@ AFRAME.registerComponent('timeline-viz', {
     init: function () {
 
         var self = this;
+
+        self.panel_timestamp = Date.now();
 
         // Load timeline data and 'prepare' it for rendering
 
@@ -603,7 +605,7 @@ AFRAME.registerComponent('timeline-viz', {
                     link: datum.original_datum.link,
                     link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.original_datum.link, self.scene_data),
                     link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.original_datum.link, self.scene_data),
-                    id: "slide_" + i
+                    id: "slide_" + i + "_" + self.panel_timestamp
                 });
 
                 self.media_panel.addEventListener("link", function(data){
@@ -645,44 +647,6 @@ AFRAME.registerComponent('timeline-viz', {
 
             var assets = document.getElementsByTagName("a-assets")[0];
 
-//            // Assume an image if background contains a dot
-//
-//            if(self.data.background!== "") {
-//
-//                if (self.data.background.indexOf('.') != -1) {
-//
-//                    self.sky_img = document.createElement("img");
-//                    self.sky_img.setAttribute("src", self.data.background);
-//                    self.sky_img.setAttribute("id", "sky_img");
-//                    assets.appendChild(self.sky_img);
-//
-//                    if (document.querySelectorAll("a-sky").length > 0) {
-//                        document.querySelectorAll("a-sky")[0].setAttribute("src", "#sky_img");
-//                        document.querySelectorAll("a-sky")[0].removeAttribute("color");
-//                    }
-//                    else {
-//                        var sky = document.createElement("a-sky");
-//                        sky.setAttribute("src", "#sky_img");
-//
-//                        self.el.sceneEl.appendChild(sky);
-//                    }
-//
-//                }
-//                else {
-//
-//                    if (document.querySelectorAll("a-sky").length > 0) {
-//                        document.querySelectorAll("a-sky")[0].setAttribute("color", self.data.background);
-//                    }
-//                    else {
-//                        var sky = document.createElement("a-sky");
-//                        sky.setAttribute("color", self.data.background);
-//
-//                        self.el.sceneEl.appendChild(sky);
-//                    }
-//
-//                }
-//            }
-
             self.render_timeline();
 
 
@@ -709,49 +673,6 @@ AFRAME.registerComponent('timeline-viz', {
             }
 
             self.rendered = true;
-
-//            // insert a media_panel with datum, distance and yaw
-//
-//            self.media_panel = document.createElement("a-entity");
-//
-//            var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
-//
-//            var vertical_offset = distance*Math.tan(THREE.Math.degToRad(self.data.panel_height/2.0)) + self.data.panel_elevation;
-//
-//            self.media_panel.setAttribute("position", {x: cam_position.x, y:cam_position.y, z: cam_position.z});
-//
-//            self.media_panel.setAttribute("shadow", {cast: true});
-//
-//            console.log("DATUM!", datum);
-//
-//            self.media_panel.setAttribute("uipack-mediapanel", {
-//                yaw: yaw,
-//                height: self.data.panel_height,
-//                theme: self.data.theme,
-//                low_height: (self.data.height*2),
-//                distance: distance,
-//                title: datum.title,
-//                subtitle: "",
-//                text: datum.text,
-//                media_url: datum.media.url,
-//                media_caption: datum.media.caption,
-//                media_credit: datum.media.credits,
-//                link: datum.original_datum.link,
-//                link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.original_datum.link, self.scene_data),
-//                link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.original_datum.link, self.scene_data),
-//                id: "slide_" + "-1"
-//            });
-//
-//            self.media_panel.addEventListener("link", function(data){
-//                self.el.emit("link", {link: data.detail.link}, false);
-//
-//                console.log("LINKANDO A ", data.detail.link);
-//            });
-//
-//
-//            self.el.sceneEl.appendChild(self.media_panel);
-//
-//            self.el.sceneEl.media_panel = self.media_panel;
 
             self.el.emit("dv_loaded", null, false);
 

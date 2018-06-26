@@ -52,6 +52,8 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
         var self = this;
 
+        self.panel_timestamp = Date.now();
+
         // Load network data and 'prepare' it for rendering
 
         if (self.data.source !== "") {
@@ -246,7 +248,8 @@ AFRAME.registerComponent('isotypes-radial-viz', {
                         link: info.link,
                         link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(info.link, self.scene_data),
                         link_type: DATAVERSE_VIZ_AUX.get_scene_type(info.link, self.scene_data),
-                        id: "isotype" + sequence
+                        id: "isotype" + sequence + "_" + self.panel_timestamp
+
                     });
 
                     self.media_panel.addEventListener("link", function(data){

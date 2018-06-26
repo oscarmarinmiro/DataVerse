@@ -33,6 +33,8 @@ AFRAME.registerComponent('treemap-viz', {
 
         console.log("INIT TREEMAP", self.data);
 
+        self.panel_timestamp = Date.now();
+
     },
     re_scale: function(value){
         var self = this;
@@ -337,7 +339,7 @@ AFRAME.registerComponent('treemap-viz', {
                         theme: self.data.theme,
                         distance: DATAVERSE.distances.panel,
                         title: datum.headline,
-                        subtitle: "subtitle",
+                        subtitle: "",
                         text: datum.text,
                         media_url: datum.media,
                         media_caption: datum.media_caption,
@@ -345,7 +347,8 @@ AFRAME.registerComponent('treemap-viz', {
                         link: datum.link,
                         link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.link, self.scene_data),
                         link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.link, self.scene_data),
-                        id: "treemap_" + self.data.id
+                        id: "treemap_" + self.data.id + "_" + self.panel_timestamp
+
                     });
 
                     self.media_panel.addEventListener("link", function(data){

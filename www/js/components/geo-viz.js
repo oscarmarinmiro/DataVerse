@@ -55,6 +55,8 @@ AFRAME.registerComponent('geo-viz', {
 
         self.rendered = false;
 
+        self.panel_timestamp = Date.now();
+
         // Load network data and 'prepare' it for rendering
 
         if (self.data.source !== "") {
@@ -350,6 +352,8 @@ AFRAME.registerComponent('geo-viz', {
 
         var component = self;
 
+        var panel_timestamp = self.panel_timestamp;
+
         // Launch mediapanel
 
         point.addEventListener("clicked", function(event){
@@ -395,6 +399,8 @@ AFRAME.registerComponent('geo-viz', {
 
                 console.log("DATUM!", datum);
 
+                console.log("PANEL TIMESTAMP", self.panel_timestamp);
+
                 self.media_panel.classList.add("dataverse-added");
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
@@ -409,7 +415,8 @@ AFRAME.registerComponent('geo-viz', {
                     link: datum.link,
                     link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.link, component.scene_data),
                     link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.link, component.scene_data),
-                    id: "point_" + index
+                    id: "point_" + index + "_" + panel_timestamp
+
                 });
 
                 self.media_panel.addEventListener("link", function(data){

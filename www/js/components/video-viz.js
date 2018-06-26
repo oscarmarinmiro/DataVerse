@@ -24,6 +24,9 @@ AFRAME.registerComponent('video-viz', {
 
         console.log("INIT COMPONENT", self);
 
+        self.video_timestamp = Date.now();
+
+
 //        // Create a sky if there is none present
 //
 //        if(document.getElementsByTagName("a-sky").length == 0){
@@ -244,7 +247,7 @@ AFRAME.registerComponent('video-viz', {
 
                 console.log("DIBUJANDO ESTEREO");
 
-                var video_id = "stereo_video" + "_" + Math.floor((Math.random() * 1000000000) + 1);
+                var video_id = "stereo_video" + "_" + self.video_timestamp;
 
                 var scene = document.getElementsByTagName("a-scene")[0];
                 var assets = document.getElementsByTagName("a-assets")[0];
@@ -324,7 +327,7 @@ AFRAME.registerComponent('video-viz', {
             else {
                 console.log("DIBUJANDO MONO");
 
-                var video_id = "mono_video" + "_" + Math.floor((Math.random() * 1000000000) + 1);
+                var video_id = "mono_video" + "_" + self.video_timestamp;
 
                 var scene = document.getElementsByTagName("a-scene")[0];
                 var assets = document.getElementsByTagName("a-assets")[0];

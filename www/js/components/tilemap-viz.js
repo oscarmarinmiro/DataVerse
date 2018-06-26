@@ -143,6 +143,8 @@ AFRAME.registerComponent('tilemap-viz', {
 
         console.log("INIT COMPONENT", self);
 
+        self.panel_timestamp = Date.now();
+
         // Undo rotation from renderer :) TODO: It's super problematic here, how to ammend instead of removing it???
 
         self.el.setAttribute("rotation", {x:0, y:0, z:0});
@@ -528,7 +530,8 @@ AFRAME.registerComponent('tilemap-viz', {
                 link: datum.link,
                 link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.link, self.scene_data),
                 link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.link, self.scene_data),
-                id: "marker_" + number
+                id: "marker_" + number + "_" +  self.panel_timestamp
+
             });
 
             self.media_panel.addEventListener("link", function(data){

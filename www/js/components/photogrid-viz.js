@@ -43,6 +43,8 @@ AFRAME.registerComponent('photogrid-viz', {
 
         var self = this;
 
+        self.panel_timestamp = Date.now();
+
         self.rendered = false;
 
         console.log("INIT SMALL TREEMAP COMPONENT", self.data);
@@ -200,7 +202,8 @@ AFRAME.registerComponent('photogrid-viz', {
                     link: thumbnail.link,
                     link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(thumbnail.link, self.scene_data),
                     link_type: DATAVERSE_VIZ_AUX.get_scene_type(thumbnail.link, self.scene_data),
-                    id: "treemap_" + i + "_" + j
+                    id: "treemap_" + i + "_" + j + "_" + self.panel_timestamp
+
                 });
 
                 self.media_panel.addEventListener("link", function(data){
