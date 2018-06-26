@@ -181,32 +181,55 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     // On transport bar click, get point clicked, infer % of new pointer, and make video seek to that point
 
-    this.bar.addEventListener('click', function (event) {
+    self.first_hover = true;
 
-        // Get raycast intersection point, and from there, x_offset in bar
+    this.bar.addEventListener('raycaster-intersected', function (event) {
 
-        var point = document.querySelector("a-cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
+        if(self.first_hover) {
 
-        var x_offset = this.object3D.worldToLocal(point).x;
 
-        var unit_offset = (x_offset/self.real_bar_width)+0.5;
+            self.first_hover = false;
 
-        // Update current step for coherence between point+click and key methods
 
-        self.current_step = Math.round(unit_offset*self.bar_steps);
+            // Get raycast intersection point, and from there, x_offset in bar
 
-        if(self.video_el.readyState > 0) {
+            var point = document.querySelector("a-cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
 
-            self.video_el.currentTime = unit_offset * self.video_el.duration;
+            var x_offset = this.object3D.worldToLocal(point).x;
+
+            var unit_offset = (x_offset / self.real_bar_width) + 0.5;
+
+            // Update current step for coherence between point+click and key methods
+
+            self.current_step = Math.round(unit_offset * self.bar_steps);
+
+            var timeout_function = function(){
+                if (self.video_el.readyState > 0) {
+                    self.video_el.currentTime = unit_offset * self.video_el.duration;
+                }
+
+            };
+
+
+            self.ray_timeout = setTimeout(timeout_function, 300);
+
+            // Prevent propagation upwards (e.g: canvas click)
+
+            event.stopPropagation();
+
+            event.preventDefault();
         }
 
-        // Prevent propagation upwards (e.g: canvas click)
+    });
 
-        event.stopPropagation();
+    this.bar.addEventListener('raycaster-intersected-cleared', function(event){
 
-        event.preventDefault();
+         self.first_hover = true;
+
+         clearTimeout(self.ray_timeout);
 
     });
+
 
     this.back_plane = document.createElement("a-plane");
 
