@@ -55,10 +55,17 @@ DATAVERSE.renderer.prototype = {
                 credits: self.actual_scene_data.credits ? self.actual_scene_data.credits : "",
                 title: self.actual_scene_data.title,
                 text: self.actual_scene_data.explain,
-                yaw: self.counter_cam_rotation,
+                yaw: self.counter_cam_rotation
             });
 
             self.scene.appendChild(self.intro_panel);
+
+            self.intro_panel.addEventListener("closed", function(){
+                 self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+            });
+        }
+        else{
+             self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
         }
 
      },
@@ -734,8 +741,6 @@ DATAVERSE.renderer.prototype = {
             self.actual_scene_component.addEventListener("dv_loaded", function(evt){
 
 //                console.log("EL COMPONENTE HA ACABADO DE CARGARSE ", self.intro_panel.components);
-
-                self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
 
                 // Set component visibility
 

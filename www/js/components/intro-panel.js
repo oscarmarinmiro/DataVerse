@@ -176,9 +176,13 @@ AFRAME.registerComponent('intro-panel', {
                     self.close.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'times-circle.png', 'radius': DATAVERSE.dmms.close_button * self.data.distance / 1000});
                     self.close.setAttribute("position", {x: 0, y: -(self.height / 2), z: -self.data.distance * self.constants.overlap_factor});
 
+                    self.close.classList.add("non_click_while_loading");
+
                     var component = self.el;
 
                     self.close.addEventListener("clicked", function () {
+
+                        self.el.emit("closed");
 
                         component.parentNode.removeChild(component);
                     });
