@@ -200,7 +200,7 @@ AFRAME.registerComponent('intro-panel', {
 
         if(self.data.auto_hide) {
 
-            setTimeout(function() {
+//            setTimeout(function() {
 
                 var sphere_animation = document.createElement("a-animation");
 
@@ -226,7 +226,7 @@ AFRAME.registerComponent('intro-panel', {
                     self.el.parentNode.removeChild(self.el);
 
                 });
-            }, 2000);
+//            }, 2000);
         }
         else {
 

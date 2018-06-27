@@ -1223,7 +1223,9 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             };
 
-            setTimeout(function(){self.el.parentNode.removeChild(self.el); }, 100);
+//            setTimeout(function(){self.el.parentNode.removeChild(self.el); }, 100);
+
+            self.el.parentNode.removeChild(self.el);
 
         });
 

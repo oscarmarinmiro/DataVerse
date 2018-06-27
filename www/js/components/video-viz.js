@@ -280,7 +280,7 @@ AFRAME.registerComponent('video-viz', {
 
                 self.stereo_left_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.stereo_left_sphere.setAttribute("scale", "-1 1 1");
-                self.stereo_left_sphere.setAttribute("visible", false);
+//                self.stereo_left_sphere.setAttribute("visible", false);
 
                 // Sync rotation with 'camera landing rotation'
 
@@ -301,7 +301,9 @@ AFRAME.registerComponent('video-viz', {
                 self.stereo_right_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.stereo_right_sphere.setAttribute("scale", "-1 1 1");
 
+/*
                 self.stereo_right_sphere.setAttribute("visible", false);
+*/
 
 
                 // Sync rotation with 'camera landing rotation'
@@ -358,7 +360,7 @@ AFRAME.registerComponent('video-viz', {
                 self.mono_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.mono_sphere.setAttribute("scale", "-1 1 1");
 
-                self.mono_sphere.setAttribute("visible", false);
+//                self.mono_sphere.setAttribute("visible", false);
 
                 // Sync rotation with 'camera landing rotation'
 

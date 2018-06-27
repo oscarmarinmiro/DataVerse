@@ -493,7 +493,7 @@ AFRAME.registerComponent('geo-viz', {
 
         self.map_sphere.classList.add("skyspheres");
         self.map_sphere.classList.add("dataverse-added");
-        self.map_sphere.setAttribute("visible", false);
+//        self.map_sphere.setAttribute("visible", false);
 
         self.map_sphere.setAttribute("geometry", {primitive: "sphere", radius:self.data.radius, segmentsWidth: 64, segmentsHeight:64});
         self.map_sphere.setAttribute("material", {shader: "flat", src: "#skymap", side: "back"});
