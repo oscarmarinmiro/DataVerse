@@ -36,95 +36,95 @@ AFRAME.registerComponent('uipack-button', {
 
     self.first_hover = true;
 
-    this.el.addEventListener('click', function(event){
-                self.el.emit("clicked", null, false);
-    });
+//    this.el.addEventListener('click', function(event){
+//                self.el.emit("clicked", null, false);
+//    });
 
-//    this.el.addEventListener('raycaster-intersected', function(event){
-//
-//
-//        // First 'fresh' hover
-//
-//        if(self.first_hover) {
-//
-//            // Insert ring for animation on hover
-//
-//            self.ring = document.createElement("a-ring");
-//            self.ring.setAttribute("radius-inner", self.data.radius * 1.0);
-//            self.ring.setAttribute("radius-outer", self.data.radius * 1.2);
-//            self.ring.setAttribute("material", "color:" + (self.data.theme ? DATAVERSE.themes[self.data.theme].arc_color : self.data.arc_color));
-//            self.ring.setAttribute("visible", true);
-//
-//            // Create animation
-//
-//            self.animation = document.createElement("a-animation");
-//            self.animation.setAttribute("easing", "linear");
-//            self.animation.setAttribute("attribute", "geometry.thetaLength");
-//            self.animation.setAttribute("dur", DATAVERSE.animation.button);
-//            self.animation.setAttribute("from", "0");
-//            self.animation.setAttribute("to", "360");
-//
-//            self.ring.appendChild(self.animation);
-//
-//            self.el.appendChild(self.ring);
-//
-//            self.first_hover = false;
-//
-////                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
-////
-////                sound.play();
-//
-//
-//            // Change cursor color and scale
-//
-////            self.original_cursor_color = event.detail.el.getAttribute("material").color;
-////
-////
-////            event.detail.el.setAttribute("material", "color:white");
-//
-//            // event.detail.el.setAttribute("scale", "2 2 2");
-//
-//            // Emit 'clicked' on ring animation end
-//
-//            self.animation.addEventListener("animationend", function () {
-//
-//                console.log("CLICK!!");
-//
-//                setTimeout(function() { self.first_hover = true; }, 500);
-//
-//                var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
+    this.el.addEventListener('raycaster-intersected', function(event){
+
+
+        // First 'fresh' hover
+
+        if(self.first_hover) {
+
+            // Insert ring for animation on hover
+
+            self.ring = document.createElement("a-ring");
+            self.ring.setAttribute("radius-inner", self.data.radius * 1.0);
+            self.ring.setAttribute("radius-outer", self.data.radius * 1.2);
+            self.ring.setAttribute("material", "color:" + (self.data.theme ? DATAVERSE.themes[self.data.theme].arc_color : self.data.arc_color));
+            self.ring.setAttribute("visible", true);
+
+            // Create animation
+
+            self.animation = document.createElement("a-animation");
+            self.animation.setAttribute("easing", "linear");
+            self.animation.setAttribute("attribute", "geometry.thetaLength");
+            self.animation.setAttribute("dur", DATAVERSE.animation.button);
+            self.animation.setAttribute("from", "0");
+            self.animation.setAttribute("to", "360");
+
+            self.ring.appendChild(self.animation);
+
+            self.el.appendChild(self.ring);
+
+            self.first_hover = false;
+
+//                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
 //
 //                sound.play();
+
+
+            // Change cursor color and scale
+
+//            self.original_cursor_color = event.detail.el.getAttribute("material").color;
 //
-//                self.el.emit("clicked", null, false);
 //
-//                console.log("EMITIDO CLICK!");
-//
-//                self.ring.parentNode.removeChild(self.ring);
-//
-//
-//            });
-//        }
-//    });
-//
-//    this.el.addEventListener('raycaster-intersected-cleared', function(event){
-//
-//         self.first_hover = true;
-//
-//         // Change cursor color and scale
-//
-////         event.detail.el.setAttribute("material", "color:red");
-//         event.detail.el.setAttribute("scale", "1 1 1");
-////         event.detail.el.setAttribute("visible", "true");
-//
-//        // Remove ring if existing
-//
-//         if(self.ring.parentNode) {
-//
-//             self.ring.parentNode.removeChild(self.ring);
-//         }
-//
-//    });
+//            event.detail.el.setAttribute("material", "color:white");
+
+            // event.detail.el.setAttribute("scale", "2 2 2");
+
+            // Emit 'clicked' on ring animation end
+
+            self.animation.addEventListener("animationend", function () {
+
+                console.log("CLICK!!");
+
+                setTimeout(function() { self.first_hover = true; }, 500);
+
+                var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
+
+                sound.play();
+
+                self.el.emit("clicked", null, false);
+
+                console.log("EMITIDO CLICK!");
+
+                self.ring.parentNode.removeChild(self.ring);
+
+
+            });
+        }
+    });
+
+    this.el.addEventListener('raycaster-intersected-cleared', function(event){
+
+         self.first_hover = true;
+
+         // Change cursor color and scale
+
+//         event.detail.el.setAttribute("material", "color:red");
+         event.detail.el.setAttribute("scale", "1 1 1");
+//         event.detail.el.setAttribute("visible", "true");
+
+        // Remove ring if existing
+
+         if(self.ring.parentNode) {
+
+             self.ring.parentNode.removeChild(self.ring);
+         }
+
+    });
 
   },
 //

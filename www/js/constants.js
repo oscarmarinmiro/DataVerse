@@ -33,8 +33,8 @@ DATAVERSE.dmms = {
 };
 
 DATAVERSE.animation = {
-    geo: 300,
-    button: 1000
+    geo: 500,
+    button: 500
 };
 
 DATAVERSE.distances = {
