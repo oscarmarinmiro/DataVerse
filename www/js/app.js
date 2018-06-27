@@ -76,12 +76,7 @@ DATAVERSE.main = function(options) {
             loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
             loading.setAttribute("width", 1);
             loading.setAttribute("height", 1);
-            loading.setAttribute("material", {
-                shader: "gif",
-                src: "url(img/loading.gif)",
-                opacity: 1.0
-
-            });
+            loading.setAttribute("src", "img/loading_static.jpg");
 
             document.querySelector("a-scene").appendChild(loading);
 

@@ -34,6 +34,35 @@ DATAVERSE.renderer.prototype = {
 
     },
 
+    'render_intropanel': function(){
+
+        var self = this;
+
+        var already_visited_scene = self.main.state.state.actual_scene in self.main.state.state.visited_scenes;
+
+        var render_intro = !(already_visited_scene ? true : (('autohide_intro' in self.actual_scene_data) ? (self.actual_scene_data.autohide_intro === "yes") : false));
+
+        console.log("EN RENDERING INTROPANEL", render_intro, already_visited_scene);
+
+        if(render_intro) {
+
+            self.intro_panel = document.createElement("a-entity");
+
+            self.intro_panel.classList.add("dataverse-added");
+
+            self.intro_panel.setAttribute("intro-panel", {
+                theme: self.theme,
+                credits: self.actual_scene_data.credits ? self.actual_scene_data.credits : "",
+                title: self.actual_scene_data.title,
+                text: self.actual_scene_data.explain,
+                yaw: self.counter_cam_rotation,
+            });
+
+            self.scene.appendChild(self.intro_panel);
+        }
+
+     },
+
     // Renders auxiliary elements: lights, themes, floor, audio, etc..
 
     'render_aux_assets': function(){
@@ -61,7 +90,7 @@ DATAVERSE.renderer.prototype = {
         // Tweek cursor, fuse and raycaster
 
         self.cursor.setAttribute("color", self.theme_data.cursor_color);
-        self.cursor.setAttribute("fuse-timeout", 1000);
+        self.cursor.setAttribute("fuse-timeout", DATAVERSE.animation.button);
         self.cursor.setAttribute("fuse", true);
 
         // To avoid clicks while loading and intro panel is present
@@ -71,120 +100,8 @@ DATAVERSE.renderer.prototype = {
         // REMOVE COMMENTS
         // Insert intro panel
 
-        self.intro_panel = document.createElement("a-entity");
+//        self.render_intropanel();
 
-        self.intro_panel.classList.add("dataverse-added");
-
-        var already_visited_scene = self.main.state.state.actual_scene in self.main.state.state.visited_scenes;
-
-        console.log("ALREADY VISITED", already_visited_scene);
-
-        self.intro_panel.setAttribute("intro-panel", {
-            theme: self.theme,
-            credits: self.actual_scene_data.credits ? self.actual_scene_data.credits: "",
-            title: self.actual_scene_data.title,
-            text: self.actual_scene_data.explain,
-            yaw: self.counter_cam_rotation,
-            auto_hide: already_visited_scene ? true : (('autohide_intro' in self.actual_scene_data) ? (self.actual_scene_data.autohide_intro === "yes") : false)
-        });
-
-        self.intro_panel.addEventListener("closed", function(){
-            // Set sky opacity
-
-            // Set floor opacity
-
-            // Make things clickable again
-
-            self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
-
-            // Set component visibility
-
-            self.actual_scene_component.setAttribute("visible", true);
-
-            // Set sky visibility
-
-            if(self.sky){
-                self.sky.setAttribute("visible", true);
-            }
-
-            if(self.floor){
-                self.floor.setAttribute("visible", true);
-            }
-
-
-            var myNodeList = document.querySelectorAll('.skyspheres');
-
-            [].forEach.call(myNodeList, function (item) {
-
-                item.setAttribute("visible", true);
-            });
-
-
-
-//            // Iterate through skyspheres
-//
-//            var myNodeList = document.querySelectorAll('.skyspheres');
-//
-//            [].forEach.call(myNodeList, function (item) {
-//              // :) hooray `item` can be used here
-//
-//                var element_animation = document.createElement("a-animation");
-//
-//                element_animation.setAttribute("attribute", "opacity");
-//                element_animation.setAttribute("dur", 3000);
-//                element_animation.setAttribute("to", 1.0);
-//
-//                item.appendChild(element_animation);
-//
-//            });
-//
-//            // Manual floors and skies
-//
-//            if(self.floor) {
-//
-//                var floor_animation = document.createElement("a-animation");
-//
-//                floor_animation.setAttribute("attribute", "opacity");
-//                floor_animation.setAttribute("dur", 3000);
-//                floor_animation.setAttribute("to", 1.0);
-//
-//                self.floor.appendChild(floor_animation);
-//            }
-//
-//            if(self.sky) {
-//
-//                var sky_animation = document.createElement("a-animation");
-//
-//                sky_animation.setAttribute("attribute", "opacity");
-//                sky_animation.setAttribute("dur", 3000);
-//                sky_animation.setAttribute("to", 1.0);
-//
-//                self.sky.appendChild(sky_animation);
-//            }
-//            // Else: photosphere sky
-//            else {
-//
-//                var my_sky = document.querySelector("a-sky");
-//
-//                if(my_sky) {
-//
-//                    var sky_animation = document.createElement("a-animation");
-//
-//                    sky_animation.setAttribute("attribute", "opacity");
-//                    sky_animation.setAttribute("dur", 3000);
-//                    sky_animation.setAttribute("to", 1.0);
-//
-//                    my_sky.appendChild(sky_animation);
-//                }
-//
-//
-//            }
-
-
-
-        });
-
-        self.intro_panel.classList.add("dataverse-added");
 
 
 //
@@ -205,8 +122,6 @@ DATAVERSE.renderer.prototype = {
 //        self.scene.appendChild(self.vive_controls);
         self.scene.appendChild(self.directional_light);
         self.scene.appendChild(self.ambient_light);
-        self.scene.appendChild(self.intro_panel);
-
 
     },
 
@@ -311,6 +226,49 @@ DATAVERSE.renderer.prototype = {
         self.main.state.state.actual_scene = destination;
 
         self.render_scene();
+
+    },
+
+    'insert_loading_scene': function(){
+
+        var self = this;
+
+        // Insert loading symbols
+
+        var loading_defs = [
+            [ [0, 1.6, -4], [-4, 1.6, 0], [4, 1.6, 0], [0, 1.6, 4]],
+            [ [0, 0, 0], [0, 90, 0], [0, -90, 0], [0, -180, 0]]
+        ];
+
+        for(var i=0; i< loading_defs[0].length; i++){
+
+            var loading = document.createElement("a-plane");
+
+            loading.classList.add("dataverse-added", "loading_scene");
+            loading.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1], z: loading_defs[0][i][2]});
+            loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
+            loading.setAttribute("width", 1);
+            loading.setAttribute("height", 1);
+            loading.setAttribute("src", "img/loading_static.jpg");
+
+            document.querySelector("a-scene").appendChild(loading);
+
+            var text = document.createElement("a-text");
+
+            text.classList.add("dataverse-added", "loading_scene");
+            text.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1] - 0.75, z: loading_defs[0][i][2]});
+            text.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
+            text.setAttribute("width", 5);
+            text.setAttribute("font", "exo2bold");
+            text.setAttribute("anchor", "center");
+            text.setAttribute("align", "center");
+            text.setAttribute("value", "Loading scene");
+
+            document.querySelector("a-scene").appendChild(text);
+
+
+        }
+
 
     },
 
@@ -745,7 +703,23 @@ DATAVERSE.renderer.prototype = {
             self.main.urls.set_params({scene: self.main.state.state.actual_scene});
 
 
-            self.main.state.state.visited_scenes[self.main.state.state.actual_scene] = true;
+            // Loading effect: Back sphere and 'loading scene' texts
+
+
+            self.back_sphere = document.createElement("a-sphere");
+
+            self.back_sphere.setAttribute("material", {shader: "flat", side: "back", color: "black"});
+
+            self.back_sphere.setAttribute("radius", 5.0);
+
+            self.back_sphere.setAttribute("opacity", 1.0);
+
+            self.back_sphere.classList.add("dataverse-added");
+
+            self.scene.appendChild(self.back_sphere);
+
+            self.insert_loading_scene();
+
 
             console.log("VISITED SCENES", self.main.state.state.visited_scenes);
 
@@ -759,9 +733,87 @@ DATAVERSE.renderer.prototype = {
 
             self.actual_scene_component.addEventListener("dv_loaded", function(evt){
 
-                console.log("EL COMPONENTE HA ACABADO DE CARGARSE ", self.intro_panel.components);
+//                console.log("EL COMPONENTE HA ACABADO DE CARGARSE ", self.intro_panel.components);
 
-                self.intro_panel.components['intro-panel'].loaded();
+                self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+
+                // Set component visibility
+
+                self.actual_scene_component.setAttribute("visible", true);
+
+                // Set sky visibility
+
+                if(self.sky){
+                    self.sky.setAttribute("visible", true);
+                }
+
+                if(self.floor){
+                    self.floor.setAttribute("visible", true);
+                }
+
+
+                var myNodeList = document.querySelectorAll('.skyspheres');
+
+                [].forEach.call(myNodeList, function (item) {
+
+                    item.setAttribute("visible", true);
+                });
+
+                // Remove 'loading scene'
+
+                var els = self.scene.querySelectorAll('.loading_scene');
+
+                for (var i = 0; i < els.length; i++) {
+
+                    els[i].parentNode.removeChild(els[i]);
+                }
+
+                        self.render_intropanel();
+
+                        self.main.state.state.visited_scenes[self.main.state.state.actual_scene] = true;
+
+
+                if(self.back_sphere.hasLoaded) {
+
+                    console.log("HASLOADED");
+
+                    var sphere_animation = document.createElement("a-animation");
+
+                    sphere_animation.setAttribute("attribute", "opacity");
+                    sphere_animation.setAttribute("dur", 2000);
+                    sphere_animation.setAttribute("from", 1.0);
+                    sphere_animation.setAttribute("to", 0.0);
+
+                    self.back_sphere.appendChild(sphere_animation);
+
+                    sphere_animation.addEventListener("animationend", function () {
+
+                         self.back_sphere.parentNode.removeChild(self.back_sphere);
+
+
+                    });
+
+                }
+                else {
+
+                    self.back_sphere.addEventListener("loaded", function(){
+                        var sphere_animation = document.createElement("a-animation");
+
+                        sphere_animation.setAttribute("attribute", "opacity");
+                        sphere_animation.setAttribute("dur", 2000);
+                        sphere_animation.setAttribute("from", 1.0);
+                        sphere_animation.setAttribute("to", 0.0);
+
+                        self.back_sphere.appendChild(sphere_animation);
+
+                        sphere_animation.addEventListener("animationend", function () {
+
+                                self.back_sphere.parentNode.removeChild(self.back_sphere);
+                        });
+
+                    });
+                }
+
 
             });
         }
