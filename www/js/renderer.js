@@ -61,7 +61,7 @@ DATAVERSE.renderer.prototype = {
         // Tweek cursor, fuse and raycaster
 
         self.cursor.setAttribute("color", self.theme_data.cursor_color);
-        self.cursor.setAttribute("fuse-timeout", 1000);
+        self.cursor.setAttribute("fuse-timeout", DATAVERSE.animation.button);
         self.cursor.setAttribute("fuse", true);
 
         // To avoid clicks while loading and intro panel is present
