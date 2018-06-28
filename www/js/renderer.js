@@ -70,6 +70,38 @@ DATAVERSE.renderer.prototype = {
 
      },
 
+    'set_cursor': function(){
+
+        var self = this;
+
+
+        console.log("HEADSET", AFRAME.utils.checkHeadsetConnected(), AFRAME.utils.isMobile());
+
+        var mobile = AFRAME.utils.isMobile();
+        var headset = AFRAME.utils.checkHeadsetConnected();
+
+        var desktop = !(mobile) && !(headset);
+
+        self.cursor.parentNode.removeChild(self.cursor);
+
+        self.cursor = document.createElement("a-entity");
+
+        self.camera.appendChild(self.cursor);
+
+        self.cursor.setAttribute("id", "cursor");
+
+        self.cursor.setAttribute("cursor", {rayOrigin: desktop ? "mouse": "entity", fuse: true, fuseTimeout: DATAVERSE.animation.button});
+        self.cursor.setAttribute("position", {x:0,y:0,z:-1});
+        self.cursor.setAttribute("geometry", {primitive: "ring", radiusInner: 0.01, radiusOuter: 0.02});
+        self.cursor.setAttribute("material", {color: self.theme_data.cursor_color, shader: "flat"});
+        self.cursor.setAttribute("visible", !desktop);
+
+        // To avoid clicks while loading and intro panel is present
+
+        self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".non_click_while_loading"});
+
+    },
+
     // Renders auxiliary elements: lights, themes, floor, audio, etc..
 
     'render_aux_assets': function(){
@@ -94,15 +126,9 @@ DATAVERSE.renderer.prototype = {
 
         self.vive_controls.classList.add("dataverse-added");
 
-        // Tweek cursor, fuse and raycaster
 
-        self.cursor.setAttribute("color", self.theme_data.cursor_color);
-        self.cursor.setAttribute("fuse-timeout", DATAVERSE.animation.button);
-        self.cursor.setAttribute("fuse", true);
+        self.set_cursor();
 
-        // To avoid clicks while loading and intro panel is present
-
-        self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".non_click_while_loading"});
 
         // REMOVE COMMENTS
         // Insert intro panel

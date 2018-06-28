@@ -32,6 +32,14 @@ AFRAME.registerComponent('uipack-button', {
 
     this.el.classList.add("uipack", "uipack-button", "clickable");
 
+//    this.el.addEventListener("click", function(event){
+//
+//        console.log("ELEMENT CLICKED");
+//
+//        self.el.emit("clicked", null, false);
+//
+//    });
+
     // Hover flag and events...
 
     self.first_hover = true;
