@@ -32,7 +32,7 @@ AFRAME.registerComponent('uipack-button', {
 
     this.el.classList.add("uipack", "uipack-button", "clickable");
 
-//    this.el.addEventListener("click", function(event){
+//    this.el.addEventListener("mousedown", function(event){
 //
 //        console.log("ELEMENT CLICKED");
 //
