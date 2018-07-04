@@ -260,90 +260,128 @@ AFRAME.registerComponent('geo-viz', {
 
         console.log("El radio del circulo es de", point.getAttribute("radius"), lat_offset);
 
+        self.button_mode = (DATAVERSE && ('cursor_mode' in DATAVERSE)) ? DATAVERSE.cursor_mode : "desktop";
 
-        point.first_hover = true;
+        if(self.button_mode === "desktop") {
 
-        var comp_data = self.data;
+            var comp_data = self.data;
 
-            point.addEventListener('raycaster-intersected', function(event){
+            point.addEventListener('mousedown', function(event){
+
+                console.log("MOUSEDOWN");
+
+                var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
+
+                sound.play();
+
+                point.emit("clicked", null, false);
+
+
+            });
+
+            point.addEventListener("mouseenter", function (event){
+
+                self.el.sceneEl.canvas.classList.remove("a-grab-cursor");
+
+
+            });
+
+            point.addEventListener("mouseleave", function (event){
+
+                self.el.sceneEl.canvas.classList.add("a-grab-cursor");
+
+            });
+
+
+        }
+        else {
+
+            point.first_hover = true;
+
+            var comp_data = self.data;
+
+            point.addEventListener('raycaster-intersected', function (event) {
 
                 var self = this;
 
-            // First 'fresh' hover
+                // First 'fresh' hover
 
-            if(self.first_hover) {
+                if (self.first_hover) {
 
-                // Insert ring for animation on hover
+                    // Insert ring for animation on hover
 
-                self.ring = document.createElement("a-ring");
-                self.ring.setAttribute("radius-inner", self.getAttribute("radius") * 1.0);
-                self.ring.setAttribute("radius-outer", self.getAttribute("radius") * 1.2);
-                self.ring.setAttribute("material", "color:" + (comp_data.theme ? DATAVERSE.themes[comp_data.theme].arc_color : self.data.arc_color));
-                self.ring.setAttribute("visible", true);
+                    self.ring = document.createElement("a-ring");
+                    self.ring.setAttribute("radius-inner", self.getAttribute("radius") * 1.0);
+                    self.ring.setAttribute("radius-outer", self.getAttribute("radius") * 1.2);
+                    self.ring.setAttribute("material", "color:" + (comp_data.theme ? DATAVERSE.themes[comp_data.theme].arc_color : self.data.arc_color));
+                    self.ring.setAttribute("visible", true);
 
-                self.appendChild(self.ring);
+                    self.appendChild(self.ring);
 
-                // Create animation
+                    // Create animation
 
-                self.animation = document.createElement("a-animation");
-                self.animation.setAttribute("easing", "linear");
-                self.animation.setAttribute("attribute", "geometry.thetaLength");
-                self.animation.setAttribute("dur", DATAVERSE.animation.geo);
-                self.animation.setAttribute("from", "0");
-                self.animation.setAttribute("to", "360");
-    //
-                self.ring.appendChild(self.animation);
+                    self.animation = document.createElement("a-animation");
+                    self.animation.setAttribute("easing", "linear");
+                    self.animation.setAttribute("attribute", "geometry.thetaLength");
+                    self.animation.setAttribute("dur", DATAVERSE.animation.geo);
+                    self.animation.setAttribute("from", "0");
+                    self.animation.setAttribute("to", "360");
+                    //
+                    self.ring.appendChild(self.animation);
 
-                var component = self.el;
-
-
-                self.first_hover = false;
-
-//                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
-//
-//                sound.play();
+                    var component = self.el;
 
 
-                // Emit 'clicked' on ring animation end
+                    self.first_hover = false;
 
-                self.animation.addEventListener("animationend", function () {
-
-                    var ring = this.parentNode;
-
-                    var point = ring.parentNode;
-
-                    setTimeout(function() { self.first_hover = true; }, 500);
-
-                    var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
-
-                    sound.play();
-
-                    point.emit("clicked", null, false);
-
-                    point.removeChild(self.ring);
+                    //                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
+                    //
+                    //                sound.play();
 
 
-                });
-            }
-          });
+                    // Emit 'clicked' on ring animation end
 
-         point.addEventListener('raycaster-intersected-cleared', function(event){
+                    self.animation.addEventListener("animationend", function () {
 
-             var self = this;
+                        var ring = this.parentNode;
 
-             self.first_hover = true;
+                        var point = ring.parentNode;
 
-             // Change cursor color and scale
+                        setTimeout(function () {
+                            self.first_hover = true;
+                        }, 500);
+
+                        var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
+
+                        sound.play();
+
+                        point.emit("clicked", null, false);
+
+                        point.removeChild(self.ring);
 
 
-            // Remove ring if existing
+                    });
+                }
+            });
 
-             if(self.ring.parentNode) {
+            point.addEventListener('raycaster-intersected-cleared', function (event) {
 
-                 self.ring.parentNode.removeChild(self.ring);
-             }
+                var self = this;
 
-        });
+                self.first_hover = true;
+
+                // Change cursor color and scale
+
+
+                // Remove ring if existing
+
+                if (self.ring.parentNode) {
+
+                    self.ring.parentNode.removeChild(self.ring);
+                }
+
+            });
+        }
 
 
         var theme = self.data.theme;
