@@ -14,7 +14,7 @@ DATAVERSE.main = function(options) {
 
         // Hide scene
 
-        document.querySelector("a-scene").style.display = "none";
+//        document.querySelector("a-scene").style.display = "none";
 
         // Insert interstitial
 
@@ -33,7 +33,7 @@ DATAVERSE.main = function(options) {
 
         body.appendChild(interstitial_image);
 
-        document.getElementById("dataverse-interstitial").addEventListener("click", function(){
+        document.getElementById("dataverse-interstitial").addEventListener("click", function(e){
 
             var scene = document.querySelector("a-scene");
 
@@ -43,9 +43,11 @@ DATAVERSE.main = function(options) {
 
             interstitial_image.parentNode.removeChild(interstitial_image);
 
+            e.stopPropagation();
+
         });
 
-        document.getElementById("dataverse-interstitial-image").addEventListener("click", function(){
+        document.getElementById("dataverse-interstitial-image").addEventListener("click", function(e){
 
             var scene = document.querySelector("a-scene");
 
@@ -54,6 +56,8 @@ DATAVERSE.main = function(options) {
             this.parentNode.removeChild(this);
 
             interstitial.parentNode.removeChild(interstitial);
+
+            e.stopPropagation();
 
 
         });

@@ -36,7 +36,7 @@ AFRAME.registerComponent('photogrid-viz', {
         rows: {type: 'int', default: 3},
         distance: {type: 'float', default: 10.0},
         form_factor_x: {type: 'float', default: 1.25},
-        form_factor_y: {type: 'float', default: 1.8}
+        form_factor_y: {type: 'float', default: 1.6}
     },
 
     init: function () {

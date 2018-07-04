@@ -179,56 +179,107 @@ AFRAME.registerComponent('uipack-mediacontrols', {
     this.real_bar_width = this.data.width - ((this.data.button_radius*5));
 
 
-    // On transport bar click, get point clicked, infer % of new pointer, and make video seek to that point
-
-    self.first_hover = true;
-
-    this.bar.addEventListener('raycaster-intersected', function (event) {
-
-        if(self.first_hover) {
+    self.button_mode = (DATAVERSE && ('cursor_mode' in DATAVERSE)) ? DATAVERSE.cursor_mode : "desktop";
 
 
-            self.first_hover = false;
+    if(self.button_mode === "desktop"){
+
+        this.bar.addEventListener("mousedown", function (event){
+
+                // Get raycast intersection point, and from there, x_offset in bar
+
+                var point = document.querySelector("#cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
+
+                var x_offset = this.object3D.worldToLocal(point).x;
+
+                var unit_offset = (x_offset / self.real_bar_width) + 0.5;
+
+                // Update current step for coherence between point+click and key methods
+
+                self.current_step = Math.round(unit_offset * self.bar_steps);
+
+                var timeout_function = function () {
+                    if (self.video_el.readyState > 0) {
+                        self.video_el.currentTime = unit_offset * self.video_el.duration;
+                    }
+
+                };
+
+                self.ray_timeout = setTimeout(timeout_function, 300);
 
 
-            // Get raycast intersection point, and from there, x_offset in bar
 
-            var point = document.querySelector("#cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
+        });
 
-            var x_offset = this.object3D.worldToLocal(point).x;
+        this.bar.addEventListener("mouseenter", function (event){
 
-            var unit_offset = (x_offset / self.real_bar_width) + 0.5;
-
-            // Update current step for coherence between point+click and key methods
-
-            self.current_step = Math.round(unit_offset * self.bar_steps);
-
-            var timeout_function = function(){
-                if (self.video_el.readyState > 0) {
-                    self.video_el.currentTime = unit_offset * self.video_el.duration;
-                }
-
-            };
+            self.el.sceneEl.canvas.classList.remove("a-grab-cursor");
 
 
-            self.ray_timeout = setTimeout(timeout_function, 300);
+        });
 
-            // Prevent propagation upwards (e.g: canvas click)
+        this.bar.addEventListener("mouseleave", function (event){
 
-            event.stopPropagation();
+            self.el.sceneEl.canvas.classList.add("a-grab-cursor");
 
-            event.preventDefault();
-        }
+            clearTimeout(self.ray_timeout);
 
-    });
+        });
 
-    this.bar.addEventListener('raycaster-intersected-cleared', function(event){
+    }
+    else {
 
-         self.first_hover = true;
+        // On transport bar click, get point clicked, infer % of new pointer, and make video seek to that point
 
-         clearTimeout(self.ray_timeout);
+        self.first_hover = true;
 
-    });
+        this.bar.addEventListener('raycaster-intersected', function (event) {
+
+            if (self.first_hover) {
+
+
+                self.first_hover = false;
+
+
+                // Get raycast intersection point, and from there, x_offset in bar
+
+                var point = document.querySelector("#cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
+
+                var x_offset = this.object3D.worldToLocal(point).x;
+
+                var unit_offset = (x_offset / self.real_bar_width) + 0.5;
+
+                // Update current step for coherence between point+click and key methods
+
+                self.current_step = Math.round(unit_offset * self.bar_steps);
+
+                var timeout_function = function () {
+                    if (self.video_el.readyState > 0) {
+                        self.video_el.currentTime = unit_offset * self.video_el.duration;
+                    }
+
+                };
+
+
+                self.ray_timeout = setTimeout(timeout_function, 300);
+
+                // Prevent propagation upwards (e.g: canvas click)
+
+                event.stopPropagation();
+
+                event.preventDefault();
+            }
+
+        });
+
+        this.bar.addEventListener('raycaster-intersected-cleared', function (event) {
+
+            self.first_hover = true;
+
+            clearTimeout(self.ray_timeout);
+
+        });
+    }
 
 
     this.back_plane = document.createElement("a-plane");

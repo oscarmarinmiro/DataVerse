@@ -100,6 +100,9 @@ DATAVERSE.renderer.prototype = {
 
         self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".non_click_while_loading"});
 
+
+        DATAVERSE.cursor_mode = desktop ? "desktop" : "gaze";
+
     },
 
     // Renders auxiliary elements: lights, themes, floor, audio, etc..
@@ -327,6 +330,10 @@ DATAVERSE.renderer.prototype = {
         console.log("LANDING WITH CAMERA ROTATION ", self.scene.camera.el.getAttribute("rotation").y);
 
         self.counter_cam_rotation = (self.scene.camera.el.getAttribute("rotation").y);
+
+        self.counter_cam_position = (self.scene.camera.el.getAttribute("position"));
+
+        console.log("LANDING WITH CAMERA POSITION ", self.counter_cam_position);
 
         // var to_delete = [];
         //
