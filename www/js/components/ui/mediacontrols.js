@@ -391,7 +391,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
                 ctx.font = self.data.theme ? DATAVERSE.themes[self.data.theme].player_font: this.data.timeTextFont;
                 ctx.fillStyle = self.data.theme ? DATAVERSE.themes[self.data.theme].player_text_color : self.data.textColor;
                 ctx.textAlign = "center";
-                ctx.fillText(time_info_text, this.bar_canvas.width/2, this.bar_canvas.height* 1.0);
+                ctx.fillText(time_info_text, this.bar_canvas.width*0.45, this.bar_canvas.height* 1.0);
 
                 // DEBUG PURPOSES
 
@@ -429,7 +429,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
                     var width = endX - startX;
 
                     ctx.fillStyle = "grey";
-                    ctx.fillRect(startX, 0, width, this.bar_canvas.height/3);
+                    ctx.fillRect(startX, 0, width, this.bar_canvas.height/2);
 
                 }
 
@@ -438,7 +438,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
                 ctx.fillStyle = this.data.barColor;
                 ctx.fillRect(0, 0,
                     (this.video_el.currentTime / this.video_el.duration)*this.bar_canvas.width,
-                    this.bar_canvas.height/3);
+                    this.bar_canvas.height/2);
 
             }
 

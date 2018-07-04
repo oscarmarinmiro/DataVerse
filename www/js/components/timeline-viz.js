@@ -306,7 +306,9 @@ AFRAME.registerComponent('timeline-viz', {
 
                     self.timeline_scale = d3.scale.linear().domain([self.max_ts, self.min_ts]).range([(self.data.margins/180)*Math.PI, ((self.data.degrees - self.data.margins)/180)*Math.PI]).clamp(true);
 
-                    self.el.setAttribute("position", "0 " + self.data.height +" 0");
+//                    self.el.setAttribute("position", "0 " + self.data.height +" 0");
+
+                    self.el.setAttribute("position", {x: self.el.getAttribute("position").x, y: self.data.height, z: self.el.getAttribute("position").z});
 
                     // Rotate user towards 'half' of the timeline
 

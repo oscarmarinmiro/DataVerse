@@ -666,9 +666,13 @@ DATAVERSE.renderer.prototype = {
 
             if("position" in my_params){
                 console.log("SETTING POSITION", my_params.position);
-                self.actual_scene_component.setAttribute("position", my_params.position);
+                self.actual_scene_component.setAttribute("position", {x: self.counter_cam_position.x + my_params.position.split(" ")[0], y: self.actual_scene_component.getAttribute("position").y, z: self.counter_cam_position.z + + my_params.position.split(" ")[2]});
                 delete(my_params.position);
             }
+            else {
+                self.actual_scene_component.setAttribute("position", {x: self.counter_cam_position.x, y: self.actual_scene_component.getAttribute("position").y, z: self.counter_cam_position.z});
+            }
+
 
             // if("rotation" in my_params){
             //     self.actual_scene_component.setAttribute("rotation", my_params.rotation);
@@ -755,6 +759,8 @@ DATAVERSE.renderer.prototype = {
             self.back_sphere.setAttribute("opacity", 1.0);
 
             self.back_sphere.classList.add("dataverse-added");
+
+            self.back_sphere.setAttribute("position", self.counter_cam_position);
 
             self.scene.appendChild(self.back_sphere);
 

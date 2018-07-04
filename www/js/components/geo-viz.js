@@ -542,6 +542,11 @@ AFRAME.registerComponent('geo-viz', {
         self.map_sphere.setAttribute("rotation", {x:0, y: self.el.getAttribute("rotation").y, z:0});
 
 
+        // Set position to the same as the cam (=user) such that points are correctly rendered
+
+        self.map_sphere.setAttribute("position", self.el.getAttribute("position"));
+
+
 
 //        self.map_sphere.setAttribute("scale", "1.0 1.0 -1.0");
 //
