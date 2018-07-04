@@ -750,7 +750,7 @@ AFRAME.registerComponent('small-treemap-viz', {
 
         var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
 
-        self.big_treemap_container.setAttribute("position", {x: cam_position.x, y:0, z: cam_position.z});
+        self.big_treemap_container.setAttribute("position", {x: cam_position.x - self.el.getAttribute("position").x, y:0, z: cam_position.z - self.el.getAttribute("position").z});
 
         self.el.appendChild(self.big_treemap_container);
 
