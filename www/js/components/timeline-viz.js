@@ -555,6 +555,19 @@ AFRAME.registerComponent('timeline-viz', {
                 // cam yaw rotation
 
                 var yaw = (self.el.sceneEl.camera.el.getAttribute("rotation").y) % 360;
+
+                // NEW YAW
+
+
+                var button_pos = this.getAttribute("position");
+
+//                var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
+
+                var new_yaw = DATAVERSE_VIZ_AUX.yaw_pointing_to_object(self.el.sceneEl.camera.el, this);
+
+//
+//                console.log("DIFF VECTOR", self.data, button_pos, cam_position, diff_vector, new_yaw, yaw);
+
                 var pitch = (self.el.sceneEl.camera.el.getAttribute("rotation").x) % 360;
 
                 console.log("MEDIA PANEL", self.el.sceneEl.media_panel);
@@ -582,7 +595,6 @@ AFRAME.registerComponent('timeline-viz', {
                 self.media_panel.setAttribute("position", {x: cam_position.x, y:cam_position.y, z: cam_position.z});
 
 
-
                 // self.media_panel.setAttribute("position", self.el.sceneEl.camera.el.getAttribute("position"));
 
 
@@ -593,7 +605,7 @@ AFRAME.registerComponent('timeline-viz', {
                 self.media_panel.classList.add("dataverse-added");
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
-                    yaw: yaw,
+                    yaw: new_yaw,
                     low_height: (self.data.height*2.0),
                     theme: self.data.theme,
                     height: self.data.panel_height,

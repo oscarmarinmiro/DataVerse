@@ -214,6 +214,28 @@ DATAVERSE_VIZ_AUX = {
 
         return new THREE.Vector3(el_one_position.x, el_one_position.y, el_one_position.z).distanceTo(new THREE.Vector3(el_two_position.x, el_two_position.y, el_two_position.z));
   },
+  'yaw_pointing_to_object': function (camera, object){
+
+      var cam_position = new THREE.Vector3();
+
+      cam_position.setFromMatrixPosition(camera.object3D.matrixWorld);
+
+      cam_position.setY(0);
+
+      var object_position = new THREE.Vector3();
+
+      object_position.setFromMatrixPosition(object.object3D.matrixWorld);
+
+      object_position.setY(0);
+
+      var pointing = object_position.sub(cam_position);
+
+      var angle = (Math.atan2(-pointing.z, pointing.x)*THREE.Math.RAD2DEG) -  90;
+
+      return angle;
+
+
+  },
   'cam_destination_to_object': function(camera, object, distance){
 
       var cam_position = new THREE.Vector3();
