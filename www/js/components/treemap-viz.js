@@ -13,7 +13,7 @@ AFRAME.registerComponent('treemap-viz', {
         title_max_chars: {type: 'number', default: 30},
         show_numbers: {type: 'boolean', default: false},
         title_x_factor: {type: 'number', default: 1.25},
-        form_factor_y: {type: 'number', default: 1.6},
+        form_factor_y: {type: 'number', default: 1.5},
         title: {type: 'string', default: ""},
         // Just an aux parameter from outside, to calculated legibility of labels, based on dims
         distance: {type: 'number', default: 3.0},
@@ -278,7 +278,7 @@ AFRAME.registerComponent('treemap-viz', {
 
             var button_row = document.createElement("a-entity");
 
-            button_row.setAttribute("position", {x: 0, y: (self.data.height/2) + button_radius*1.25, z: 0});
+            button_row.setAttribute("position", {x: 0, y: (self.data.height/2), z: 0.01});
 
 
             self.el.appendChild(button_row);
@@ -691,7 +691,7 @@ AFRAME.registerComponent('small-treemap-viz', {
         text_font: {type: 'string', default: 'roboto'},
         unique_color_scale: {type: 'boolean', default: true},
         form_factor_x: {type: 'float', default: 1.25},
-        form_factor_y: {type: 'float', default: 1.8},
+        form_factor_y: {type: 'float', default: 1.5},
         other_treemap: {type: 'boolean', default: true},
         general_text_dmms : {type: 'int', default: 30},
         general_button_dmms : {type: 'int', default: 20}

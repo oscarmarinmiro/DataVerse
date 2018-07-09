@@ -627,6 +627,12 @@ AFRAME.registerComponent('timeline-viz', {
                     console.log("LINKANDO A ", data.detail.link);
                 });
 
+//                self.media_panel.addEventListener("panel_closed", function(){
+//
+//                    console.log("PANEL CLOSED EVENT");
+//
+//                });
+
                 self.el.sceneEl.appendChild(self.media_panel);
 
                 self.el.sceneEl.media_panel = self.media_panel;

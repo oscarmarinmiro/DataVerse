@@ -361,6 +361,8 @@ AFRAME.registerComponent('tilemap-viz', {
 
         var marker = document.createElement("a-entity");
 
+        marker.classList.add("marker");
+
         marker.__data__ = datum;
 
         console.log("MARKER DATA", marker.__data__);
@@ -510,6 +512,20 @@ AFRAME.registerComponent('tilemap-viz', {
 
             };
 
+            // Hide all markers before showing media_panel
+
+            var els = self.el.sceneEl.querySelectorAll('.marker');
+
+            for (var i = 0; i < els.length; i++) {
+
+                var el = els[i];
+
+//                if(el !== this.parentNode.parentNode) {
+
+                    el.setAttribute("visible", false);
+//                }
+            }
+
             self.media_panel.setAttribute("position", self.media_panel_position);
 
 
@@ -539,8 +555,23 @@ AFRAME.registerComponent('tilemap-viz', {
                 console.log("LINKANDO A ", data.detail.link);
             });
 
-            self.el.appendChild(self.media_panel);
 
+            self.media_panel.addEventListener("panel_closed", function(){
+
+                // Hide all markers before showing media_panel
+
+                var els = self.el.sceneEl.querySelectorAll('.marker');
+
+                for (var i = 0; i < els.length; i++) {
+
+                    var el = els[i];
+
+                    el.setAttribute("visible", true);
+                }
+
+            });
+
+            self.el.appendChild(self.media_panel);
 
             self.el.sceneEl.restore_clickable = this;
 

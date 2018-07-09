@@ -36,7 +36,7 @@ AFRAME.registerComponent('photogrid-viz', {
         rows: {type: 'int', default: 3},
         distance: {type: 'float', default: 10.0},
         form_factor_x: {type: 'float', default: 1.25},
-        form_factor_y: {type: 'float', default: 1.6}
+        form_factor_y: {type: 'float', default: 1.5}
     },
 
     init: function () {
@@ -143,7 +143,7 @@ AFRAME.registerComponent('photogrid-viz', {
 
             more_button.setAttribute("uipack-button", { theme: self.data.theme, icon_name: 'plus.png', radius: radius});
 
-            more_button.setAttribute("position", {x: 0, y: ((params.thumbnail_size) / 2)  + (radius*1.5) , z: 0});
+            more_button.setAttribute("position", {x: 0, y: ((params.thumbnail_size) / 2) , z: 0.1});
 
             thumbnail_component.appendChild(more_button);
 
