@@ -62,10 +62,22 @@ DATAVERSE.renderer.prototype = {
 
             self.intro_panel.addEventListener("closed", function(){
                  self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+
+                 if(self.laser_controls) {
+
+                     self.laser_controls.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+                 }
+
             });
         }
         else{
              self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+
+             if(self.laser_controls) {
+
+                 self.laser_controls.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+             }
+
         }
 
      },
@@ -100,8 +112,34 @@ DATAVERSE.renderer.prototype = {
 
         self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".non_click_while_loading"});
 
+        if((headset) && (!(mobile))){
 
-        DATAVERSE.cursor_mode = desktop ? "desktop" : "gaze";
+            self.laser_controls = document.createElement("a-entity");
+
+            self.laser_controls.setAttribute("laser-controls", {});
+//            self.laser_controls.setAttribute("teleport_controls", true);
+
+            self.laser_controls.classList.add("dataverse-added");
+
+            self.laser_controls.setAttribute("line", {color: self.theme_data.cursor_color});
+
+            self.laser_controls.setAttribute("raycaster", {near: 0.0, objects: ".non_click_while_loading"});
+
+            // Hide and deactivate gaze cursor
+
+            self.cursor.setAttribute("visible", false);
+
+            self.cursor.setAttribute("raycaster", {far:0.0});
+
+            self.scene.appendChild(self.laser_controls);
+
+        }
+
+
+//<a-entity laser-controls line="color: red; opacity: 0.75"></a-entity>
+
+
+        DATAVERSE.cursor_mode = desktop ? "desktop" : (mobile ? "gaze": "laser");
 
     },
 
@@ -122,12 +160,6 @@ DATAVERSE.renderer.prototype = {
         self.directional_light.setAttribute("position", {x:1, y:10, z:-1});
         self.directional_light.classList.add("dataverse-added");
 
-        self.vive_controls = document.createElement("a-entity");
-
-        self.vive_controls.setAttribute("vive-controls", {hand: "right"});
-        self.vive_controls.setAttribute("teleport_controls", true);
-
-        self.vive_controls.classList.add("dataverse-added");
 
 
         self.set_cursor();

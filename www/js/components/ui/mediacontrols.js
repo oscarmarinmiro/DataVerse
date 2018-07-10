@@ -188,7 +188,9 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
                 // Get raycast intersection point, and from there, x_offset in bar
 
-                var point = document.querySelector("#cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
+//                var point = document.querySelector("#cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
+
+                var point = event.detail.intersection.point;
 
                 var x_offset = this.object3D.worldToLocal(point).x;
 
@@ -235,6 +237,9 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
         this.bar.addEventListener('raycaster-intersected', function (event) {
 
+
+            console.log("INSERSECTED", event.detail.intersection.point);
+
             if (self.first_hover) {
 
 
@@ -243,7 +248,9 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
                 // Get raycast intersection point, and from there, x_offset in bar
 
-                var point = document.querySelector("#cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
+//                var point = document.querySelector("#cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
+
+                var point = event.detail.intersection.point;
 
                 var x_offset = this.object3D.worldToLocal(point).x;
 
