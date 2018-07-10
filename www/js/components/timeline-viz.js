@@ -272,7 +272,8 @@ AFRAME.registerComponent('timeline-viz', {
         trigger_color:{type: 'string', default: "black"},
         active_trigger_color: {type: 'string', default: "red"},
         size: {type: 'float', default: 5.0},
-        height: {type: 'float', default: 1.1},
+        height: {type: 'float', default: 1.0},
+        y_position: {type: 'float', default: 0},
         title: {type: 'string', default: ""},
         explain: {type: 'string', default: ""},
         panel_elevation: {type: 'float', default: 2.0},
@@ -308,7 +309,7 @@ AFRAME.registerComponent('timeline-viz', {
 
 //                    self.el.setAttribute("position", "0 " + self.data.height +" 0");
 
-                    self.el.setAttribute("position", {x: self.el.getAttribute("position").x, y: self.data.height, z: self.el.getAttribute("position").z});
+                    self.el.setAttribute("position", {x: self.el.getAttribute("position").x, y: self.data.y_position, z: self.el.getAttribute("position").z});
 
                     // Rotate user towards 'half' of the timeline
 
@@ -606,7 +607,7 @@ AFRAME.registerComponent('timeline-viz', {
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: new_yaw,
-                    low_height: (self.data.height*2.0),
+                    low_height: (self.data.height*0.6) + self.data.y_position,
                     theme: self.data.theme,
                     height: self.data.panel_height,
                     distance: distance,
