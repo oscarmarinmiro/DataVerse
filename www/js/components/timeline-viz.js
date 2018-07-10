@@ -29,10 +29,10 @@ AFRAME.registerSystem('timeline-viz', {
                 slide_image: 3
             },
             height: {
-                trigger: 0.25,
+                trigger: 0.5,
                 media_controls: 0.60,
-                legend_date_explain: -0.01,
-                legend_title: -0.15,
+                legend_date_explain: 0.25,
+                legend_title: 0.0,
                 slide_image: 2.5,
                 slide_title: 3.8,
                 slide_supertitle: 3.5,
@@ -607,7 +607,8 @@ AFRAME.registerComponent('timeline-viz', {
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: new_yaw,
-                    low_height: (self.data.height*0.6) + self.data.y_position,
+                    // low height is y_position + half of timeline + two times the radius of the upper button
+                    low_height: (self.data.height*0.5) + self.data.y_position + ((DATAVERSE.dmms.plus_button * self.data.size) / 1000)*2,
                     theme: self.data.theme,
                     height: self.data.panel_height,
                     distance: distance,
