@@ -317,7 +317,7 @@ DATAVERSE.renderer.prototype = {
             loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
             loading.setAttribute("width", 1);
             loading.setAttribute("height", 1);
-            loading.setAttribute("src", "img/loading_static.jpg");
+            loading.setAttribute("src", DATAVERSE.paths.loading_thumbnail_static);
 
             document.querySelector("a-scene").appendChild(loading);
 

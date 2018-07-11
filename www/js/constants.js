@@ -11,13 +11,12 @@ DATAVERSE.cache = {
 };
 
 DATAVERSE.paths = {
-
-    click_sound: "audio_effects/dustyroom_multimedia_select_digital_button.mp3",
-    hover_sound: "audio_effects/soundbits_CSFX-2_Menu-Close_17.mp3",
-    photo_thumbnail: "img/thumbnail.png",
-    video_thumbnail: "img/thumbnail.png",
-    viz_thumbnail: "img/thumbnail.png"
-
+    click_sound: "cdn/audio/click.mp3",
+    hover_sound: "cdn/audio/hover.mp3",
+    photo_thumbnail: "cdn/img/thumbnail.png",
+    video_thumbnail: "cdn/img/thumbnail.png",
+    viz_thumbnail: "cdn/img/thumbnail.png",
+    loading_thumbnail_static: "cdn/img/loading_static.jpg"
 };
 
 DATAVERSE.dmms = {
