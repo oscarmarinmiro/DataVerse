@@ -410,6 +410,8 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             img_asset.setAttribute("id", asset_id);
             img_asset.setAttribute("src", self.data.media_url);
+            img_asset.setAttribute('crossorigin', 'anonymous');
+
 
             self.assets.appendChild(img_asset);
 
@@ -758,6 +760,8 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
                         img_asset.setAttribute("id", asset_id);
                         img_asset.setAttribute("src", self.data.link_thumbnail);
+                        img_asset.setAttribute('crossorigin', 'anonymous');
+
 
                         self.assets.appendChild(img_asset);
                     }
@@ -997,6 +1001,8 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             audio_asset.setAttribute("id", asset_id);
             audio_asset.setAttribute("src", self.data.media_url);
+            audio_asset.setAttribute('crossorigin', 'anonymous');
+
 
             self.assets.appendChild(audio_asset);
         }
@@ -1104,7 +1110,7 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
             var video_asset = document.createElement("video");
 
-
+            video_asset.setAttribute('crossorigin', 'anonymous');
             video_asset.setAttribute("id", asset_id);
             video_asset.setAttribute("src", self.data.media_url);
 //            video_asset.setAttribute("preload", "metadata");
