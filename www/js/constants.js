@@ -11,12 +11,12 @@ DATAVERSE.cache = {
 };
 
 DATAVERSE.paths = {
-    click_sound: "cdn/audio/click.mp3",
-    hover_sound: "cdn/audio/hover.mp3",
-    photo_thumbnail: "cdn/img/thumbnail.png",
-    video_thumbnail: "cdn/img/thumbnail.png",
-    viz_thumbnail: "cdn/img/thumbnail.png",
-    loading_thumbnail_static: "cdn/img/loading_static.jpg"
+    click_sound: "https://cdn.dataverse.xyz/audio/click.mp3",
+    hover_sound: "https://cdn.dataverse.xyz/audio/hover.mp3",
+    photo_thumbnail: "https://cdn.dataverse.xyz/img/thumbnail.png",
+    video_thumbnail: "https://cdn.dataverse.xyz/img/thumbnail.png",
+    viz_thumbnail: "https://cdn.dataverse.xyz/img/thumbnail.png",
+    loading_thumbnail_static: "https://cdn.dataverse.xyz/img/loading_static.jpg"
 };
 
 DATAVERSE.dmms = {

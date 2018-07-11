@@ -33,6 +33,23 @@ DATAVERSE.main = function(options) {
 
         body.appendChild(interstitial_image);
 
+        self.assets = document.createElement("a-assets");
+        self.assets.classList.add("dataverse-added");
+
+        var scene = document.querySelector("a-scene");
+
+        scene.appendChild(self.assets);
+
+        var img_asset = document.createElement("img");
+
+        img_asset.setAttribute("id", "loading_sheet");
+        img_asset.setAttribute("src", DATAVERSE.paths.loading_thumbnail_static);
+        img_asset.setAttribute('crossorigin', 'anonymous');
+
+        self.assets.appendChild(img_asset);
+
+
+
         document.getElementById("dataverse-interstitial").addEventListener("click", function(e){
 
             var scene = document.querySelector("a-scene");
@@ -80,7 +97,7 @@ DATAVERSE.main = function(options) {
             loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
             loading.setAttribute("width", 1);
             loading.setAttribute("height", 1);
-            loading.setAttribute("src", DATAVERSE.paths.loading_thumbnail_static);
+            loading.setAttribute("src", "#loading_sheet");
 
             document.querySelector("a-scene").appendChild(loading);
 

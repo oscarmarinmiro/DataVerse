@@ -523,6 +523,7 @@ AFRAME.registerComponent('geo-viz', {
         var img_asset = document.createElement("img");
 
         img_asset.setAttribute("id", "skymap");
+        img_asset.setAttribute("crossorigin", "anonymous");
         img_asset.setAttribute("src", self.data.theme ? DATAVERSE.themes[self.data.theme].earth_texture : self.data.earth_texture);
 
         assets.appendChild(img_asset);

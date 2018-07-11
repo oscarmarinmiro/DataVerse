@@ -606,6 +606,8 @@ DATAVERSE.renderer.prototype = {
                 self.sky_img.classList.add("dataverse-added");
                 self.sky_img.setAttribute("src", self.actual_scene_data.background);
                 self.sky_img.setAttribute("id", "sky_img");
+                self.sky_img.setAttribute('crossorigin', 'anonymous');
+
 
                 self.assets.appendChild(self.sky_img);
 
@@ -654,6 +656,7 @@ DATAVERSE.renderer.prototype = {
                             self.sky_img.classList.add("dataverse-added");
                             self.sky_img.setAttribute("src", my_sky);
                             self.sky_img.setAttribute("id", "sky_img");
+                            self.sky_img.setAttribute('crossorigin', 'anonymous');
 
                             self.assets.appendChild(self.sky_img);
 
@@ -754,6 +757,9 @@ DATAVERSE.renderer.prototype = {
 
                     self.audio = document.createElement("audio");
                     self.audio.classList.add("dataverse-added");
+
+                    self.audio.setAttribute('crossorigin', 'anonymous');
+
 
                     self.audio.setAttribute("src", self.actual_scene_data.audio);
                     self.audio.setAttribute("id", "audio");
