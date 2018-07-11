@@ -1,6 +1,10 @@
 html {
 }
 
+body{
+    background-color: black;
+}
+
 #dataverse-interstitial {
     width: 100%!important;
     height: 100%!important;
