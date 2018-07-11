@@ -24,6 +24,9 @@ AFRAME.registerComponent('video-viz', {
 
         console.log("INIT COMPONENT", self);
 
+        self.video_timestamp = Date.now();
+
+
 //        // Create a sky if there is none present
 //
 //        if(document.getElementsByTagName("a-sky").length == 0){
@@ -122,9 +125,8 @@ AFRAME.registerComponent('video-viz', {
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,
-                    pitch: pitch,
                     theme: self.data.theme,
-                    distance: 1.5,
+                    distance: DATAVERSE.distances.panel,
                     title: info.headline,
                     subtitle: "",
                     text: info.text,
@@ -168,42 +170,45 @@ AFRAME.registerComponent('video-viz', {
 
         self.prepared_data.forEach(function(datum, i){
 
-                    var object = document.createElement("a-entity");
+                    if(datum.scene === DATAVERSE.scene_number) {
 
-                    // TODO: CHANGE label_height to that of camera...
+                        var object = document.createElement("a-entity");
 
-                    var arc = datum.yaw * THREE.Math.DEG2RAD;
+                        // TODO: CHANGE label_height to that of camera...
 
-                    console.log("ARC", arc);
+                        var arc = datum.yaw * THREE.Math.DEG2RAD;
 
-                    object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
+                        console.log("ARC", arc);
 
-                    // Face the center
+                        object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: (('height' in datum) && (typeof(datum.height) === "number")) ? datum.height : self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
 
-                    object.setAttribute('rotation', {x: 0, y: (arc / Math.PI) * 180 > 180 ? (arc / Math.PI) * 180 - 180 : 180 + (arc / Math.PI) * 180, z: 0});
+                        // Face the center
 
-                    var title = datum.headline;
+                        object.setAttribute('rotation', {x: 0, y: (arc / Math.PI) * 180 > 180 ? (arc / Math.PI) * 180 - 180 : 180 + (arc / Math.PI) * 180, z: 0});
 
-                    var text_width = (DATAVERSE.dmms.label * self.data.label_distance * (title.length + 4)) / 1000;
+                        var title = datum.headline;
 
-                    object.setAttribute('text', {value: title, align: "center",
-                                                color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.label_color,
-                                                font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.label_font,
-                                                width: text_width,
-                                                wrapCount: title.length + 4, zOffset: 0.01});
+                        var text_width = (DATAVERSE.dmms.label * self.data.label_distance * (title.length + 4)) / 1000;
 
-                    var label_height = (DATAVERSE.dmms.label * self.data.label_distance / 1000)*3;
+                        object.setAttribute('text', {value: title, align: "center",
+                            color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.label_color,
+                            font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.label_font,
+                            width: text_width,
+                            wrapCount: title.length + 4, zOffset: 0.01});
 
-                    object.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+                        var label_height = (DATAVERSE.dmms.label * self.data.label_distance / 1000) * 3;
 
-                    object.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.label_background, shader: "flat"});
+                        object.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+
+                        object.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.label_background, shader: "flat"});
 
 
-                    // self.add_more_button(object, datum, sequence);
+                        // self.add_more_button(object, datum, sequence);
 
-                    self.add_more_button(object, datum, i, label_height);
+                        self.add_more_button(object, datum, i, label_height);
 
-                    self.el.appendChild(object);
+                        self.el.appendChild(object);
+                    }
 
         });
 
@@ -242,7 +247,7 @@ AFRAME.registerComponent('video-viz', {
 
                 console.log("DIBUJANDO ESTEREO");
 
-                var video_id = "stereo_video" + "_" + Math.floor((Math.random() * 1000000000) + 1);
+                var video_id = "stereo_video" + "_" + self.video_timestamp;
 
                 var scene = document.getElementsByTagName("a-scene")[0];
                 var assets = document.getElementsByTagName("a-assets")[0];
@@ -269,12 +274,13 @@ AFRAME.registerComponent('video-viz', {
 
                 self.stereo_left_sphere = document.createElement("a-entity");
 
-                self.stereo_left_sphere.setAttribute("class", "videospheres dataverse-added");
+                self.stereo_left_sphere.setAttribute("class", "videospheres dataverse-added skyspheres");
 
                 self.stereo_left_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
 
                 self.stereo_left_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.stereo_left_sphere.setAttribute("scale", "-1 1 1");
+                self.stereo_left_sphere.setAttribute("visible", false);
 
                 // Sync rotation with 'camera landing rotation'
 
@@ -289,11 +295,14 @@ AFRAME.registerComponent('video-viz', {
 
                 self.stereo_right_sphere = document.createElement("a-entity");
 
-                self.stereo_right_sphere.setAttribute("class", "videospheres dataverse-added");
+                self.stereo_right_sphere.setAttribute("class", "videospheres dataverse-added skyspheres");
 
                 self.stereo_right_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
                 self.stereo_right_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.stereo_right_sphere.setAttribute("scale", "-1 1 1");
+
+                self.stereo_right_sphere.setAttribute("visible", false);
+
 
                 // Sync rotation with 'camera landing rotation'
 
@@ -318,7 +327,7 @@ AFRAME.registerComponent('video-viz', {
             else {
                 console.log("DIBUJANDO MONO");
 
-                var video_id = "mono_video" + "_" + Math.floor((Math.random() * 1000000000) + 1);
+                var video_id = "mono_video" + "_" + self.video_timestamp;
 
                 var scene = document.getElementsByTagName("a-scene")[0];
                 var assets = document.getElementsByTagName("a-assets")[0];
@@ -343,11 +352,13 @@ AFRAME.registerComponent('video-viz', {
 
                 self.mono_sphere = document.createElement("a-entity");
 
-                self.mono_sphere.setAttribute("class", "videospheres dataverse-added");
+                self.mono_sphere.setAttribute("class", "videospheres dataverse-added skyspheres");
 
                 self.mono_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
                 self.mono_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.mono_sphere.setAttribute("scale", "-1 1 1");
+
+                self.mono_sphere.setAttribute("visible", false);
 
                 // Sync rotation with 'camera landing rotation'
 

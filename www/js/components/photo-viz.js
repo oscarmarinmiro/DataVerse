@@ -25,6 +25,8 @@ AFRAME.registerComponent('photo-viz', {
 
         console.log("INIT COMPONENT", self);
 
+        self.panel_timestamp = Date.now();
+
         // Create a sky if there is none present
 
         if(document.getElementsByTagName("a-sky").length == 0){
@@ -40,6 +42,9 @@ AFRAME.registerComponent('photo-viz', {
         // Match component rotation to sky...
 
         document.getElementsByTagName("a-sky")[0].setAttribute("rotation", {x:0, y: self.el.getAttribute("rotation").y, z:0});
+        document.getElementsByTagName("a-sky")[0].classList.add("skyspheres");
+//        document.getElementsByTagName("a-sky")[0].setAttribute("visible", false);
+
 
     },
 
@@ -102,9 +107,8 @@ AFRAME.registerComponent('photo-viz', {
 
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: yaw,
-                    pitch: pitch,
+                    distance: DATAVERSE.distances.panel,
                     theme: self.data.theme,
-                    distance: 1.5,
                     title: info.headline,
                     subtitle: "",
                     text: info.text,
@@ -114,7 +118,8 @@ AFRAME.registerComponent('photo-viz', {
                     link: info.link,
                     link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(info.link, self.scene_data),
                     link_type: DATAVERSE_VIZ_AUX.get_scene_type(info.link, self.scene_data),
-                    id: "photo-viz" + sequence
+                    id: "photo-viz" + sequence + "_" + self.panel_timestamp
+
                 });
 
                 self.media_panel.addEventListener("link", function (data) {
@@ -143,46 +148,53 @@ AFRAME.registerComponent('photo-viz', {
 
         var self = this;
 
+        console.log("SCENE NUMBER", DATAVERSE.scene_number);
+
         console.log("RENDERING TAB", self.prepared_data);
 
         self.prepared_data.forEach(function(datum, i){
 
-                    var object = document.createElement("a-entity");
+                    // Insert label if it belongs to this scene
 
-                    // TODO: CHANGE label_height to that of camera...
+                    if(datum.scene === DATAVERSE.scene_number) {
 
-                    var arc = datum.yaw * THREE.Math.DEG2RAD;
+                        var object = document.createElement("a-entity");
 
-                    console.log("ARC", arc);
+                        // TODO: CHANGE label_height to that of camera...
 
-                    object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
+                        var arc = (datum.yaw + 180) * THREE.Math.DEG2RAD;
 
-                    // Face the center
+                        console.log("ARC", arc);
 
-                    object.setAttribute('rotation', {x: 0, y: (arc / Math.PI) * 180 > 180 ? (arc / Math.PI) * 180 - 180 : 180 + (arc / Math.PI) * 180, z: 0});
+                        object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: (('height' in datum) && (typeof(datum.height) === "number")) ? datum.height : self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
 
-                    var title = datum.headline;
+                        // Face the center
 
-                    var text_width = (DATAVERSE.dmms.label * self.data.label_distance * (title.length + 4)) / 1000;
+                        object.setAttribute('rotation', {x: 0, y: (arc / Math.PI) * 180 > 180 ? (arc / Math.PI) * 180 - 180 : 180 + (arc / Math.PI) * 180, z: 0});
 
-                    object.setAttribute('text', {value: title, align: "center",
-                                                color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.label_color,
-                                                font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.label_font,
-                                                width: text_width,
-                                                wrapCount: title.length + 4, zOffset: 0.01});
+                        var title = datum.headline;
 
-                    var label_height = (DATAVERSE.dmms.label * self.data.label_distance / 1000)*3;
+                        var text_width = (DATAVERSE.dmms.label * self.data.label_distance * (title.length + 4)) / 1000;
 
-                    object.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+                        object.setAttribute('text', {value: title, align: "center",
+                            color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.label_color,
+                            font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.label_font,
+                            width: text_width,
+                            wrapCount: title.length + 4, zOffset: 0.01});
 
-                    object.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.label_background, shader: "flat"});
+                        var label_height = (DATAVERSE.dmms.label * self.data.label_distance / 1000) * 3;
+
+                        object.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+
+                        object.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.label_background, shader: "flat"});
 
 
-                    // self.add_more_button(object, datum, sequence);
+                        // self.add_more_button(object, datum, sequence);
 
-                    self.add_more_button(object, datum, i, label_height);
+                        self.add_more_button(object, datum, i, label_height);
 
-                    self.el.appendChild(object);
+                        self.el.appendChild(object);
+                    }
 
         });
 
@@ -243,6 +255,14 @@ AFRAME.registerComponent('photo-viz', {
                 var texture = new THREE.CanvasTexture(this.canvas);
 
                 var sky = document.getElementsByTagName("a-sky")[0];
+
+                sky.setAttribute("scale", "1 1 1");
+
+                // Rotate 180 degrees since we are reversing y direction with latest statement
+
+                var sky_rotation = sky.getAttribute("rotation");
+
+                sky.setAttribute("rotation", {x: sky_rotation.x, y: sky_rotation.y + 180, z: sky_rotation.z});
 
                 sky.getOrCreateObject3D('mesh').material = new THREE.MeshBasicMaterial({map: texture, side: THREE.BackSide});
 

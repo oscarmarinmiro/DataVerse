@@ -22,6 +22,9 @@ AFRAME.registerComponent('uipack-button', {
 
     var self = this;
 
+
+    self.button_mode = (DATAVERSE && ('cursor_mode' in DATAVERSE)) ? DATAVERSE.cursor_mode : "desktop";
+
     // Create the element
 
     self.button = document.createElement("a-circle");
@@ -32,95 +35,135 @@ AFRAME.registerComponent('uipack-button', {
 
     this.el.classList.add("uipack", "uipack-button", "clickable");
 
-    // Hover flag and events...
 
-    self.first_hover = true;
+    if(self.button_mode === "desktop") {
 
-    this.el.addEventListener('raycaster-intersected', function(event){
+        this.el.addEventListener("mousedown", function (event) {
+
+//            console.log("ELEMENT CLICKED");
+
+            var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
+
+            sound.play();
 
 
-        // First 'fresh' hover
+            self.el.emit("clicked", null, false);
 
-        if(self.first_hover) {
+//            console.log("CURSOR...", self.el.sceneEl.canvas);
 
-            // Insert ring for animation on hover
+        });
 
-            self.ring = document.createElement("a-ring");
-            self.ring.setAttribute("radius-inner", self.data.radius * 1.0);
-            self.ring.setAttribute("radius-outer", self.data.radius * 1.2);
-            self.ring.setAttribute("material", "color:" + (self.data.theme ? DATAVERSE.themes[self.data.theme].arc_color : self.data.arc_color));
-            self.ring.setAttribute("visible", true);
+        this.el.addEventListener("mouseenter", function(event){
 
-            // Create animation
+//            console.log("ENTERING");
 
-            self.animation = document.createElement("a-animation");
-            self.animation.setAttribute("easing", "linear");
-            self.animation.setAttribute("attribute", "geometry.thetaLength");
-            self.animation.setAttribute("dur", DATAVERSE.animation.button);
-            self.animation.setAttribute("from", "0");
-            self.animation.setAttribute("to", "360");
+            self.el.sceneEl.canvas.classList.remove("a-grab-cursor");
 
-            self.ring.appendChild(self.animation);
+        });
 
-            self.el.appendChild(self.ring);
+        this.el.addEventListener("mouseleave", function(event){
+//            console.log("LEAVING");
 
-            self.first_hover = false;
+            self.el.sceneEl.canvas.classList.add("a-grab-cursor");
+
+        });
+
+    }
+
+    else {
+
+        // Hover flag and events...
+
+        self.first_hover = true;
+
+        this.el.addEventListener('raycaster-intersected', function (event) {
+
+
+            // First 'fresh' hover
+
+            if (self.first_hover) {
+
+                // Insert ring for animation on hover
+
+                self.ring = document.createElement("a-ring");
+                self.ring.setAttribute("radius-inner", self.data.radius * 1.0);
+                self.ring.setAttribute("radius-outer", self.data.radius * 1.2);
+                self.ring.setAttribute("material", "color:" + (self.data.theme ? DATAVERSE.themes[self.data.theme].arc_color : self.data.arc_color));
+                self.ring.setAttribute("visible", true);
+
+                // Create animation
+
+                self.animation = document.createElement("a-animation");
+                self.animation.setAttribute("easing", "linear");
+                self.animation.setAttribute("attribute", "geometry.thetaLength");
+                self.animation.setAttribute("dur", DATAVERSE.animation.button);
+                self.animation.setAttribute("from", "0");
+                self.animation.setAttribute("to", "360");
+
+                self.ring.appendChild(self.animation);
+
+                self.el.appendChild(self.ring);
+
+                self.first_hover = false;
 
 //                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
 //
 //                sound.play();
 
 
-            // Change cursor color and scale
+                // Change cursor color and scale
 
 //            self.original_cursor_color = event.detail.el.getAttribute("material").color;
 //
 //
 //            event.detail.el.setAttribute("material", "color:white");
 
-            // event.detail.el.setAttribute("scale", "2 2 2");
+                // event.detail.el.setAttribute("scale", "2 2 2");
 
-            // Emit 'clicked' on ring animation end
+                // Emit 'clicked' on ring animation end
 
-            self.animation.addEventListener("animationend", function () {
+                self.animation.addEventListener("animationend", function () {
 
-                console.log("CLICK!!");
+                    console.log("CLICK!!");
 
-                setTimeout(function() { self.first_hover = true; }, 500);
+                    setTimeout(function () {
+                        self.first_hover = true;
+                    }, 500);
 
-                var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
+                    var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
 
-                sound.play();
+                    sound.play();
 
-                self.el.emit("clicked", null, false);
+                    self.el.emit("clicked", null, false);
 
-                console.log("EMITIDO CLICK!");
+                    console.log("EMITIDO CLICK!");
 
-                self.ring.parentNode.removeChild(self.ring);
+                    self.ring.parentNode.removeChild(self.ring);
 
 
-            });
-        }
-    });
+                });
+            }
+        });
 
-    this.el.addEventListener('raycaster-intersected-cleared', function(event){
+        this.el.addEventListener('raycaster-intersected-cleared', function (event) {
 
-         self.first_hover = true;
+            self.first_hover = true;
 
-         // Change cursor color and scale
+            // Change cursor color and scale
 
 //         event.detail.el.setAttribute("material", "color:red");
-         event.detail.el.setAttribute("scale", "1 1 1");
+            event.detail.el.setAttribute("scale", "1 1 1");
 //         event.detail.el.setAttribute("visible", "true");
 
-        // Remove ring if existing
+            // Remove ring if existing
 
-         if(self.ring.parentNode) {
+            if (self.ring.parentNode) {
 
-             self.ring.parentNode.removeChild(self.ring);
-         }
+                self.ring.parentNode.removeChild(self.ring);
+            }
 
-    });
+        });
+    }
 
   },
 //

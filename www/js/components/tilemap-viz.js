@@ -2,51 +2,6 @@
  * Created by Oscar on 11/03/17.
  */
 
-AFRAME.registerComponent("info-panel", {
-    schema: {
-        jsonData:{
-            parse: JSON.parse,
-            stringify: JSON.stringify
-        },
-        position: {type: "vec3", default: {x:0, y:0, z:0}
-
-        }
-    }
-});
-
-AFRAME.registerComponent("dimmify", {
-
-    schema:{
-
-    },
-
-    init: function(){
-
-    },
-    update: function(){
-
-    },
-    tick: function(){
-        var self = this;
-
-        // Get distance to camera ...
-
-//        var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
-//        var el_position = self.el.getAttribute("position");
-//
-//        var distance = new THREE.Vector3(cam_position.x, cam_position.y, cam_position.z).distanceTo(new THREE.Vector3(el_position.x, el_position.y, el_position.z));
-
-
-        var distance = DATAVERSE_VIZ_AUX.get_distance(self.el.sceneEl.camera.el, self.el);
-
-        // And adjust scale
-
-        self.el.setAttribute("scale", {x: 0.001*distance, y: 0.001*distance, z: 0.001*distance});
-
-
-    }
-
-});
 
 AFRAME.registerComponent("face-camera",{
 
@@ -167,15 +122,18 @@ AFRAME.registerComponent('tilemap-viz', {
         tab: {type: 'string', default: ""},
         theme: {'type': 'string', default: ""},
         provider: {type: 'string', default: "CartoDB.Positron"},
+        // This is just an adjustment to always have an unmutable reference to default provider
+        default_provider: {type: 'string', default: "CartoDB.Positron"},
         lat: {type: 'float', default: 51.4825757},
         long: {type: 'float', default: -0.0164351},
         zoom: {type: 'number', default: 18},
         size: {type: 'number', default: 10},
         canvas_size: {type: 'number', default: 2048},
-        marker_size: {type: 'number', default: 0.5},
+        marker_size: {type: 'number', default: 0.25},
         text_color: {type: 'string', default: "white"},
         text_font: {type: 'string', default: "roboto"},
         text_background: {type: 'string', default: "black"},
+        text_attribution_color: {type: 'string', default: "#48a4cd"},
         map_y: {type: 'float', default: 0.0}
     },
 
@@ -184,6 +142,8 @@ AFRAME.registerComponent('tilemap-viz', {
         var self = this;
 
         console.log("INIT COMPONENT", self);
+
+        self.panel_timestamp = Date.now();
 
         // Undo rotation from renderer :) TODO: It's super problematic here, how to ammend instead of removing it???
 
@@ -200,7 +160,7 @@ AFRAME.registerComponent('tilemap-viz', {
 
                     self.prepared_data = data;
 
-                    self.scene_data = data;
+                    self.scene_data = scene_data;
 
                     // insert leaflet div
 
@@ -228,7 +188,25 @@ AFRAME.registerComponent('tilemap-viz', {
                     console.log("LATLONG", self.data.lat, self.data.long, self.data.zoom);
 
                     self.map = L.map('map').setView([self.data.lat, self.data.long], self.data.zoom);
-                    self.layer = L.tileLayer.provider(self.data.theme ? DATAVERSE.themes[self.data.theme].map_provider : self.data.provider);
+
+                    // If provider comes thorught sheet params ==> self.data.theme && self.data.provider !== "CartoDB.Positron"
+
+                    if(self.data.theme && self.data.provider !== self.data.default_provider){
+
+                        self.layer = L.tileLayer.provider(self.data.provider, {crossOrigin: true});
+
+                    }
+                    else {
+
+                        self.layer = L.tileLayer.provider(self.data.theme ? DATAVERSE.themes[self.data.theme].map_provider : self.data.provider, {crossOrigin: true});
+                    }
+
+                    console.log("CROSSORIGIN", self.layer.options.crossOrigin, self.data.provider);
+
+
+                    console.log("TILELAYER", self.layer.options.attribution);
+
+
 
                     self.layer.addTo(self.map);
 
@@ -236,16 +214,21 @@ AFRAME.registerComponent('tilemap-viz', {
 
 //                    https://stackoverflow.com/questions/28873713/leaflet-event-on-tiles-loading?rq=1
 
-//                        self.layer.on("load", function() {
-//
-//                            html2canvas(document.getElementById("map"), {
-//                                useCORS: true,
-//                                onrendered: function (canvas) {
-//
+                        self.layer.on("load", function() {
+
+                            console.log("LOAD DISPARADO 1");
+
+                            html2canvas(document.getElementById("map"), {
+
+                                useCORS: true,
+                                onrendered: function (canvas) {
+
+                                    console.log("LOAD DISPARADO 2");
+
 //                                    self.el.appendChild(canvas);
-//
-//                                    console.log("RENDERED");
-//
+
+                                    console.log("RENDERED");
+
 //                                    self.map_img = document.createElement('img');
 //                                    self.map_img.setAttribute("id", "map_img");
 //                                    var dimensions = self.map.getSize();
@@ -256,36 +239,61 @@ AFRAME.registerComponent('tilemap-viz', {
 //                                    var assets = document.querySelector("a-assets");
 //
 //                                    assets.appendChild(self.map_img);
+
+                                    var interval_function = function() {
+
+                                        self.map_texture = new THREE.CanvasTexture(canvas);
+
+
+                                        self.update();
+
+                                    };
+
+
+                                    setTimeout(interval_function, 1000);
+
+
+//                                    self.map_texture = new THREE.CanvasTexture(canvas);
+//
 //
 //                                    self.update();
-//
-//
-//                                    //                            document.getElementById('images').innerHTML = '';
-//                                    //                            document.getElementById('images').appendChild(img);
-//
-//                                }
-//                            });
-//                        });
 
 
-                            leafletImage(self.map, function(err, canvas) {
+                                    //                            document.getElementById('images').innerHTML = '';
+                                    //                            document.getElementById('images').appendChild(img);
 
-
-                                    var map_img = document.createElement('img');
-                                    map_img.setAttribute("id", "map_img");
-                                    var dimensions = self.map.getSize();
-                                    map_img.width = dimensions.x;
-                                    map_img.height = dimensions.y;
-                                    map_img.src = canvas.toDataURL();
-
-                                    var assets = document.querySelector("a-assets");
-
-                                    assets.appendChild(map_img);
-
-                                    self.map_img = map_img;
-
-                                    self.update();
+                                }
                             });
+                        });
+
+
+//                            leafletImage(self.map, function(err, canvas) {
+//
+//
+//                                    console.log("MAPIN 1");
+//
+//
+//                                    var map_img = document.createElement('img');
+//                                    map_img.setAttribute("id", "map_img");
+//                                    var dimensions = self.map.getSize();
+//                                    map_img.width = dimensions.x;
+//                                    map_img.height = dimensions.y;
+//                                    map_img.src = canvas.toDataURL();
+//
+//                                    console.log("MAPIN 2");
+//
+//
+//                                    var assets = document.querySelector("a-assets");
+//
+//                                    assets.appendChild(map_img);
+//
+//                                    self.map_img = map_img;
+//
+//                                    console.log("MAPIN 3");
+//
+//
+//                                    self.update();
+//                            });
 
 
 //                    var interval_function = function() {
@@ -353,6 +361,8 @@ AFRAME.registerComponent('tilemap-viz', {
 
         var marker = document.createElement("a-entity");
 
+        marker.classList.add("marker");
+
         marker.__data__ = datum;
 
         console.log("MARKER DATA", marker.__data__);
@@ -374,28 +384,34 @@ AFRAME.registerComponent('tilemap-viz', {
 
         }
 
+        var marker_jump = (self.data.marker_size / 4);
+
 
         var sphere = document.createElement("a-sphere");
 
-        sphere.setAttribute("position", {x:0, y: -(self.data.marker_size/3)*2, z:0});
+        sphere.setAttribute("position", {x:0, y: -marker_jump, z:0});
 
         sphere.setAttribute("color", element_color);
-        sphere.setAttribute("radius", self.data.marker_size/8);
+        sphere.setAttribute("radius", marker_jump);
 
         var cone = document.createElement("a-cone");
 
-        cone.setAttribute("height", self.data.marker_size);
+        cone.setAttribute("height", marker_jump*3);
         cone.setAttribute("color", element_color);
-        cone.setAttribute("position", {x:0, y: -self.data.marker_size/2, z:0});
-        cone.setAttribute("radius-top", (self.data.marker_size/6));
+        cone.setAttribute("position", {x:0, y: -(marker_jump) * 2.5, z:0});
+        cone.setAttribute("radius-top", marker_jump);
         cone.setAttribute("radius-bottom", 0);
+
+
+        var icon_radius = ((DATAVERSE.dmms.plus_button/2) * (self.data.size/2)) / 1000;
+
 
 //        cone.setAttribute("shadow", {cast: true});
 
         var text = document.createElement("a-entity");
 
 
-        var text_width = (DATAVERSE.dmms.subtitle * (self.data.size/2) * (datum.headline.length + 4)) / 1000;
+        var text_width = (DATAVERSE.dmms.map_label * (self.data.size/2) * (datum.headline.length + 2)) / 1000;
 
 //        .setAttribute('text', {value: title, align: "center", color: self.data.text_color, width: text_width, wrapCount: title.length + 4, zOffset: 0.01});
 
@@ -406,15 +422,16 @@ AFRAME.registerComponent('tilemap-viz', {
             width: text_width, wrapCount: datum.headline.length + 4, zOffset: 0.01});
 
 
-        var label_height = (DATAVERSE.dmms.subtitle * (self.data.size/2) / 1000)*3;
+        var label_height = (DATAVERSE.dmms.map_label * (self.data.size/2) / 1000)*3;
 
         text.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
 
-        text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.text_background, shader: "flat"});
+        text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.text_background, shader: "flat", opacity: 0.2, transparent: true});
 
+//        text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.text_background, shader: "flat", opacity: 0.2, transparent: true});
 
-        text.setAttribute("position", {x:0, y: self.data.marker_size/4, z:0});
-        text.setAttribute("rotation", {x:-45, y: 0, z:0});
+        text.setAttribute("position", {x:0, y: (self.data.marker_size / 2) + (text_width / 2) + icon_radius*2, z:0});
+        text.setAttribute("rotation", {x:0, y: 0, z:90});
 
 //        text.setAttribute("scale", {x:2.0, y:2.0, z:2.0});
         text.setAttribute("face-camera", "");
@@ -429,11 +446,11 @@ AFRAME.registerComponent('tilemap-viz', {
 
         var button_row = document.createElement("a-entity");
 
+        button_row.setAttribute("position", {x:0, y: 0, z:0});
+
         button_row.setAttribute("face-camera", "");
 
-        button_row.setAttribute("rotation", {x:-45, y: 0, z:0});
-
-        var icon_radius = ((DATAVERSE.dmms.plus_button/2) * (self.data.size/2)) / 1000;
+        button_row.setAttribute("rotation", {x:0, y: 0, z:0});
 
 
         var more = document.createElement("a-entity");
@@ -444,7 +461,8 @@ AFRAME.registerComponent('tilemap-viz', {
         more.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'plus.png', 'radius': icon_radius});
 
 
-        more.setAttribute("position", {x: -icon_radius*2, y:  self.data.marker_size/4 + (label_height*1.5), z:0});
+//        more.setAttribute("position", {x: -icon_radius*2, y:  self.data.marker_size/4 + (label_height*1.5), z:0});
+        more.setAttribute("position", {x: 0, y:  icon_radius*1.5, z:0});
 
 
         more.addEventListener("clicked", function(){
@@ -494,6 +512,20 @@ AFRAME.registerComponent('tilemap-viz', {
 
             };
 
+            // Hide all markers before showing media_panel
+
+            var els = self.el.sceneEl.querySelectorAll('.marker');
+
+            for (var i = 0; i < els.length; i++) {
+
+                var el = els[i];
+
+//                if(el !== this.parentNode.parentNode) {
+
+                    el.setAttribute("visible", false);
+//                }
+            }
+
             self.media_panel.setAttribute("position", self.media_panel_position);
 
 
@@ -503,11 +535,9 @@ AFRAME.registerComponent('tilemap-viz', {
 
             self.media_panel.setAttribute("uipack-mediapanel", {
                 yaw: yaw,
-                pitch: 0,
+                distance: DATAVERSE.distances.panel,
                 theme: self.data.theme,
-                distance: 1.5,
                 title: datum.headline,
-                subtitle: "subtitle",
                 text: datum.text,
                 low_height: 1,
                 media_url: datum.media,
@@ -516,7 +546,8 @@ AFRAME.registerComponent('tilemap-viz', {
                 link: datum.link,
                 link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.link, self.scene_data),
                 link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.link, self.scene_data),
-                id: "marker_" + number
+                id: "marker_" + number + "_" +  self.panel_timestamp
+
             });
 
             self.media_panel.addEventListener("link", function(data){
@@ -524,8 +555,23 @@ AFRAME.registerComponent('tilemap-viz', {
                 console.log("LINKANDO A ", data.detail.link);
             });
 
-            self.el.appendChild(self.media_panel);
 
+            self.media_panel.addEventListener("panel_closed", function(){
+
+                // Hide all markers before showing media_panel
+
+                var els = self.el.sceneEl.querySelectorAll('.marker');
+
+                for (var i = 0; i < els.length; i++) {
+
+                    var el = els[i];
+
+                    el.setAttribute("visible", true);
+                }
+
+            });
+
+            self.el.appendChild(self.media_panel);
 
             self.el.sceneEl.restore_clickable = this;
 
@@ -555,7 +601,9 @@ AFRAME.registerComponent('tilemap-viz', {
 
         var link = document.createElement("a-entity");
         link.setAttribute("uipack-button", {'theme': self.data.theme, 'icon_name': 'arrow-up.png', 'radius': icon_radius});
-        link.setAttribute("position", {x: icon_radius*2, y: self.data.marker_size/4 + (label_height*1.5), z:0});
+//        link.setAttribute("position", {x: icon_radius*2, y: self.data.marker_size/4 + (label_height*1.5), z:0});
+
+        link.setAttribute("position", {x: 0, y: icon_radius*4.0, z:0});
 
         link.addEventListener("clicked", function(){
 
@@ -600,11 +648,58 @@ AFRAME.registerComponent('tilemap-viz', {
         marker.appendChild(text);
         button_row.appendChild(more);
 //        button_row.appendChild(media);
-        button_row.appendChild(link);
+//        button_row.appendChild(link);
 
         marker.appendChild(button_row);
 
         self.el.appendChild(marker);
+
+    },
+
+    put_attribution: function(){
+
+        var self = this;
+
+        console.log("SETTING ATTRIBUTION", self.layer.options.attribution);
+
+        var attr_string = self.layer.options.attribution;
+
+        // Convert copyright to (c)
+
+        attr_string = attr_string.replace(/&copy;/gi, "(c)");
+        attr_string = attr_string.replace(/&mdash;/gi, "--");
+
+        // Remove links
+
+        attr_string = attr_string.replace(/<.*?>/gi, "");
+
+        console.log("ATTR 1", attr_string);
+
+
+        var text = document.createElement("a-entity");
+
+
+        var text_width = (DATAVERSE.dmms.map_attribution * (1.6) * (attr_string.length + 2)) / 1000;
+
+
+        text.setAttribute("text", {value: attr_string, align: "center",
+            color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_attribution_color : self.data.text_attribution_color,
+            font: self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.label_font,
+            width: text_width, wrapCount: attr_string.length + 2, zOffset: 0.01});
+
+
+        var label_height = (DATAVERSE.dmms.map_attribution * (1.6) / 1000)*3;
+
+        text.setAttribute("geometry", {primitive: "plane", height: label_height, width: "auto"});
+
+        text.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.text_background, shader: "flat", opacity: 0.5, transparent: true});
+
+
+
+        text.setAttribute("position", {x:0, y: 0.1, z:0});
+        text.setAttribute("rotation", {x:-90, y: 0, z:0});
+
+        self.el.appendChild(text);
 
     },
 
@@ -618,7 +713,7 @@ AFRAME.registerComponent('tilemap-viz', {
         console.log("UPDATING COMPONENT", self, self.data, self.prepared_data);
 
 
-        if((self.prepared_data !== undefined) && (typeof(self.map_img) !== "undefined")) {
+        if((self.prepared_data !== undefined) && (typeof(self.map_texture) !== "undefined")) {
 
             // Iterate through objects and titles and delete them
 
@@ -676,15 +771,34 @@ AFRAME.registerComponent('tilemap-viz', {
 //            self.plane.setAttribute("width", self.data.size);
 //            self.plane.setAttribute("height", self.data.size);
             self.plane.setAttribute("radius", self.data.size/2);
-            self.plane.setAttribute("shader", "flat");
 
-            self.plane.setAttribute("src", "#map_img");
+//            self.plane.setAttribute("shader", "flat");
+//
+//            self.plane.setAttribute("src", "#map_img");
 
-            self.plane.setAttribute("shadow", {receive: true});
+//            self.plane.setAttribute("shadow", {receive: true});
 
 //            self.plane.setAttribute.src="#map_img";
 
             self.el.appendChild(self.plane);
+
+            console.log("ANTES DE LOADED");
+
+            self.plane.addEventListener("loaded", function(evt){
+
+                self.plane.getObject3D('mesh').material = new THREE.MeshBasicMaterial({ map: self.map_texture});
+
+//                self.map_texture.needsUpdate = true;
+
+//                self.plane.getOrCreateObject3D('mesh').material = new THREE.MeshBasicMaterial({map: self.map_texture});
+
+            });
+
+            // Set attribution text
+
+            self.put_attribution();
+
+            console.log("DESPUES DE LOADED");
 
             self.el.emit("dv_loaded", null, false);
 
@@ -695,7 +809,11 @@ AFRAME.registerComponent('tilemap-viz', {
         var self = this;
 
         self.map_div.parentNode.removeChild(self.map_div);
-        self.map_img.parentNode.removeChild(self.map_img);
+
+        if(self.map_texture){
+//            console.log("DISPOSING TEXTURE");
+//            self.map_texture.dispose();
+        }
 
     }
 });

@@ -27,19 +27,26 @@ DATAVERSE.dmms = {
     'big_label': 30,
     'sublabel': 16,
     'subtitle': 12,
-    'min_text': 8
+    'min_text': 1,
+    'map_label': 8,
+    'map_attribution': 20
 };
 
 DATAVERSE.animation = {
-    geo: 300,
-    button: 1000
+    geo: 500,
+    button: 500
+};
+
+DATAVERSE.distances = {
+    close: 1.75,
+    panel: 1.5
 };
 
 
 DATAVERSE.height = 1.6;
 
 
-DATAVERSE.floor_vizs = ['isotypes-radial-viz', 'timeline-viz'];
+DATAVERSE.floor_vizs = ['isotypes-radial-viz'];
 
 DATAVERSE.sky_vizs = ['isotypes-radial-viz', 'timeline-viz', 'photogrid-viz', 'small-treemap-viz', 'tilemap-viz'];
 

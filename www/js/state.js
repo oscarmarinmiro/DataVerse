@@ -10,7 +10,10 @@ DATAVERSE.state = function(options, parent, callback){
 
     self.options = options;
 
-    self.state = {'actual_scene': self.main.urls.get_params().scene ? parseInt(self.main.urls.get_params().scene, 10): 2, 'scene_history': []};
+    self.state = {'actual_scene': self.main.urls.get_params().scene ? parseInt(self.main.urls.get_params().scene, 10): 2,
+        'scene_history': [],
+        'visited_scenes': {}
+    };
 
     self.load_app_data(callback);
 

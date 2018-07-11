@@ -179,34 +179,115 @@ AFRAME.registerComponent('uipack-mediacontrols', {
     this.real_bar_width = this.data.width - ((this.data.button_radius*5));
 
 
-    // On transport bar click, get point clicked, infer % of new pointer, and make video seek to that point
+    self.button_mode = (DATAVERSE && ('cursor_mode' in DATAVERSE)) ? DATAVERSE.cursor_mode : "desktop";
 
-    this.bar.addEventListener('click', function (event) {
 
-        // Get raycast intersection point, and from there, x_offset in bar
+    if(self.button_mode === "desktop"){
 
-        var point = document.querySelector("a-cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
+        this.bar.addEventListener("mousedown", function (event){
 
-        var x_offset = this.object3D.worldToLocal(point).x;
+                // Get raycast intersection point, and from there, x_offset in bar
 
-        var unit_offset = (x_offset/self.real_bar_width)+0.5;
+//                var point = document.querySelector("#cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
 
-        // Update current step for coherence between point+click and key methods
+                var point = event.detail.intersection.point;
 
-        self.current_step = Math.round(unit_offset*self.bar_steps);
+                var x_offset = this.object3D.worldToLocal(point).x;
 
-        if(self.video_el.readyState > 0) {
+                var unit_offset = (x_offset / self.real_bar_width) + 0.5;
 
-            self.video_el.currentTime = unit_offset * self.video_el.duration;
-        }
+                // Update current step for coherence between point+click and key methods
 
-        // Prevent propagation upwards (e.g: canvas click)
+                self.current_step = Math.round(unit_offset * self.bar_steps);
 
-        event.stopPropagation();
+                var timeout_function = function () {
+                    if (self.video_el.readyState > 0) {
+                        self.video_el.currentTime = unit_offset * self.video_el.duration;
+                    }
 
-        event.preventDefault();
+                };
 
-    });
+                self.ray_timeout = setTimeout(timeout_function, 300);
+
+
+
+        });
+
+        this.bar.addEventListener("mouseenter", function (event){
+
+            self.el.sceneEl.canvas.classList.remove("a-grab-cursor");
+
+
+        });
+
+        this.bar.addEventListener("mouseleave", function (event){
+
+            self.el.sceneEl.canvas.classList.add("a-grab-cursor");
+
+            clearTimeout(self.ray_timeout);
+
+        });
+
+    }
+    else {
+
+        // On transport bar click, get point clicked, infer % of new pointer, and make video seek to that point
+
+        self.first_hover = true;
+
+        this.bar.addEventListener('raycaster-intersected', function (event) {
+
+
+            console.log("INSERSECTED", event.detail.intersection.point);
+
+            if (self.first_hover) {
+
+
+                self.first_hover = false;
+
+
+                // Get raycast intersection point, and from there, x_offset in bar
+
+//                var point = document.querySelector("#cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
+
+                var point = event.detail.intersection.point;
+
+                var x_offset = this.object3D.worldToLocal(point).x;
+
+                var unit_offset = (x_offset / self.real_bar_width) + 0.5;
+
+                // Update current step for coherence between point+click and key methods
+
+                self.current_step = Math.round(unit_offset * self.bar_steps);
+
+                var timeout_function = function () {
+                    if (self.video_el.readyState > 0) {
+                        self.video_el.currentTime = unit_offset * self.video_el.duration;
+                    }
+
+                };
+
+
+                self.ray_timeout = setTimeout(timeout_function, 300);
+
+                // Prevent propagation upwards (e.g: canvas click)
+
+                event.stopPropagation();
+
+                event.preventDefault();
+            }
+
+        });
+
+        this.bar.addEventListener('raycaster-intersected-cleared', function (event) {
+
+            self.first_hover = true;
+
+            clearTimeout(self.ray_timeout);
+
+        });
+    }
+
 
     this.back_plane = document.createElement("a-plane");
 
@@ -317,7 +398,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
                 ctx.font = self.data.theme ? DATAVERSE.themes[self.data.theme].player_font: this.data.timeTextFont;
                 ctx.fillStyle = self.data.theme ? DATAVERSE.themes[self.data.theme].player_text_color : self.data.textColor;
                 ctx.textAlign = "center";
-                ctx.fillText(time_info_text, this.bar_canvas.width/2, this.bar_canvas.height* 1.0);
+                ctx.fillText(time_info_text, this.bar_canvas.width*0.45, this.bar_canvas.height* 1.0);
 
                 // DEBUG PURPOSES
 
@@ -355,7 +436,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
                     var width = endX - startX;
 
                     ctx.fillStyle = "grey";
-                    ctx.fillRect(startX, 0, width, this.bar_canvas.height/3);
+                    ctx.fillRect(startX, 0, width, this.bar_canvas.height/2);
 
                 }
 
@@ -364,7 +445,7 @@ AFRAME.registerComponent('uipack-mediacontrols', {
                 ctx.fillStyle = this.data.barColor;
                 ctx.fillRect(0, 0,
                     (this.video_el.currentTime / this.video_el.duration)*this.bar_canvas.width,
-                    this.bar_canvas.height/3);
+                    this.bar_canvas.height/2);
 
             }
 

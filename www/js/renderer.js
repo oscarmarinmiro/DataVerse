@@ -34,6 +34,115 @@ DATAVERSE.renderer.prototype = {
 
     },
 
+    'render_intropanel': function(){
+
+        var self = this;
+
+        var already_visited_scene = self.main.state.state.actual_scene in self.main.state.state.visited_scenes;
+
+        var render_intro = !(already_visited_scene ? true : (('autohide_intro' in self.actual_scene_data) ? (self.actual_scene_data.autohide_intro === "yes") : false));
+
+        console.log("EN RENDERING INTROPANEL", render_intro, already_visited_scene);
+
+        if(render_intro) {
+
+            self.intro_panel = document.createElement("a-entity");
+
+            self.intro_panel.classList.add("dataverse-added");
+
+            self.intro_panel.setAttribute("intro-panel", {
+                theme: self.theme,
+                credits: self.actual_scene_data.credits ? self.actual_scene_data.credits : "",
+                title: self.actual_scene_data.title,
+                text: self.actual_scene_data.explain,
+                yaw: self.counter_cam_rotation
+            });
+
+            self.scene.appendChild(self.intro_panel);
+
+            self.intro_panel.addEventListener("closed", function(){
+                 self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+
+                 if(self.laser_controls) {
+
+                     self.laser_controls.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+                 }
+
+            });
+        }
+        else{
+             self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+
+             if(self.laser_controls) {
+
+                 self.laser_controls.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
+             }
+
+        }
+
+     },
+
+    'set_cursor': function(){
+
+        var self = this;
+
+
+        console.log("HEADSET", AFRAME.utils.checkHeadsetConnected(), AFRAME.utils.isMobile());
+
+        var mobile = AFRAME.utils.isMobile();
+        var headset = AFRAME.utils.checkHeadsetConnected();
+
+        var desktop = !(mobile) && !(headset);
+
+        self.cursor.parentNode.removeChild(self.cursor);
+
+        self.cursor = document.createElement("a-entity");
+
+        self.camera.appendChild(self.cursor);
+
+        self.cursor.setAttribute("id", "cursor");
+
+        self.cursor.setAttribute("cursor", {rayOrigin: desktop ? "mouse": "entity", fuse: true, fuseTimeout: DATAVERSE.animation.button});
+        self.cursor.setAttribute("position", {x:0,y:0,z:-1});
+        self.cursor.setAttribute("geometry", {primitive: "ring", radiusInner: 0.01, radiusOuter: 0.02});
+        self.cursor.setAttribute("material", {color: self.theme_data.cursor_color, shader: "flat"});
+        self.cursor.setAttribute("visible", !desktop);
+
+        // To avoid clicks while loading and intro panel is present
+
+        self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".non_click_while_loading"});
+
+        if((headset) && (!(mobile))){
+
+            self.laser_controls = document.createElement("a-entity");
+
+            self.laser_controls.setAttribute("laser-controls", {});
+//            self.laser_controls.setAttribute("teleport_controls", true);
+
+            self.laser_controls.classList.add("dataverse-added");
+
+            self.laser_controls.setAttribute("line", {color: self.theme_data.cursor_color});
+
+            self.laser_controls.setAttribute("raycaster", {near: 0.0, objects: ".non_click_while_loading"});
+
+            // Hide and deactivate gaze cursor
+
+            self.cursor.setAttribute("visible", false);
+
+            self.cursor.setAttribute("raycaster", {far:0.0});
+
+            self.scene.appendChild(self.laser_controls);
+
+        }
+
+
+//<a-entity laser-controls line="color: red; opacity: 0.75"></a-entity>
+
+
+        DATAVERSE.cursor_mode = desktop ? "desktop" : (mobile ? "gaze": "laser");
+
+    },
+
     // Renders auxiliary elements: lights, themes, floor, audio, etc..
 
     'render_aux_assets': function(){
@@ -51,116 +160,16 @@ DATAVERSE.renderer.prototype = {
         self.directional_light.setAttribute("position", {x:1, y:10, z:-1});
         self.directional_light.classList.add("dataverse-added");
 
-        self.vive_controls = document.createElement("a-entity");
 
-        self.vive_controls.setAttribute("vive-controls", {hand: "right"});
-        self.vive_controls.setAttribute("teleport_controls", true);
 
-        self.vive_controls.classList.add("dataverse-added");
+        self.set_cursor();
 
-        // Tweek cursor, fuse and raycaster
-
-        self.cursor.setAttribute("color", self.theme_data.cursor_color);
-        self.cursor.setAttribute("fuse-timeout", 1000);
-        self.cursor.setAttribute("fuse", true);
-
-        // To avoid clicks while loading and intro panel is present
-
-        self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".non_click_while_loading"});
 
         // REMOVE COMMENTS
         // Insert intro panel
 
-        self.intro_panel = document.createElement("a-entity");
+//        self.render_intropanel();
 
-        self.intro_panel.classList.add("dataverse-added");
-
-        self.intro_panel.setAttribute("intro-panel", {
-            theme: self.theme,
-            credits: self.actual_scene_data.credits ? self.actual_scene_data.credits: "",
-            title: self.actual_scene_data.title,
-            text: self.actual_scene_data.explain,
-            yaw: self.counter_cam_rotation
-        });
-
-        self.intro_panel.addEventListener("closed", function(){
-            // Set sky opacity
-
-            // Set floor opacity
-
-            // Make things clickable again
-
-            self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
-
-            // Set component visibility
-
-            self.actual_scene_component.setAttribute("visible", true);
-
-
-//            // Iterate through skyspheres
-//
-//            var myNodeList = document.querySelectorAll('.skyspheres');
-//
-//            [].forEach.call(myNodeList, function (item) {
-//              // :) hooray `item` can be used here
-//
-//                var element_animation = document.createElement("a-animation");
-//
-//                element_animation.setAttribute("attribute", "opacity");
-//                element_animation.setAttribute("dur", 3000);
-//                element_animation.setAttribute("to", 1.0);
-//
-//                item.appendChild(element_animation);
-//
-//            });
-//
-//            // Manual floors and skies
-//
-//            if(self.floor) {
-//
-//                var floor_animation = document.createElement("a-animation");
-//
-//                floor_animation.setAttribute("attribute", "opacity");
-//                floor_animation.setAttribute("dur", 3000);
-//                floor_animation.setAttribute("to", 1.0);
-//
-//                self.floor.appendChild(floor_animation);
-//            }
-//
-//            if(self.sky) {
-//
-//                var sky_animation = document.createElement("a-animation");
-//
-//                sky_animation.setAttribute("attribute", "opacity");
-//                sky_animation.setAttribute("dur", 3000);
-//                sky_animation.setAttribute("to", 1.0);
-//
-//                self.sky.appendChild(sky_animation);
-//            }
-//            // Else: photosphere sky
-//            else {
-//
-//                var my_sky = document.querySelector("a-sky");
-//
-//                if(my_sky) {
-//
-//                    var sky_animation = document.createElement("a-animation");
-//
-//                    sky_animation.setAttribute("attribute", "opacity");
-//                    sky_animation.setAttribute("dur", 3000);
-//                    sky_animation.setAttribute("to", 1.0);
-//
-//                    my_sky.appendChild(sky_animation);
-//                }
-//
-//
-//            }
-
-
-
-        });
-
-        self.intro_panel.classList.add("dataverse-added");
 
 
 //
@@ -178,11 +187,9 @@ DATAVERSE.renderer.prototype = {
         // self.camera.appendChild(self.cursor);
 
         // self.scene.appendChild(self.camera);
-        self.scene.appendChild(self.vive_controls);
+//        self.scene.appendChild(self.vive_controls);
         self.scene.appendChild(self.directional_light);
         self.scene.appendChild(self.ambient_light);
-        self.scene.appendChild(self.intro_panel);
-
 
     },
 
@@ -217,7 +224,7 @@ DATAVERSE.renderer.prototype = {
 
                 theme: self.theme,
 
-                icons: icons.icons,  buttons: []
+                icons: icons.icons,  buttons: [], open:true
 
             });
 
@@ -290,6 +297,49 @@ DATAVERSE.renderer.prototype = {
 
     },
 
+    'insert_loading_scene': function(){
+
+        var self = this;
+
+        // Insert loading symbols
+
+        var loading_defs = [
+            [ [0, 1.6, -4], [-4, 1.6, 0], [4, 1.6, 0], [0, 1.6, 4]],
+            [ [0, 0, 0], [0, 90, 0], [0, -90, 0], [0, -180, 0]]
+        ];
+
+        for(var i=0; i< loading_defs[0].length; i++){
+
+            var loading = document.createElement("a-plane");
+
+            loading.classList.add("dataverse-added", "loading_scene");
+            loading.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1], z: loading_defs[0][i][2]});
+            loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
+            loading.setAttribute("width", 1);
+            loading.setAttribute("height", 1);
+            loading.setAttribute("src", "img/loading_static.jpg");
+
+            document.querySelector("a-scene").appendChild(loading);
+
+            var text = document.createElement("a-text");
+
+            text.classList.add("dataverse-added", "loading_scene");
+            text.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1] - 0.75, z: loading_defs[0][i][2]});
+            text.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
+            text.setAttribute("width", 5);
+            text.setAttribute("font", "exo2bold");
+            text.setAttribute("anchor", "center");
+            text.setAttribute("align", "center");
+            text.setAttribute("value", "Loading scene");
+
+            document.querySelector("a-scene").appendChild(text);
+
+
+        }
+
+
+    },
+
     // Renders a scene
 
     'render_scene': function(){
@@ -312,6 +362,10 @@ DATAVERSE.renderer.prototype = {
         console.log("LANDING WITH CAMERA ROTATION ", self.scene.camera.el.getAttribute("rotation").y);
 
         self.counter_cam_rotation = (self.scene.camera.el.getAttribute("rotation").y);
+
+        self.counter_cam_position = (self.scene.camera.el.getAttribute("position"));
+
+        console.log("LANDING WITH CAMERA POSITION ", self.counter_cam_position);
 
         // var to_delete = [];
         //
@@ -364,9 +418,9 @@ DATAVERSE.renderer.prototype = {
 
         // Check that component is registered, else.. croack
 
-        if(!(self.actual_scene_data.type in AFRAME.components)){
+        if((self.actual_scene_data === undefined) || (!(self.actual_scene_data.type in AFRAME.components))){
 
-            self.main.croak("Invalid type of scene in row " + (self.main.state.state.actual_scene + 2) + ": " + self.actual_scene_data.type);
+            self.main.croak("Invalid type of scene in row or nonexistent scene: " + (self.main.state.state.actual_scene));
 
         }
         else {
@@ -377,6 +431,9 @@ DATAVERSE.renderer.prototype = {
             self.theme = (self.actual_scene_data.theme !== "") ? self.theme = self.actual_scene_data.theme : DATAVERSE.constants.default_theme;
 
             self.theme_data = DATAVERSE.themes[self.theme];
+
+            DATAVERSE.scene_number = self.main.state.state.actual_scene;
+
 
             // Redefine icon path
 
@@ -394,7 +451,13 @@ DATAVERSE.renderer.prototype = {
             my_params.title = self.actual_scene_data.title;
             my_params.explain = self.actual_scene_data.explain;
             my_params.source = self.main.state.state.scenes_data_source;
-            my_params.tab = self.actual_scene_data.tab;
+
+            if ((self.actual_scene_data.type === "photo-viz") || (self.actual_scene_data.type === "video-viz")){
+                my_params.tab = "labels";
+            }
+            else {
+                my_params.tab = self.actual_scene_data.tab;
+            }
 
             // If theme exists, fill it in params
 
@@ -437,6 +500,9 @@ DATAVERSE.renderer.prototype = {
 
                 self.floor.classList.add("dataverse-added");
 
+                self.floor.setAttribute("visible", false);
+
+
 //                self.floor.setAttribute("opacity", 0.0);
 
                 self.scene.appendChild(self.floor);
@@ -454,6 +520,9 @@ DATAVERSE.renderer.prototype = {
                     self.floor.setAttribute("repeat", "100 100");
                     self.floor.setAttribute("rotation", {x:-90, y: self.counter_cam_rotation, z:0});
                     self.floor.classList.add("dataverse-added");
+
+                    self.floor.setAttribute("visible", false);
+
 
 //                    self.floor.setAttribute("opacity", 0.0);
 
@@ -492,6 +561,9 @@ DATAVERSE.renderer.prototype = {
 
                             self.floor.classList.add("dataverse-added");
 
+                            self.floor.setAttribute("visible", false);
+
+
 //                            self.floor.setAttribute("opacity", 0.0);
 
                             self.scene.appendChild(self.floor);
@@ -507,6 +579,8 @@ DATAVERSE.renderer.prototype = {
                             self.floor.setAttribute("repeat", "100 100");
                             self.floor.setAttribute("rotation", {x: -90, y: self.counter_cam_rotation, z: 0});
                             self.floor.classList.add("dataverse-added");
+
+                            self.floor.setAttribute("visible", false);
 
 //                            self.floor.setAttribute("opacity", 0.0);
 
@@ -545,6 +619,9 @@ DATAVERSE.renderer.prototype = {
                 self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
 
+                self.sky.setAttribute("visible", false);
+
+
                 self.scene.appendChild(self.sky);
 
 
@@ -558,6 +635,8 @@ DATAVERSE.renderer.prototype = {
                     self.sky.classList.add("dataverse-added");
 
                     self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
+
+                    self.sky.setAttribute("visible", false);
 
 //                    self.sky.setAttribute("opacity", 0.0);
 
@@ -586,6 +665,8 @@ DATAVERSE.renderer.prototype = {
 
 //                            self.sky.setAttribute("opacity", 0.0);
 
+                            self.sky.setAttribute("visible", false);
+
                             self.scene.appendChild(self.sky);
 
                         }
@@ -598,6 +679,8 @@ DATAVERSE.renderer.prototype = {
                             self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
 //                            self.sky.setAttribute("opacity", 0.0);
+
+                            self.sky.setAttribute("visible", false);
 
                             self.scene.appendChild(self.sky);
 
@@ -615,9 +698,13 @@ DATAVERSE.renderer.prototype = {
 
             if("position" in my_params){
                 console.log("SETTING POSITION", my_params.position);
-                self.actual_scene_component.setAttribute("position", my_params.position);
+                self.actual_scene_component.setAttribute("position", {x: self.counter_cam_position.x + my_params.position.split(" ")[0], y: self.actual_scene_component.getAttribute("position").y, z: self.counter_cam_position.z + + my_params.position.split(" ")[2]});
                 delete(my_params.position);
             }
+            else {
+                self.actual_scene_component.setAttribute("position", {x: self.counter_cam_position.x, y: self.actual_scene_component.getAttribute("position").y, z: self.counter_cam_position.z});
+            }
+
 
             // if("rotation" in my_params){
             //     self.actual_scene_component.setAttribute("rotation", my_params.rotation);
@@ -691,6 +778,29 @@ DATAVERSE.renderer.prototype = {
 
             self.main.urls.set_params({scene: self.main.state.state.actual_scene});
 
+
+            // Loading effect: Back sphere and 'loading scene' texts
+
+
+            self.back_sphere = document.createElement("a-sphere");
+
+            self.back_sphere.setAttribute("material", {shader: "flat", side: "back", color: "black"});
+
+            self.back_sphere.setAttribute("radius", 5.0);
+
+            self.back_sphere.setAttribute("opacity", 1.0);
+
+            self.back_sphere.classList.add("dataverse-added");
+
+            self.back_sphere.setAttribute("position", self.counter_cam_position);
+
+            self.scene.appendChild(self.back_sphere);
+
+            self.insert_loading_scene();
+
+
+            console.log("VISITED SCENES", self.main.state.state.visited_scenes);
+
             // React on 'link'
 
             self.actual_scene_component.addEventListener("link", function(evt){
@@ -701,9 +811,85 @@ DATAVERSE.renderer.prototype = {
 
             self.actual_scene_component.addEventListener("dv_loaded", function(evt){
 
-                console.log("EL COMPONENTE HA ACABADO DE CARGARSE ", self.intro_panel.components);
+//                console.log("EL COMPONENTE HA ACABADO DE CARGARSE ", self.intro_panel.components);
 
-                self.intro_panel.components['intro-panel'].loaded();
+                // Set component visibility
+
+                self.actual_scene_component.setAttribute("visible", true);
+
+                // Set sky visibility
+
+                if(self.sky){
+                    self.sky.setAttribute("visible", true);
+                }
+
+                if(self.floor){
+                    self.floor.setAttribute("visible", true);
+                }
+
+
+                var myNodeList = document.querySelectorAll('.skyspheres');
+
+                [].forEach.call(myNodeList, function (item) {
+
+                    item.setAttribute("visible", true);
+                });
+
+                // Remove 'loading scene'
+
+                var els = self.scene.querySelectorAll('.loading_scene');
+
+                for (var i = 0; i < els.length; i++) {
+
+                    els[i].parentNode.removeChild(els[i]);
+                }
+
+                        self.render_intropanel();
+
+                        self.main.state.state.visited_scenes[self.main.state.state.actual_scene] = true;
+
+
+                if(self.back_sphere.hasLoaded) {
+
+                    console.log("HASLOADED");
+
+                    var sphere_animation = document.createElement("a-animation");
+
+                    sphere_animation.setAttribute("attribute", "opacity");
+                    sphere_animation.setAttribute("dur", 2000);
+                    sphere_animation.setAttribute("from", 1.0);
+                    sphere_animation.setAttribute("to", 0.0);
+
+                    self.back_sphere.appendChild(sphere_animation);
+
+                    sphere_animation.addEventListener("animationend", function () {
+
+                         self.back_sphere.parentNode.removeChild(self.back_sphere);
+
+
+                    });
+
+                }
+                else {
+
+                    self.back_sphere.addEventListener("loaded", function(){
+                        var sphere_animation = document.createElement("a-animation");
+
+                        sphere_animation.setAttribute("attribute", "opacity");
+                        sphere_animation.setAttribute("dur", 2000);
+                        sphere_animation.setAttribute("from", 1.0);
+                        sphere_animation.setAttribute("to", 0.0);
+
+                        self.back_sphere.appendChild(sphere_animation);
+
+                        sphere_animation.addEventListener("animationend", function () {
+
+                                self.back_sphere.parentNode.removeChild(self.back_sphere);
+                        });
+
+                    });
+                }
+
 
             });
         }
