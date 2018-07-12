@@ -1,3 +1,5 @@
+var DATAVERSE = DATAVERSE || {};
+
 DATAVERSE.themes =
 {
     'dark': {

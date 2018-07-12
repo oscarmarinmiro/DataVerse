@@ -7,10 +7,10 @@ AFRAME.registerComponent('uipack-button', {
     schema: {
         icon_name: {type: 'string'},
         yaw: { type: 'number', default: 0.0},
-        elevation: { type: 'number', default: UIPACK_CONSTANTS.button_elevation},
-        distance: { type: 'number', default: UIPACK_CONSTANTS.button_distance},
+        elevation: { type: 'number', default: DATAVERSE.UIPACK_CONSTANTS.button_elevation},
+        distance: { type: 'number', default: DATAVERSE.UIPACK_CONSTANTS.button_distance},
         absolute_pos: { type: 'boolean', default: false},
-        radius: {type: 'number', default: UIPACK_CONSTANTS.button_radius},
+        radius: {type: 'number', default: DATAVERSE.UIPACK_CONSTANTS.button_radius},
         arc_color: {type: 'string', default: "red"},
         theme: {type: 'string', default: ""}
     },
@@ -177,7 +177,7 @@ AFRAME.registerComponent('uipack-button', {
 
     // CHange material, radius, position and rotation
 
-    self.icon_path = (self.data.theme !== "" ? DATAVERSE.themes[self.data.theme].icon_path : UIPACK_CONSTANTS.icon_path) + "/" + self.data.icon_name;
+    self.icon_path = (self.data.theme !== "" ? DATAVERSE.themes[self.data.theme].icon_path : DATAVERSE.UIPACK_CONSTANTS.icon_path) + "/" + self.data.icon_name;
 
     self.button.setAttribute("material",{"src": 'url(' + self.icon_path + ')', "shader": "flat"});
 

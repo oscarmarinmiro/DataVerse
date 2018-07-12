@@ -189,28 +189,28 @@ AFRAME.registerComponent('uipack-menu', {
 
     // Position icons
 
-    var icon_row_half_width = ((self.icon_row.length-1)*(UIPACK_CONSTANTS.button_radius*2) + (self.icon_row.length - 1) * UIPACK_CONSTANTS.icon_spacing)/2.0;
+    var icon_row_half_width = ((self.icon_row.length-1)*(DATAVERSE.UIPACK_CONSTANTS.button_radius*2) + (self.icon_row.length - 1) * DATAVERSE.UIPACK_CONSTANTS.icon_spacing)/2.0;
 
     for(var i=0; i< self.icon_row.length; i++){
       //          <!--<a-entity uipack-button="icon_name: interface/airplane; pitch:30.0; yaw:270.0" id="b"></a-entity>-->
 
       self.icon_row[i].setAttribute("uipack-button", {icon_name: self.data.icons[i]});
 
-      self.icon_row[i].setAttribute("position", (i*(UIPACK_CONSTANTS.button_radius*2 +UIPACK_CONSTANTS.icon_spacing )) - icon_row_half_width + " " +  UIPACK_CONSTANTS.offset_icons +" 0");
+      self.icon_row[i].setAttribute("position", (i*(DATAVERSE.UIPACK_CONSTANTS.button_radius*2 +DATAVERSE.UIPACK_CONSTANTS.icon_spacing )) - icon_row_half_width + " " +  DATAVERSE.UIPACK_CONSTANTS.offset_icons +" 0");
     }
 
     // Position text buttons
 
     // button_parent
 
-    var button_row_half_width = ((self.button_row.length-1)*(UIPACK_CONSTANTS.menu_button_width) + (self.button_row.length - 1) * UIPACK_CONSTANTS.button_spacing)/2.0;
+    var button_row_half_width = ((self.button_row.length-1)*(DATAVERSE.UIPACK_CONSTANTS.menu_button_width) + (self.button_row.length - 1) * DATAVERSE.UIPACK_CONSTANTS.button_spacing)/2.0;
 
     for(i=0; i< self.button_row.length; i++){
       //          <!--<a-entity uipack-button="icon_name: interface/airplane; pitch:30.0; yaw:270.0" id="b"></a-entity>-->
 
-      self.button_row[i].setAttribute("uipack-textbutton", {text: self.data.buttons[i], width: UIPACK_CONSTANTS.menu_button_width, color: "#FFF", background: "#000"});
+      self.button_row[i].setAttribute("uipack-textbutton", {text: self.data.buttons[i], width: DATAVERSE.UIPACK_CONSTANTS.menu_button_width, color: "#FFF", background: "#000"});
 
-      self.button_row[i].setAttribute("position", (i*(UIPACK_CONSTANTS.menu_button_width + UIPACK_CONSTANTS.button_spacing )) - button_row_half_width + " " +  UIPACK_CONSTANTS.offset_buttons +" 0");
+      self.button_row[i].setAttribute("position", (i*(DATAVERSE.UIPACK_CONSTANTS.menu_button_width + DATAVERSE.UIPACK_CONSTANTS.button_spacing )) - button_row_half_width + " " +  DATAVERSE.UIPACK_CONSTANTS.offset_buttons +" 0");
     }
 
 
@@ -219,12 +219,12 @@ AFRAME.registerComponent('uipack-menu', {
     if(self.data.media_id != "") {
 
         self.media_controls.setAttribute("uipack-mediacontrols", {'src': "#" + self.data.media_id,
-            width: UIPACK_CONSTANTS.menu_player_width,
-            height: UIPACK_CONSTANTS.menu_player_height,
+            width: DATAVERSE.UIPACK_CONSTANTS.menu_player_width,
+            height: DATAVERSE.UIPACK_CONSTANTS.menu_player_height,
             theme: self.data.theme,
-            button_radius: UIPACK_CONSTANTS.menu_player_button_radius});
+            button_radius: DATAVERSE.UIPACK_CONSTANTS.menu_player_button_radius});
 
-        self.media_controls.setAttribute("position", "0 " + UIPACK_CONSTANTS.offset_player + " 0");
+        self.media_controls.setAttribute("position", "0 " + DATAVERSE.UIPACK_CONSTANTS.offset_player + " 0");
     }
 
     // If data.open, emulate open menu
@@ -265,7 +265,7 @@ AFRAME.registerComponent('uipack-menu', {
 
       self.frame_count++;
 
-      if(self.frame_count % UIPACK_CONSTANTS.menu_tick_check == 0){
+      if(self.frame_count % DATAVERSE.UIPACK_CONSTANTS.menu_tick_check == 0){
 
         // Get camera pitch and yaw
 
@@ -297,9 +297,9 @@ AFRAME.registerComponent('uipack-menu', {
 
             console.log("camera rotation", camera_rotation, camera_yaw);
 
-            self.y_position = UIPACK_CONSTANTS.menu_distance * Math.sin(this.data.pitch * Math.PI / 180.0);
-            self.x_position = UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.cos(camera_yaw * Math.PI / 180.0);
-            self.z_position = -UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.sin(camera_yaw * Math.PI / 180.0);
+            self.y_position = DATAVERSE.UIPACK_CONSTANTS.menu_distance * Math.sin(this.data.pitch * Math.PI / 180.0);
+            self.x_position = DATAVERSE.UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.cos(camera_yaw * Math.PI / 180.0);
+            self.z_position = -DATAVERSE.UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.sin(camera_yaw * Math.PI / 180.0);
 
             this.container.setAttribute("position", [self.x_position, self.y_position, self.z_position].join(" "));
 
@@ -323,9 +323,9 @@ AFRAME.registerComponent('uipack-menu', {
 
             // Set position of menu based on camera yaw and data.pitch
 
-            self.y_position = UIPACK_CONSTANTS.menu_distance * Math.sin(this.data.pitch * Math.PI / 180.0);
-            self.x_position = UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.cos(camera_yaw * Math.PI / 180.0);
-            self.z_position = -UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.sin(camera_yaw * Math.PI / 180.0);
+            self.y_position = DATAVERSE.UIPACK_CONSTANTS.menu_distance * Math.sin(this.data.pitch * Math.PI / 180.0);
+            self.x_position = DATAVERSE.UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.cos(camera_yaw * Math.PI / 180.0);
+            self.z_position = -DATAVERSE.UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.sin(camera_yaw * Math.PI / 180.0);
 
             this.container.setAttribute("position", [self.x_position, self.y_position, self.z_position].join(" "));
 

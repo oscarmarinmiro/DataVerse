@@ -437,7 +437,7 @@ DATAVERSE.renderer.prototype = {
 
             // Redefine icon path
 
-            UIPACK_CONSTANTS.icon_path = self.theme_data.icon_path;
+            DATAVERSE.UIPACK_CONSTANTS.icon_path = self.theme_data.icon_path;
 
             self.render_aux_assets();
             self.actual_scene_component = document.createElement("a-entity");

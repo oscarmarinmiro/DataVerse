@@ -2,8 +2,8 @@
 AFRAME.registerComponent('uipack-textbutton', {
         schema: {
             yaw: { type: 'number', default: 0.0},
-            elevation: { type: 'number', default: UIPACK_CONSTANTS.button_elevation},
-            distance: { type: 'number', default: UIPACK_CONSTANTS.button_distance},
+            elevation: { type: 'number', default: DATAVERSE.UIPACK_CONSTANTS.button_elevation},
+            distance: { type: 'number', default: DATAVERSE.UIPACK_CONSTANTS.button_distance},
             width: { type: 'number', default: 3.0},
             text: { type: 'string', default: ""},
             color: { type: 'string', default: "#000"},
@@ -56,7 +56,7 @@ AFRAME.registerComponent('uipack-textbutton', {
 
             self.icon = document.createElement("a-entity");
 
-            self.icon.setAttribute("uipack-button", {icon_name: UIPACK_CONSTANTS.thumbnail_icon});
+            self.icon.setAttribute("uipack-button", {icon_name: DATAVERSE.UIPACK_CONSTANTS.thumbnail_icon});
 
             self.el.appendChild(self.icon);
 
@@ -64,7 +64,7 @@ AFRAME.registerComponent('uipack-textbutton', {
 
             self.text.addEventListener("textfontset", function(){
 
-              self.icon.setAttribute("position", {x:0, y: -self.text.getAttribute("geometry").height/2, z:UIPACK_CONSTANTS.label_front_gap});
+              self.icon.setAttribute("position", {x:0, y: -self.text.getAttribute("geometry").height/2, z:DATAVERSE.UIPACK_CONSTANTS.label_front_gap});
 
             });
 
