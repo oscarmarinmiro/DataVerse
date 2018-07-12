@@ -1,6 +1,7 @@
 {
-  "name": "DataVerses",
-  "author": "@oscarmarinmiro / Knight Foundation",
+  "name": "DataVerse",
+  "author": "@oscarmarinmiro",
+  "version": "0.8.2",
   "dependencies": {
     "jquery": "latest",
     "moment": "latest",
