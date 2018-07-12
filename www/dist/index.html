@@ -23,14 +23,6 @@
 
         <script>
 
-            // This is to force reload on 'artificially inserted' history entries...
-
-            window.onpopstate = function(event) {
-                if(event && event.state) {
-                    location.reload();
-                }
-            };
-
             // World 100
 
 //            var main = new DATAVERSE.main({'debug': false, 'source': "https://docs.google.com/spreadsheets/d/13QLqRWDrg5EC2q-zWZW4svLlb5RzvzTqRnVOdbytu5c/edit?usp=sharing"});

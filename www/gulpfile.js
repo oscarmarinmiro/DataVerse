@@ -4,7 +4,6 @@ var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var filter = require('gulp-filter');
 var del = require('del');
-var mainbowerfiles = require('main-bower-files');
 var minifycss = require('gulp-minify-css');
 
 // Define default destination folder
@@ -19,20 +18,6 @@ gulp.task('clean', function() {
 
 gulp.task('js', function() {
 
-//    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-//    <script src="bower_components/aframe/dist/aframe-v0.8.2.min.js"></script>
-//    <script src="bower_components/moment/min/moment-with-locales.min.js"></script>
-//    <script src="bower_components/howler/dist/howler.min.js"></script>
-//    <script src="bower_components/leaflet/dist/leaflet.js"></script>
-//    <script src="bower_components/leaflet-providers/leaflet-providers.js"></script>
-//    <script src="bower_components/html2canvas/build/html2canvas.min.js"></script>
-//    <!--<script src="bower_components/leaflet-image/leaflet-image.js"></script>-->
-//
-//    <script src="bower_components/d3/d3.min.js"></script>
-//
-//    <script src="bower_components/tabletop/src/tabletop.min.js"></script>
-
-
    var jsFiles = ['bower_components/jquery/dist/jquery.js',
        'bower_components/aframe/dist/aframe-v0.8.2.js', 'bower_components/moment/min/moment-with-locales.js',
        'bower_components/howler/dist/howler.js', 'bower_components/leaflet/dist/leaflet-src.js', 'bower_components/leaflet-providers/leaflet-providers.js',
@@ -41,7 +26,6 @@ gulp.task('js', function() {
    ];
 
 
-//    return gulp.src(mainbowerfiles().concat(jsFiles))
     return gulp.src(jsFiles)
         .pipe(filter('**/*.js'))
         .pipe(concat('dataverse.js'))

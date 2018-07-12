@@ -1,0 +1,39 @@
+{
+  "name": "dataverse",
+  "version": "0.8.2",
+  "description": "A data-based WebVR immersive story generator",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "bower install",
+    "clean": "shx rm -rf bower_components && rm dist/*.css && rm dist/*.js",
+    "build": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oscarmarinmiro/DataVerse.git"
+  },
+  "keywords": [
+    "webvr",
+    "aframe",
+    "immersive",
+    "data"
+  ],
+  "author": "Oscar Marin Miro <oscar@outliers.es> (https://github.com/oscarmarinmiro/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oscarmarinmiro/DataVerse/issues"
+  },
+  "homepage": "https://github.com/oscarmarinmiro/DataVerse",
+  "devDependencies": {
+    "bower": "^1.8.4",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-filter": "^5.1.0",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-rename": "^1.3.0",
+    "gulp-uglify": "^3.0.0",
+    "shelljs": "^0.8.2",
+    "shx": "^0.3.2"
+  }
+}
