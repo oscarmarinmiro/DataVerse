@@ -12,7 +12,6 @@ DATAVERSE.themes =
         'icon_path': 'https://cdn.dataverse.xyz/themes/dark/icons',
         'text_color': '#E5E8F2',
         'text_background': '#313037',
-//https://aframe.io/docs/0.8.0/components/text.html
         'text_font': 'exo2bold',
         'text_attribution_color': '#48a4cd',
         'map_provider': 'CartoDB.DarkMatter',

@@ -10,8 +10,6 @@ DATAVERSE.urls = function(options, parent){
 
     self.options = options;
 
-    console.log('INIT URLS');
-
         /*
           jQuery deparam is an extraction of the deparam method from Ben Alman's jQuery BBQ
           http://benalman.com/projects/jquery-bbq-plugin/

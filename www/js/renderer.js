@@ -20,17 +20,11 @@ DATAVERSE.renderer.prototype = {
 
         var self = this;
 
-        console.log("INIT SCENES");
-
         self.scene = document.querySelector("a-scene");
 
         self.camera = document.querySelector("a-camera");
 
         self.cursor = document.querySelector("a-cursor");
-
-        // if(self.main.options.debug) {
-        //     self.scene.setAttribute("stats", "");
-        // }
 
     },
 
@@ -41,8 +35,6 @@ DATAVERSE.renderer.prototype = {
         var already_visited_scene = self.main.state.state.actual_scene in self.main.state.state.visited_scenes;
 
         var render_intro = !(already_visited_scene ? true : (('autohide_intro' in self.actual_scene_data) ? (self.actual_scene_data.autohide_intro === "yes") : false));
-
-        console.log("EN RENDERING INTROPANEL", render_intro, already_visited_scene);
 
         if(render_intro) {
 
@@ -117,7 +109,6 @@ DATAVERSE.renderer.prototype = {
             self.laser_controls = document.createElement("a-entity");
 
             self.laser_controls.setAttribute("laser-controls", {});
-//            self.laser_controls.setAttribute("teleport_controls", true);
 
             self.laser_controls.classList.add("dataverse-added");
 
@@ -136,9 +127,6 @@ DATAVERSE.renderer.prototype = {
         }
 
 
-//<a-entity laser-controls line="color: red; opacity: 0.75"></a-entity>
-
-
         DATAVERSE.cursor_mode = desktop ? "desktop" : (mobile ? "gaze": "laser");
 
     },
@@ -149,7 +137,7 @@ DATAVERSE.renderer.prototype = {
 
         var self = this;
 
-        // TODO: THEMES module
+        // TODO: THEMES module here
 
         self.ambient_light = document.createElement("a-entity");
         self.ambient_light.setAttribute("light", {type:"ambient", color: "#AAA"});
@@ -164,30 +152,6 @@ DATAVERSE.renderer.prototype = {
 
         self.set_cursor();
 
-
-        // REMOVE COMMENTS
-        // Insert intro panel
-
-//        self.render_intropanel();
-
-
-
-//
-// color="yellow" raycaster="near: 0.0; objects: .clickable" fuse="true" fuse-timeout="1000"
-
-        // self.camera = document.createElement("a-camera");
-        //
-        // self.cursor = document.createElement("a-cursor");
-        // self.cursor.setAttribute("color", "yellow");
-        // self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".clickable"});
-        // self.cursor.setAttribute("fuse", true);
-        // self.cursor.setAttribute("fuse-timeout", 1000);
-        //
-        //
-        // self.camera.appendChild(self.cursor);
-
-        // self.scene.appendChild(self.camera);
-//        self.scene.appendChild(self.vive_controls);
         self.scene.appendChild(self.directional_light);
         self.scene.appendChild(self.ambient_light);
 
@@ -206,8 +170,6 @@ DATAVERSE.renderer.prototype = {
 
 
         if(media_id) {
-
-            console.log("MEDIA ES NO NULL", media_id);
 
             self.menu.setAttribute("uipack-menu", {
 
@@ -241,12 +203,10 @@ DATAVERSE.renderer.prototype = {
 
             if(e.detail.type === "icon" && icons.names[e.detail.index] === "home"){
 
-                console.log("CLICKADO HOME");
-
                 // Push scene in history, and point to home scene
 
                 self.main.state.state.scene_history.push(self.main.state.state.actual_scene);
-//
+
                 var obj = { Title: "", Url: window.location.origin + window.location.pathname + "?scene=" + self.main.state.state.actual_scene};
                 history.pushState(obj, obj.Title, obj.Url);
 
@@ -257,12 +217,8 @@ DATAVERSE.renderer.prototype = {
 
             }
 
-            // TODO: real history stack of last_scene for 'back'. now after one back it's a loop
 
             if(e.detail.type === "icon" && icons.names[e.detail.index] === "back"){
-
-                console.log("CLICKADO BACK");
-                console.log(self.main.state.state.scene_history);
 
                 if(self.main.state.state.scene_history.length > 0) {
 
@@ -284,12 +240,12 @@ DATAVERSE.renderer.prototype = {
 
         var self = this;
 
-           // Push scene in history and change actual scene to destination
+        // Push scene in history and change actual scene to destination
 
         self.main.state.state.scene_history.push(self.main.state.state.actual_scene);
 
-         var obj = { Title: "", Url: window.location.origin + window.location.pathname + "?scene=" + self.main.state.state.actual_scene};
-         history.pushState(obj, obj.Title, obj.Url);
+        var obj = { Title: "", Url: window.location.origin + window.location.pathname + "?scene=" + self.main.state.state.actual_scene};
+        history.pushState(obj, obj.Title, obj.Url);
 
         self.main.state.state.actual_scene = destination;
 
@@ -346,41 +302,9 @@ DATAVERSE.renderer.prototype = {
 
         var self = this;
 
-        console.log("RENDERING SCENE");
-        console.log(self.main.state.state.actual_scene, self.main.state);
-
-        console.log("REMOVING SCENE ELEMENTS", self.scene);
-
-        // Removing last scene children, if any
-
-        console.log("CHILDREN", self.scene.children);
-
-        console.log("CACHE", DATAVERSE.cache);
-
-        // var cam_rotation = self.camera.el.getAttribute("rotation").y;
-
-        console.log("LANDING WITH CAMERA ROTATION ", self.scene.camera.el.getAttribute("rotation").y);
-
         self.counter_cam_rotation = (self.scene.camera.el.getAttribute("rotation").y);
 
         self.counter_cam_position = (self.scene.camera.el.getAttribute("position"));
-
-        console.log("LANDING WITH CAMERA POSITION ", self.counter_cam_position);
-
-        // var to_delete = [];
-        //
-        // var candidates = document.getElementsByClassName("dataverse-added");
-        //
-        // for(var i=0; i < candidates.length; i++) {
-        //
-        //     to_delete.push(candidates[i]);
-        // }
-        //
-        // to_delete.forEach(function(child){
-        //     var parent = child.parentElement;
-        //
-        //     parent.removeChild(child);
-        // });
 
         var to_delete = [];
 
@@ -389,15 +313,8 @@ DATAVERSE.renderer.prototype = {
             var child = self.scene.children[i];
 
             if(child.classList.contains("dataverse-added"))
-
-//                // Maybe insert class webvr-polyfill-fullscreen-wrapper with child.classList.contains()
-//
-//                if (!((child.hasAttribute("data-aframe-canvas")=== true)|| (child.hasAttribute("aframe-injected")=== true) || (child.hasAttribute("dataverse-added")))){
                     to_delete.push(child);
-//                }
         }
-
-        console.log("TO DELETE ELEMENTS ", to_delete);
 
         to_delete.forEach(function(child){
             self.scene.removeChild(child);
@@ -412,10 +329,6 @@ DATAVERSE.renderer.prototype = {
 
         self.actual_scene_data = self.main.state.state.scenes[self.main.state.state.actual_scene];
 
-        console.log("COMPONENTS");
-
-        console.log(AFRAME.components);
-
         // Check that component is registered, else.. croack
 
         if((self.actual_scene_data === undefined) || (!(self.actual_scene_data.type in AFRAME.components))){
@@ -425,15 +338,11 @@ DATAVERSE.renderer.prototype = {
         }
         else {
 
-            console.log("CREATING SCENE");
-
-
             self.theme = (self.actual_scene_data.theme !== "") ? self.theme = self.actual_scene_data.theme : DATAVERSE.constants.default_theme;
 
             self.theme_data = DATAVERSE.themes[self.theme];
 
             DATAVERSE.scene_number = self.main.state.state.actual_scene;
-
 
             // Redefine icon path
 
@@ -445,8 +354,6 @@ DATAVERSE.renderer.prototype = {
             self.actual_scene_component.setAttribute("visible", false);
 
             var my_params = AFRAME.utils.styleParser.parse(self.actual_scene_data.params);
-
-            console.log("DECODED PARAMS ", my_params);
 
             my_params.title = self.actual_scene_data.title;
             my_params.explain = self.actual_scene_data.explain;
@@ -474,11 +381,6 @@ DATAVERSE.renderer.prototype = {
             }
 
 
-            console.log("LLAMANDO CON PARAMS", my_params, self.actual_scene_data);
-
-
-            // console.log("LE ENCHUFO SOURCE", )
-
             // Set floor: its an image
 
             if(self.actual_scene_data.floor.indexOf('.')!==-1){
@@ -502,9 +404,6 @@ DATAVERSE.renderer.prototype = {
 
                 self.floor.setAttribute("visible", false);
 
-
-//                self.floor.setAttribute("opacity", 0.0);
-
                 self.scene.appendChild(self.floor);
 
 
@@ -523,9 +422,6 @@ DATAVERSE.renderer.prototype = {
 
                     self.floor.setAttribute("visible", false);
 
-
-//                    self.floor.setAttribute("opacity", 0.0);
-
                     self.scene.appendChild(self.floor);
 
                 }
@@ -534,15 +430,11 @@ DATAVERSE.renderer.prototype = {
 
                 else {
 
-                    console.log("BEFORE PUTTING FLOOR ", DATAVERSE.floor_vizs, self.actual_scene_data.type);
-
                     if(DATAVERSE.floor_vizs.indexOf(self.actual_scene_data.type.toLowerCase())!== -1){
 
                         var my_floor = self.theme_data.floor;
 
                         if(my_floor.indexOf(".") !== -1) {
-
-                            console.log("PUTTING FLOOR IMG");
 
                             self.floor_img = document.createElement("img");
                             self.floor_img.classList.add("dataverse-added");
@@ -563,14 +455,9 @@ DATAVERSE.renderer.prototype = {
 
                             self.floor.setAttribute("visible", false);
 
-
-//                            self.floor.setAttribute("opacity", 0.0);
-
                             self.scene.appendChild(self.floor);
                         }
                         else {
-
-                            console.log("PUTTING FLOOR FLAT");
 
                             self.floor = document.createElement("a-plane");
                             self.floor.setAttribute("color", my_floor);
@@ -581,8 +468,6 @@ DATAVERSE.renderer.prototype = {
                             self.floor.classList.add("dataverse-added");
 
                             self.floor.setAttribute("visible", false);
-
-//                            self.floor.setAttribute("opacity", 0.0);
 
                             self.scene.appendChild(self.floor);
                         }
@@ -615,9 +500,6 @@ DATAVERSE.renderer.prototype = {
                 self.sky.setAttribute("src", "#sky_img");
                 self.sky.classList.add("dataverse-added");
 
-//                self.sky.setAttribute("opacity", 0.0);
-
-
                 self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
 
@@ -639,8 +521,6 @@ DATAVERSE.renderer.prototype = {
                     self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
                     self.sky.setAttribute("visible", false);
-
-//                    self.sky.setAttribute("opacity", 0.0);
 
                     self.scene.appendChild(self.sky);
                 }
@@ -666,8 +546,6 @@ DATAVERSE.renderer.prototype = {
 
                             self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
-//                            self.sky.setAttribute("opacity", 0.0);
-
                             self.sky.setAttribute("visible", false);
 
                             self.scene.appendChild(self.sky);
@@ -681,8 +559,6 @@ DATAVERSE.renderer.prototype = {
 
                             self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
 
-//                            self.sky.setAttribute("opacity", 0.0);
-
                             self.sky.setAttribute("visible", false);
 
                             self.scene.appendChild(self.sky);
@@ -694,25 +570,15 @@ DATAVERSE.renderer.prototype = {
                 }
             }
 
-            console.log("my params", my_params);
-
-
             // Set position and rotation from params, and delete from entity-specific params
 
             if("position" in my_params){
-                console.log("SETTING POSITION", my_params.position);
                 self.actual_scene_component.setAttribute("position", {x: self.counter_cam_position.x + my_params.position.split(" ")[0], y: self.actual_scene_component.getAttribute("position").y, z: self.counter_cam_position.z + + my_params.position.split(" ")[2]});
                 delete(my_params.position);
             }
             else {
                 self.actual_scene_component.setAttribute("position", {x: self.counter_cam_position.x, y: self.actual_scene_component.getAttribute("position").y, z: self.counter_cam_position.z});
             }
-
-
-            // if("rotation" in my_params){
-            //     self.actual_scene_component.setAttribute("rotation", my_params.rotation);
-            //     delete(my_params.rotation);
-            // }
 
 
             // Set rotation if specified and/or correct for user head yaw landing (based on camera)
@@ -725,15 +591,11 @@ DATAVERSE.renderer.prototype = {
                 self.actual_scene_component.setAttribute("rotation", {x: 0, y: (self.counter_cam_rotation % 360), z: 0}) ;
             }
 
-
-
             self.actual_scene_component.setAttribute(self.actual_scene_data.type, my_params);
 
             self.scene.appendChild(self.actual_scene_component);
 
             // Now launch menu: directly if no audio/video
-
-            console.log("SCENE DATA", self.actual_scene_data);
 
             if(self.actual_scene_data.type === "video-viz"){
 
@@ -804,20 +666,14 @@ DATAVERSE.renderer.prototype = {
 
             self.insert_loading_scene();
 
-
-            console.log("VISITED SCENES", self.main.state.state.visited_scenes);
-
             // React on 'link'
 
             self.actual_scene_component.addEventListener("link", function(evt){
-                console.log("LINK PRESSED: ", evt.detail.link);
 
                 self.follow_link(evt.detail.link);
             });
 
             self.actual_scene_component.addEventListener("dv_loaded", function(evt){
-
-//                console.log("EL COMPONENTE HA ACABADO DE CARGARSE ", self.intro_panel.components);
 
                 // Set component visibility
 
@@ -850,14 +706,12 @@ DATAVERSE.renderer.prototype = {
                     els[i].parentNode.removeChild(els[i]);
                 }
 
-                        self.render_intropanel();
+                self.render_intropanel();
 
-                        self.main.state.state.visited_scenes[self.main.state.state.actual_scene] = true;
+                self.main.state.state.visited_scenes[self.main.state.state.actual_scene] = true;
 
 
                 if(self.back_sphere.hasLoaded) {
-
-                    console.log("HASLOADED");
 
                     var sphere_animation = document.createElement("a-animation");
 
@@ -871,7 +725,6 @@ DATAVERSE.renderer.prototype = {
                     sphere_animation.addEventListener("animationend", function () {
 
                          self.back_sphere.parentNode.removeChild(self.back_sphere);
-
 
                     });
 

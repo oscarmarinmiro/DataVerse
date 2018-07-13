@@ -30,8 +30,6 @@ DATAVERSE.state.prototype = {
 
         var params = self.main.urls.get_params();
 
-        console.log("LOS PARAMS SON", params);
-
         if ('source' in self.main.options) {
             params.source = self.main.options.source;
         }
@@ -67,9 +65,6 @@ DATAVERSE.state.prototype = {
                     DATAVERSE.cache[self.main.options.source] = data;
 
                     self.state.scenes = tabletop.sheets("scenes").elements;
-                    // self.state.links = tabletop.sheets("links").elements;
-                    // self.state.labels = tabletop.sheets("labels").elements;
-
 
                     var indexed_scenes = {};
 
@@ -87,8 +82,6 @@ DATAVERSE.state.prototype = {
 
 
                     self.state.scenes = indexed_scenes;
-
-                    console.log("SCENES QUEDA", self.state.scenes);
 
                     callback();
                 }

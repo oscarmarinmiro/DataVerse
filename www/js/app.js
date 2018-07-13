@@ -14,15 +14,8 @@ DATAVERSE.main = function(options) {
 
     self.options = options ? options : {};
 
-    console.log('INIT DATAVERSE.main');
-    console.log(self.options);
-
 
     $(document).ready(function () {
-
-        // Hide scene
-
-//        document.querySelector("a-scene").style.display = "none";
 
         // Insert interstitial
 
@@ -55,8 +48,6 @@ DATAVERSE.main = function(options) {
         img_asset.setAttribute('crossorigin', 'anonymous');
 
         self.assets.appendChild(img_asset);
-
-
 
         document.getElementById("dataverse-interstitial").addEventListener("click", function(e){
 
@@ -125,28 +116,17 @@ DATAVERSE.main = function(options) {
 
         }
 
-
-        console.log('APP TEST READY!!');
-
         // Instantiate urls component
 
         self.urls = new DATAVERSE.urls({}, self);
-
-        console.log('URLS READY');
 
         // Instantiate renderer
 
         self.renderer = new DATAVERSE.renderer({}, self);
 
-        console.log('RENDERER READY');
-
         // Instantiate state
 
         self.state = new DATAVERSE.state({}, self, function() {
-
-            console.log('STATE READY');
-
-            console.log("ENTRANDO DENTRO DEL MAIN");
 
             // TEST MODE
 
@@ -162,9 +142,6 @@ DATAVERSE.main = function(options) {
 
             }
             else {
-                console.log("EN EL ELSE DEL MAIN", self.state);
-
-                console.log(self.state.state.scenes);
 
                 // Init scenes
 
@@ -182,7 +159,7 @@ DATAVERSE.main = function(options) {
 
 DATAVERSE.main.prototype = {
 
-    // Outputs errors (TODO: Show in VR or in a more sophisticated way)
+    // Outputs errors
 
     'croak': function(message){
 
