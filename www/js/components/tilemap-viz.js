@@ -14,8 +14,6 @@ AFRAME.registerComponent("face-camera",{
         var self = this;
         self.vector = new THREE.Vector3();
 
-        console.log(self.el.sceneEl.camera);
-
     },
     update: function(oldData){
 
@@ -485,8 +483,6 @@ AFRAME.registerComponent('tilemap-viz', {
                 var coords = self.map.latLngToLayerPoint(L.latLng(datum.lat, datum.long));
 
                 if(((coords.x >= 0) && (coords.x < self.data.canvas_size)) && ((coords.y >= 0) && (coords.y < self.data.canvas_size))){
-
-                    console.log("MARKER ENTRA", datum, coords, self.marker_scale.range(), self.marker_scale.domain(), self.data.map_y);
 
                     self.insert_marker(datum, {x: self.marker_scale(coords.x), y: self.data.map_y + self.data.marker_size, z: self.marker_scale(coords.y)}, i);
 

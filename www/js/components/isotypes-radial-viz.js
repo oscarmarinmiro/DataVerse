@@ -124,8 +124,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
         var plane_height = plane_width * (height/width);
 
-        console.log("DIMENSIONS", width, height, plane_width, plane_height);
-
         object.setAttribute("height", plane_height);
         object.setAttribute("width", plane_width);
 
@@ -176,8 +174,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
         if((!('subgroups' in datum)) || (('subgroups' in datum) && (datum.subgroups == false))){
 
-            console.log("AAB");
-
             var info = datum.datum;
 
             if(info.headline !== ""){
@@ -210,7 +206,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                     if (self.el.sceneEl.media_panel) {
                         if (self.el.sceneEl.media_panel.parentNode) {
-                            console.log("MEDIA PANEL ABIERTO");
                             self.el.sceneEl.media_panel.parentNode.removeChild(self.el.sceneEl.media_panel);
                         }
                     }
@@ -244,7 +239,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                     self.media_panel.addEventListener("link", function(data){
                         self.el.emit("link", {link: data.detail.link}, false);
-                        console.log("LINKANDO A ", data.detail.link);
                     });
 
 
@@ -526,8 +520,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
                     object.setAttribute('rotation', {x: 0, y: (arc / Math.PI) * 180 > 180 ? (arc / Math.PI) * 180 - 180 : 180 + (arc / Math.PI) * 180, z: 0});
 
                     var title = datum.datum.real_number ? datum.title + " (" + datum.datum.real_number + ")": datum.title;
-
-                    console.log("SUBTITLE DATUM", datum, arc);
 
                     var text_width = (DATAVERSE.dmms.sublabel * self.data.size * (title.length + 4)) / 1000;
 

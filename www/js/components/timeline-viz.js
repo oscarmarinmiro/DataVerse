@@ -200,8 +200,6 @@ AFRAME.registerSystem('timeline-viz', {
 
             var datum = data[i];
 
-            console.log("DATUM", datum);
-
             // Is it a title? => insert in title
 
             if(datum.type === "title") {

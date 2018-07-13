@@ -276,8 +276,6 @@ AFRAME.registerComponent('uipack-menu', {
 
         if(self.data.open) {
 
-            console.log("camera rotation", camera_rotation, camera_yaw);
-
             self.y_position = DATAVERSE.UIPACK_CONSTANTS.menu_distance * Math.sin(this.data.pitch * Math.PI / 180.0);
             self.x_position = DATAVERSE.UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.cos(camera_yaw * Math.PI / 180.0);
             self.z_position = -DATAVERSE.UIPACK_CONSTANTS.menu_distance * Math.cos(this.data.pitch * Math.PI / 180.0) * Math.sin(camera_yaw * Math.PI / 180.0);

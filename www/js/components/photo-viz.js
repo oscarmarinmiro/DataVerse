@@ -205,8 +205,6 @@ AFRAME.registerComponent('photo-viz', {
 
         var sv_re = /\s*-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?\s*/i;
 
-        // console.log("REGEXP",self.data.media_source.search(sv_re));
-
         if (self.data.media_source.search(sv_re) !== -1) {
 
             var params =  self.data.media_source.trim().split(",");
