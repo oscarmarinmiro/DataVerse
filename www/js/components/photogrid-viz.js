@@ -47,8 +47,6 @@ AFRAME.registerComponent('photogrid-viz', {
 
         self.rendered = false;
 
-        console.log("INIT SMALL TREEMAP COMPONENT", self.data);
-
         if (self.data.source !== "") {
 
             this.system.load_data("photogrid", self.data.source, self.data.tab, function (data, scene_data) {
@@ -56,8 +54,6 @@ AFRAME.registerComponent('photogrid-viz', {
                 if (data !== null) {
 
                     self.scene_data = scene_data;
-
-                    console.log("SELF", self.scene_data);
 
                     self.parsed_data = self.system.parse_data(data, self.data);
 
@@ -168,11 +164,8 @@ AFRAME.registerComponent('photogrid-viz', {
                 var yaw = (self.el.sceneEl.camera.el.getAttribute("rotation").y) % 360;
                 var pitch = (self.el.sceneEl.camera.el.getAttribute("rotation").x) % 360;
 
-                console.log("MEDIA PANEL", self.el.sceneEl.media_panel);
-
                 if (self.el.sceneEl.media_panel) {
                     if (self.el.sceneEl.media_panel.parentNode) {
-                        console.log("MEDIA PANEL ABIERTO");
                         self.el.sceneEl.media_panel.parentNode.removeChild(self.el.sceneEl.media_panel);
                     }
                 }
@@ -184,8 +177,6 @@ AFRAME.registerComponent('photogrid-viz', {
                 self.media_panel.setAttribute("position", self.el.sceneEl.camera.el.getAttribute("position"));
 
                 self.media_panel.setAttribute("shadow", {cast: true});
-
-                console.log("RENDERING THIS DATUM", thumbnail, self.scene_data);
 
                 self.media_panel.classList.add("dataverse-added");
 
@@ -208,8 +199,6 @@ AFRAME.registerComponent('photogrid-viz', {
 
                 self.media_panel.addEventListener("link", function(data){
                     self.el.emit("link", {link: data.detail.link}, false);
-
-                    console.log("LINKANDO A ", data.detail.link);
                 });
 
 
@@ -239,10 +228,6 @@ AFRAME.registerComponent('photogrid-viz', {
 
             self.rendered = true;
 
-            console.log("UPDATING PHOTO GRID COMPONENT", self.data);
-
-            console.log("REMOVING OLD GEOMETRY...");
-
             if (self.el.children && self.el.children.length > 0) {
 
                 console.log(self.el.children);
@@ -254,8 +239,6 @@ AFRAME.registerComponent('photogrid-viz', {
             }
 
             // One treemap per keyword in self.prepared_data
-
-            console.log("PARSED DATA", self.parsed_data);
 
             // Move parent entity to eye level
 
@@ -296,8 +279,6 @@ AFRAME.registerComponent('photogrid-viz', {
 
             for(var i = 0; i < self.data.rows ; i++ ) {
 
-                console.log("ROW ", i);
-
                 // Not the last row
 
                 if(i !== self.data.rows -1 ){
@@ -305,8 +286,6 @@ AFRAME.registerComponent('photogrid-viz', {
                     for(var j = 0; j < params.number_cols; j++) {
 
                         var index = (i*params.number_cols) + j;
-
-                        console.log("COL ", j, index);
 
                         var thumbnail = self.parsed_data[index];
 
@@ -323,8 +302,6 @@ AFRAME.registerComponent('photogrid-viz', {
                     for(var j= 0; j < params.last_row_cols; j++){
 
                         var index = (i*params.number_cols) + j;
-
-                        console.log("COL ", j, index);
 
                         var thumbnail = self.parsed_data[index];
 

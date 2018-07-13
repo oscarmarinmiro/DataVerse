@@ -7,17 +7,14 @@ AFRAME.registerComponent('uipack-button', {
     schema: {
         icon_name: {type: 'string'},
         yaw: { type: 'number', default: 0.0},
-        elevation: { type: 'number', default: UIPACK_CONSTANTS.button_elevation},
-        distance: { type: 'number', default: UIPACK_CONSTANTS.button_distance},
+        elevation: { type: 'number', default: DATAVERSE.UIPACK_CONSTANTS.button_elevation},
+        distance: { type: 'number', default: DATAVERSE.UIPACK_CONSTANTS.button_distance},
         absolute_pos: { type: 'boolean', default: false},
-        radius: {type: 'number', default: UIPACK_CONSTANTS.button_radius},
+        radius: {type: 'number', default: DATAVERSE.UIPACK_CONSTANTS.button_radius},
         arc_color: {type: 'string', default: "red"},
         theme: {type: 'string', default: ""}
     },
 
-  /**
-   * Called once when component is attached. Generally for initial setup.
-   */
   init: function () {
 
     var self = this;
@@ -40,29 +37,21 @@ AFRAME.registerComponent('uipack-button', {
 
         this.el.addEventListener("mousedown", function (event) {
 
-//            console.log("ELEMENT CLICKED");
-
             var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
 
             sound.play();
 
-
             self.el.emit("clicked", null, false);
-
-//            console.log("CURSOR...", self.el.sceneEl.canvas);
 
         });
 
         this.el.addEventListener("mouseenter", function(event){
-
-//            console.log("ENTERING");
 
             self.el.sceneEl.canvas.classList.remove("a-grab-cursor");
 
         });
 
         this.el.addEventListener("mouseleave", function(event){
-//            console.log("LEAVING");
 
             self.el.sceneEl.canvas.classList.add("a-grab-cursor");
 
@@ -106,25 +95,9 @@ AFRAME.registerComponent('uipack-button', {
 
                 self.first_hover = false;
 
-//                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
-//
-//                sound.play();
-
-
-                // Change cursor color and scale
-
-//            self.original_cursor_color = event.detail.el.getAttribute("material").color;
-//
-//
-//            event.detail.el.setAttribute("material", "color:white");
-
-                // event.detail.el.setAttribute("scale", "2 2 2");
-
                 // Emit 'clicked' on ring animation end
 
                 self.animation.addEventListener("animationend", function () {
-
-                    console.log("CLICK!!");
 
                     setTimeout(function () {
                         self.first_hover = true;
@@ -135,8 +108,6 @@ AFRAME.registerComponent('uipack-button', {
                     sound.play();
 
                     self.el.emit("clicked", null, false);
-
-                    console.log("EMITIDO CLICK!");
 
                     self.ring.parentNode.removeChild(self.ring);
 
@@ -151,9 +122,7 @@ AFRAME.registerComponent('uipack-button', {
 
             // Change cursor color and scale
 
-//         event.detail.el.setAttribute("material", "color:red");
             event.detail.el.setAttribute("scale", "1 1 1");
-//         event.detail.el.setAttribute("visible", "true");
 
             // Remove ring if existing
 
@@ -166,18 +135,13 @@ AFRAME.registerComponent('uipack-button', {
     }
 
   },
-//
-//  /**
-//   * Called when component is attached and when component data changes.
-//   * Generally modifies the entity based on the data.
-//   */
   update: function (oldData) {
 
     var self = this;
 
     // CHange material, radius, position and rotation
 
-    self.icon_path = (self.data.theme !== "" ? DATAVERSE.themes[self.data.theme].icon_path : UIPACK_CONSTANTS.icon_path) + "/" + self.data.icon_name;
+    self.icon_path = (self.data.theme !== "" ? DATAVERSE.themes[self.data.theme].icon_path : DATAVERSE.UIPACK_CONSTANTS.icon_path) + "/" + self.data.icon_name;
 
     self.button.setAttribute("material",{"src": 'url(' + self.icon_path + ')', "shader": "flat"});
 
@@ -186,9 +150,6 @@ AFRAME.registerComponent('uipack-button', {
         // If parent is scene, absolute positioning, else, leave position up to the user
 
         if(self.el.parentEl === self.el.sceneEl || self.data.absolute_pos) {
-
-            console.log("ABSOLUTE POSITIONING");
-
 
             self.x_position = self.data.distance * Math.cos(this.data.yaw * Math.PI/180.0);
             self.y_position = self.data.elevation;
@@ -199,34 +160,12 @@ AFRAME.registerComponent('uipack-button', {
             this.el.setAttribute("position", [self.x_position, self.y_position, self.z_position].join(" "));
 
         }
-      else {
-            console.log("NON ABSOLUTE POSITIONING");
-        }
 
-  },
-//
-//  /**
-//   * Called when a component is removed (e.g., via removeAttribute).
-//   * Generally undoes all modifications to the entity.
-//   */
-//  remove: function () { },
-//
-//  /**
-//   * Called on each scene tick.
-//   */
-  tick: function (t) {
+        // What was this for??
 
-  },
+//      else {
+//            console.log("NON ABSOLUTE POSITIONING");
+//        }
 
-  /**
-   * Called when entity pauses.
-   * Use to stop or remove any dynamic or background behavior such as events.
-   */
-  pause: function () { },
-
-  /**
-   * Called when entity resumes.
-   * Use to continue or add any dynamic or background behavior such as events.
-   */
-  play: function () { }
+  }
 });

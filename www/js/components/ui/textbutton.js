@@ -2,8 +2,8 @@
 AFRAME.registerComponent('uipack-textbutton', {
         schema: {
             yaw: { type: 'number', default: 0.0},
-            elevation: { type: 'number', default: UIPACK_CONSTANTS.button_elevation},
-            distance: { type: 'number', default: UIPACK_CONSTANTS.button_distance},
+            elevation: { type: 'number', default: DATAVERSE.UIPACK_CONSTANTS.button_elevation},
+            distance: { type: 'number', default: DATAVERSE.UIPACK_CONSTANTS.button_distance},
             width: { type: 'number', default: 3.0},
             text: { type: 'string', default: ""},
             color: { type: 'string', default: "#000"},
@@ -11,9 +11,6 @@ AFRAME.registerComponent('uipack-textbutton', {
 
         },
 
-        /**
-         * Called once when component is attached. Generally for initial setup.
-         */
 
         init: function () {
 
@@ -56,7 +53,7 @@ AFRAME.registerComponent('uipack-textbutton', {
 
             self.icon = document.createElement("a-entity");
 
-            self.icon.setAttribute("uipack-button", {icon_name: UIPACK_CONSTANTS.thumbnail_icon});
+            self.icon.setAttribute("uipack-button", {icon_name: DATAVERSE.UIPACK_CONSTANTS.thumbnail_icon});
 
             self.el.appendChild(self.icon);
 
@@ -64,11 +61,9 @@ AFRAME.registerComponent('uipack-textbutton', {
 
             self.text.addEventListener("textfontset", function(){
 
-              self.icon.setAttribute("position", {x:0, y: -self.text.getAttribute("geometry").height/2, z:UIPACK_CONSTANTS.label_front_gap});
+              self.icon.setAttribute("position", {x:0, y: -self.text.getAttribute("geometry").height/2, z:DATAVERSE.UIPACK_CONSTANTS.label_front_gap});
 
             });
-
-
 
             // On icon clicked
 
@@ -80,12 +75,6 @@ AFRAME.registerComponent('uipack-textbutton', {
 
 
     },
-
-//
-//  /**
-//   * Called when component is attached and when component data changes.
-//   * Generally modifies the entity based on the data.
-//   */
 
   update: function (oldData) {
 
@@ -124,37 +113,6 @@ AFRAME.registerComponent('uipack-textbutton', {
 
 
 
-  },
-//
-//  /**
-//   * Called when a component is removed (e.g., via removeAttribute).
-//   * Generally undoes all modifications to the entity.
-//   */
-//  remove: function () { },
-//
-//  /**
-//   * Called on each scene tick.
-//   */
-  tick: function (t) {
-
-//    // Rotate towards camera
-//
-//    if(this.el.sceneEl.camera) {
-//        this.el.object3D.lookAt(new THREE.Vector3(0,0,0));
-//    }
-
-  },
-
-  /**
-   * Called when entity pauses.
-   * Use to stop or remove any dynamic or background behavior such as events.
-   */
-  pause: function () { },
-
-  /**
-   * Called when entity resumes.
-   * Use to continue or add any dynamic or background behavior such as events.
-   */
-  play: function () { }
+  }
 });
 

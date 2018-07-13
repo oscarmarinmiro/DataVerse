@@ -65,20 +65,11 @@ AFRAME.registerComponent('geo-viz', {
 
                 if(data!==null) {
 
-                    console.log("DATA!", data, scene_data);
-
                     self.scene_data = scene_data;
 
                     console.log(self.scene_data);
 
                     self.geo_data = data;
-
-                    console.log("FINAL DATA");
-                    console.log(self.geo_data);
-
-
-                    console.log("PARAM DATA");
-                    console.log(self.data);
 
                     // Call component update explicitly, since callback makes first update lag in data...
 
@@ -87,7 +78,6 @@ AFRAME.registerComponent('geo-viz', {
                 }
                 else {
                     console.error("Could not load data file ", self.data.source);
-                    console.log(self.geo_data);
                 }
             });
         }
@@ -104,8 +94,6 @@ AFRAME.registerComponent('geo-viz', {
 
         // Iterate features
 
-        console.log("MAX MINS FEATURES BROWSING");
-
         self.geo_data.forEach(function(datum){
 
                 // Point radius is variable
@@ -114,30 +102,25 @@ AFRAME.registerComponent('geo-viz', {
 
         });
 
-        console.log("MAX MINS FEATURES CALCULATION");
+
+        Object.keys(self.max_mins).forEach(function(property){
+
+            var vector = self.max_mins[property];
 
 
-            Object.keys(self.max_mins).forEach(function(property){
-
-                var vector = self.max_mins[property];
+            if(vector.length > 0) {
 
 
-                if(vector.length > 0) {
+                var max = d3.max(vector);
+                var min = d3.min(vector);
 
-                    console.log("VECTOR", property, vector);
-
-                    var max = d3.max(vector);
-                    var min = d3.min(vector);
-
-                    self.max_mins[property] = {'max': max, 'min': min,
-                        'scale': property === "radius" ? d3.scale.sqrt().domain([min, max]).range([self.data[["point", property, 'min'].join("_")], self.data[["point", property, 'max'].join("_")]]).clamp(true)
-                            : d3.scale.linear().domain([min, max]).range([self.data[["point", property, 'min'].join("_")], self.data[["point", property, 'max'].join("_")]]).clamp(true)
-                    };
-                }
+                self.max_mins[property] = {'max': max, 'min': min,
+                    'scale': property === "radius" ? d3.scale.sqrt().domain([min, max]).range([self.data[["point", property, 'min'].join("_")], self.data[["point", property, 'max'].join("_")]]).clamp(true)
+                        : d3.scale.linear().domain([min, max]).range([self.data[["point", property, 'min'].join("_")], self.data[["point", property, 'max'].join("_")]]).clamp(true)
+                };
+            }
 
         });
-
-        console.log("RESULTING VALUES FROM MAX MINS", self.max_mins);
 
     },
 
@@ -161,10 +144,7 @@ AFRAME.registerComponent('geo-viz', {
         var y = point_coords.y;
         var z = point_coords.z;
 
-        console.log("COORDS", x, y, z);
-
         var point = document.createElement("a-circle");
-
 
         point.setAttribute("color", (function(){
 
@@ -188,13 +168,9 @@ AFRAME.registerComponent('geo-viz', {
 
             if(self.data.point_radius == -1){
 
-                console.log("VARIABLE RADIUS", datum.value);
-
                 return self.max_mins['radius']['scale'](datum.value);
             }
             else {
-
-                console.log("CONSTANT RADIUS");
 
                 return self.data.point_radius;
             }
@@ -204,10 +180,6 @@ AFRAME.registerComponent('geo-viz', {
 
         point.setAttribute("position", {x: x, y:y, z:z});
         point.setAttribute("rotation", {x: lat, y: -(lon + 90), z:0});
-
-        console.log("ROTACIONES", {x:lat,y: -(lon+90), z:0});
-
-
 
         // Calculate latitude offset based on earth radius and circle radius
 
@@ -257,9 +229,6 @@ AFRAME.registerComponent('geo-viz', {
             self.el.appendChild(legend);
         }
 
-
-        console.log("El radio del circulo es de", point.getAttribute("radius"), lat_offset);
-
         self.button_mode = (DATAVERSE && ('cursor_mode' in DATAVERSE)) ? DATAVERSE.cursor_mode : "desktop";
 
         if(self.button_mode === "desktop") {
@@ -267,8 +236,6 @@ AFRAME.registerComponent('geo-viz', {
             var comp_data = self.data;
 
             point.addEventListener('mousedown', function(event){
-
-                console.log("MOUSEDOWN");
 
                 var sound = new Howl({src: DATAVERSE.paths.click_sound, volume: 0.25});
 
@@ -334,11 +301,6 @@ AFRAME.registerComponent('geo-viz', {
 
                     self.first_hover = false;
 
-                    //                var sound = new Howl({src: DATAVERSE.paths.hover_sound, volume: 0.25, rate: 0.5});
-                    //
-                    //                sound.play();
-
-
                     // Emit 'clicked' on ring animation end
 
                     self.animation.addEventListener("animationend", function () {
@@ -369,9 +331,6 @@ AFRAME.registerComponent('geo-viz', {
                 var self = this;
 
                 self.first_hover = true;
-
-                // Change cursor color and scale
-
 
                 // Remove ring if existing
 
@@ -415,13 +374,10 @@ AFRAME.registerComponent('geo-viz', {
                 var yaw = (self.sceneEl.camera.el.getAttribute("rotation").y) % 360;
                 var pitch = (self.sceneEl.camera.el.getAttribute("rotation").x) % 360;
 
-                console.log("MEDIA PANEL", self.sceneEl.media_panel);
-
                 if (self.sceneEl.media_panel) {
                     if (self.sceneEl.media_panel.parentNode) {
 
                         if(self.sceneEl.media_panel_id === index) { return;}
-                        console.log("MEDIA PANEL ABIERTO");
                         self.sceneEl.media_panel.parentNode.removeChild(self.sceneEl.media_panel);
                     }
                 }
@@ -434,10 +390,6 @@ AFRAME.registerComponent('geo-viz', {
 
 
                 self.media_panel.setAttribute("shadow", {cast: true});
-
-                console.log("DATUM!", datum);
-
-                console.log("PANEL TIMESTAMP", self.panel_timestamp);
 
                 self.media_panel.classList.add("dataverse-added");
 
@@ -459,7 +411,6 @@ AFRAME.registerComponent('geo-viz', {
 
                 self.media_panel.addEventListener("link", function(data){
                     entity.emit("link", {link: data.detail.link}, false);
-                    console.log("LINKANDO A ", data.detail.link);
                 });
 
 
@@ -547,19 +498,9 @@ AFRAME.registerComponent('geo-viz', {
 
         self.map_sphere.setAttribute("position", self.el.getAttribute("position"));
 
-
-
-//        self.map_sphere.setAttribute("scale", "1.0 1.0 -1.0");
-//
-//        self.map_sphere.setAttribute("src", "#skymap");
-//
-//        self.map_sphere.setAttribute("radius", self.data.radius);
-
         // Inform to parent
 
         img_asset.addEventListener("load", function(){
-
-                console.log("LOADED IMG");
 
                 // Calculating max-mins for points, lines and polygons
 
@@ -572,23 +513,6 @@ AFRAME.registerComponent('geo-viz', {
                 self.el.emit("dv_loaded", null, false);
 
         });
-
-//        self.map_sphere.addEventListener("materialtextureloaded", function(){
-//
-//            console.log("CARGADA TEXTURA");
-//
-//            // Calculating max-mins for points, lines and polygons
-//
-//            self.calculate_max_mins();
-//
-//            // Render points
-//
-//            self.render_points();
-//
-//            self.el.emit("dv_loaded", null, false);
-//        });
-
-        console.log("EL SELF", self);
 
         self.el.sceneEl.appendChild(self.map_sphere);
 
@@ -603,14 +527,6 @@ AFRAME.registerComponent('geo-viz', {
         if((self.geo_data !== undefined) && (!(self.rendered))) {
 
             self.rendered = true;
-
-            // Iterate through objects and titles and delete them
-
-            console.log("DELETING OLD GEOMETRY ...");
-
-            // Regenerating new geometry
-
-            console.log("REGENERATING NEW GEOMETRY ...");
 
             // Render 'Earth'
 

@@ -142,14 +142,6 @@ AFRAME.registerComponent('stereo', {
 
                 this.videoEl = this.el.object3D.children[0].material.map.image;
 
-                // On canvas click, play video element. Use self to not lose track of object into event handler
-
-//                var self = this;
-//
-//                this.el.sceneEl.canvas.onclick = function () {
-//                    self.videoEl.play();
-//                };
-
                 // Signal that click event is added
                 this.video_click_event_added = true;
 

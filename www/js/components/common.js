@@ -121,7 +121,7 @@ DATAVERSE_VIZ_AUX = {
        var self = this;
 
 
-       console.log("GST ", link, typeof(link), link!=="", parseInt(link, 10) - 2, gs_data);
+//       console.log("GST ", link, typeof(link), link!=="", parseInt(link, 10) - 2, gs_data);
 
        if(typeof(link) !== "undefined") {
            if (link !== "") {
@@ -181,9 +181,6 @@ DATAVERSE_VIZ_AUX = {
    },
   'get_distance': function(el_one, el_two) {
 
-
-      //         var cam_position = new THREE.Vector3();
-
         var el_one_position = new THREE.Vector3();
 
         el_one_position.setFromMatrixPosition(el_one.object3D.matrixWorld);
@@ -192,13 +189,9 @@ DATAVERSE_VIZ_AUX = {
 
         el_two_position.setFromMatrixPosition(el_two.object3D.matrixWorld);
 
-
         return new THREE.Vector3(el_one_position.x, el_one_position.y, el_one_position.z).distanceTo(new THREE.Vector3(el_two_position.x, el_two_position.y, el_two_position.z));
   },
   'get_distance_xz': function(el_one, el_two) {
-
-
-      //         var cam_position = new THREE.Vector3();
 
         var el_one_position = new THREE.Vector3();
 
@@ -263,17 +256,17 @@ DATAVERSE_VIZ_AUX = {
 
       var self = this;
 
-      console.log("SYSTEM LOADING DATA", path);
+//      console.log("SYSTEM LOADING DATA", path);
 
       // remote csv file
 
       if (path.endsWith(".csv")) {
 
-          console.log("ITS A CSV");
+//          console.log("ITS A CSV");
 
           d3.csv(path, function (data) {
 
-              console.log("LOADED CSV DATA", data);
+//              console.log("LOADED CSV DATA", data);
 
               if (callback) callback(data);
 
@@ -284,7 +277,7 @@ DATAVERSE_VIZ_AUX = {
 
       else if (path.includes("docs.google.com")) {
 
-          console.log("ITS A GSHEET");
+//          console.log("ITS A GSHEET");
 
           if (tab) {
 
@@ -292,12 +285,13 @@ DATAVERSE_VIZ_AUX = {
 
                   if (('cache' in DATAVERSE) && (path in DATAVERSE.cache)) {
 
-                      console.log("DEVUELVO EL ELEMENTO CACHEADO");
+//                      console.log("DEVUELVO EL ELEMENTO CACHEADO");
+
                       callback(DATAVERSE.cache[path][tab]['elements'], DATAVERSE.cache[path])
                   }
                   else {
 
-                      console.log("LOADING TAB", tab);
+//                      console.log("LOADING TAB", tab);
 
                       try {
                           Tabletop.init({
@@ -330,10 +324,6 @@ DATAVERSE_VIZ_AUX = {
 
               // DO NOT USE CACHE IF STANDALONE VIZ!!!
 
-              // if((DATAVERSE) && (path in DATAVERSE.cache)){
-              //     callback(DATAVERSE.cache[path][tab]['elements'], DATAVERSE.cache[path])
-              // }
-              // else {
                   try {
                       Tabletop.init({
                           key: path,

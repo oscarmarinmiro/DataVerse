@@ -11,13 +11,15 @@
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
     <script src="bower_components/leaflet-providers/leaflet-providers.js"></script>
     <script src="bower_components/html2canvas/build/html2canvas.min.js"></script>
-    <script src="bower_components/leaflet-image/leaflet-image.js"></script>
+    <!--<script src="bower_components/leaflet-image/leaflet-image.js"></script>-->
 
     <script src="bower_components/d3/d3.min.js"></script>
 
     <script src="bower_components/tabletop/src/tabletop.min.js"></script>
 
-    <script src="js/components/ui/constants.js"></script>
+    <script src="js/constants.js"></script>
+
+
     <script src="js/components/ui/button.js"></script>
     <script src="js/components/ui/mediacontrols.js"></script>
     <script src="js/components/ui/menu.js"></script>
@@ -39,7 +41,6 @@
 
     <script src="js/renderer.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/constants.js"></script>
     <script src="js/state.js"></script>
     <script src="js/tests.js"></script>
     <script src="js/urls.js"></script>
@@ -65,13 +66,7 @@
 
         <script>
 
-            // This is to force reload on 'artificially inserted' history entries...
 
-            window.onpopstate = function(event) {
-                if(event && event.state) {
-                    location.reload();
-                }
-            };
 
 //            UIPACK_CONSTANTS.icon_path = "http://www.pedro.com";
 
