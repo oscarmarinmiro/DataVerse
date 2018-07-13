@@ -547,6 +547,7 @@ AFRAME.registerComponent('timeline-viz', {
 
                 self.media_panel.setAttribute("position", {x: cam_position.x, y:cam_position.y, z: cam_position.z});
 
+
                 self.media_panel.setAttribute("shadow", {cast: true});
 
                 self.media_panel.classList.add("dataverse-added");
@@ -571,7 +572,7 @@ AFRAME.registerComponent('timeline-viz', {
                 });
 
                 self.media_panel.addEventListener("link", function(data){
-                    console.log("LINKANDO A ", data.detail.link);
+                    self.el.emit("link", {link: data.detail.link}, false);
                 });
 
                 self.el.sceneEl.appendChild(self.media_panel);
@@ -601,6 +602,7 @@ AFRAME.registerComponent('timeline-viz', {
             var assets = document.getElementsByTagName("a-assets")[0];
 
             self.render_timeline();
+
 
             // Render slide -1
 

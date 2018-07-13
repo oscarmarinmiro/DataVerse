@@ -197,8 +197,6 @@ AFRAME.registerComponent('treemap-viz', {
 
         if (self.el.children && self.el.children.length > 0) {
 
-            console.log(self.el.children);
-
             self.el.children.forEach(function (d) {
 
                 self.el.removeChild(d);
@@ -283,8 +281,6 @@ AFRAME.registerComponent('treemap-viz', {
 
                     var yaw = (self.el.sceneEl.camera.el.getAttribute("rotation").y) % 360;
                     var pitch = (self.el.sceneEl.camera.el.getAttribute("rotation").x) % 360;
-
-                    console.log("MEDIA PANEL", self.el.sceneEl.media_panel);
 
                     if (self.el.sceneEl.media_panel) {
                         if (self.el.sceneEl.media_panel.parentNode) {
@@ -537,8 +533,6 @@ AFRAME.registerSystem('small-treemap-viz', {
 
                         d.children.forEach(function(d,i){
 
-                            console.log("sumando a other", d.value, d);
-
                             other.children[0].value += d.value;
 
                         });
@@ -736,8 +730,6 @@ AFRAME.registerComponent('small-treemap-viz', {
 
             if (self.el.children && self.el.children.length > 0) {
 
-                console.log(self.el.children);
-
                 for(var i=0; i < self.el.children.length; i++) {
 
                     self.el.removeChild(self.el.children[i]);
@@ -760,7 +752,7 @@ AFRAME.registerComponent('small-treemap-viz', {
 
             // Get max length of treemap titles
 
-            var max_title_length_index = Object.keys(self.parsed_data.treemap_counts).sort(function(a,b) { console.log(self.parsed_data.data[a].name); console.log(self.parsed_data.data[b].name); return self.parsed_data.data[b].name.length - self.parsed_data.data[a].name.length;})[0];
+            var max_title_length_index = Object.keys(self.parsed_data.treemap_counts).sort(function(a,b) { return self.parsed_data.data[b].name.length - self.parsed_data.data[a].name.length;})[0];
 
             var max_title_length = self.parsed_data.data[max_title_length_index].name.length;
 
