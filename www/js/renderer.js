@@ -626,6 +626,8 @@ DATAVERSE.renderer.prototype = {
                     self.audio.setAttribute("src", self.actual_scene_data.audio);
                     self.audio.setAttribute("id", "audio");
                     self.audio.setAttribute("autoplay", true);
+                    self.audio.setAttribute("crossorigin", "anonymous");
+
 
                     self.assets.appendChild(self.audio);
 

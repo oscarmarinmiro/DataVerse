@@ -216,6 +216,7 @@ AFRAME.registerComponent('video-viz', {
                 self.video.setAttribute("id", video_id);
                 self.video.setAttribute("loop", false);
                 self.video.setAttribute("autoplay", "true");
+                self.video.setAttribute("crossorigin", "anonymous");
 
                 assets.appendChild(self.video);
 
@@ -282,6 +283,7 @@ AFRAME.registerComponent('video-viz', {
                 self.video.setAttribute("id", video_id);
                 self.video.setAttribute("loop", false);
                 self.video.setAttribute("autoplay", "true");
+                self.video.setAttribute("crossorigin", "anonymous");
 
                 assets.appendChild(self.video);
 
