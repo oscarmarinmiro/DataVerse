@@ -358,6 +358,7 @@ AFRAME.registerComponent('isotypes-radial-viz', {
                     var img_asset = document.createElement("img");
                     img_asset.setAttribute("id", id);
                     img_asset.setAttribute("src", datum.image);
+                    img_asset.setAttribute('crossorigin', 'anonymous');
 
                     assets.appendChild(img_asset);
 

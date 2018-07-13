@@ -254,7 +254,7 @@ AFRAME.registerComponent('treemap-viz', {
 
             self.el.appendChild(button_row);
 
-            if (self.data.treemap_data.headline != "") {
+            if (('headline' in self.data.treemap_data) && (self.data.treemap_data.headline != "")) {
 
                 var more_button = document.createElement("a-entity");
 

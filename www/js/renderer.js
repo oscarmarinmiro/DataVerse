@@ -266,30 +266,34 @@ DATAVERSE.renderer.prototype = {
 
         for(var i=0; i< loading_defs[0].length; i++){
 
-            var loading = document.createElement("a-plane");
+            // Race condition here with removal on dv_loaded
 
-            loading.classList.add("dataverse-added", "loading_scene");
-            loading.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1], z: loading_defs[0][i][2]});
-            loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
-            loading.setAttribute("width", 1);
-            loading.setAttribute("height", 1);
-            loading.setAttribute("src", DATAVERSE.paths.loading_thumbnail_static);
+            if(!(self.loaded_scene)) {
 
-            document.querySelector("a-scene").appendChild(loading);
+                var loading = document.createElement("a-plane");
 
-            var text = document.createElement("a-text");
+                loading.classList.add("dataverse-added", "loading_scene");
+                loading.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1], z: loading_defs[0][i][2]});
+                loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
+                loading.setAttribute("width", 1);
+                loading.setAttribute("height", 1);
+                loading.setAttribute("src", DATAVERSE.paths.loading_thumbnail_static);
 
-            text.classList.add("dataverse-added", "loading_scene");
-            text.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1] - 0.75, z: loading_defs[0][i][2]});
-            text.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
-            text.setAttribute("width", 5);
-            text.setAttribute("font", "exo2bold");
-            text.setAttribute("anchor", "center");
-            text.setAttribute("align", "center");
-            text.setAttribute("value", "Loading scene");
+                document.querySelector("a-scene").appendChild(loading);
 
-            document.querySelector("a-scene").appendChild(text);
+                var text = document.createElement("a-text");
 
+                text.classList.add("dataverse-added", "loading_scene");
+                text.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1] - 0.75, z: loading_defs[0][i][2]});
+                text.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
+                text.setAttribute("width", 5);
+                text.setAttribute("font", "exo2bold");
+                text.setAttribute("anchor", "center");
+                text.setAttribute("align", "center");
+                text.setAttribute("value", "Loading scene");
+
+                document.querySelector("a-scene").appendChild(text);
+            }
 
         }
 
@@ -301,6 +305,8 @@ DATAVERSE.renderer.prototype = {
     'render_scene': function(){
 
         var self = this;
+
+        self.loaded_scene = false;
 
         self.counter_cam_rotation = (self.scene.camera.el.getAttribute("rotation").y);
 
@@ -676,6 +682,8 @@ DATAVERSE.renderer.prototype = {
             });
 
             self.actual_scene_component.addEventListener("dv_loaded", function(evt){
+
+                self.loaded_scene = true;
 
                 // Set component visibility
 
