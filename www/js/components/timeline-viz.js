@@ -13,8 +13,6 @@ AFRAME.registerSystem('timeline-viz', {
 
         var self = this;
 
-        console.log("INICIALIZANDO SYSTEM");
-
         // Organize render elements by type, each with specific depths offsets and breadth
 
         self.types = {
@@ -154,8 +152,6 @@ AFRAME.registerSystem('timeline-viz', {
 
         var arranged = {};
 
-        console.log("ARRANGING", datum);
-
         if(datum.type === "title"){
             arranged.title = datum.headline;
             arranged.text = datum.text;
@@ -173,8 +169,6 @@ AFRAME.registerSystem('timeline-viz', {
             arranged.dates = self.arrange_dates(datum);
             arranged.original_datum = datum;
         }
-
-        console.log("ARRANGED", arranged);
 
         return arranged;
 
@@ -214,8 +208,6 @@ AFRAME.registerSystem('timeline-viz', {
 
                 final_data.title = self.arrange_entry(datum);
 
-                console.log("DEBUG", "INSERTING TITLE ASSET");
-
             }
 
             // Else ==> arrange date, and insert into milestones
@@ -237,8 +229,6 @@ AFRAME.registerSystem('timeline-viz', {
         }
 
         // Calculate max-min date
-
-        console.log("DATES ARRAY", self.dates_ts);
 
         self.min_ts = d3.min(self.dates_ts);
         self.max_ts = d3.max(self.dates_ts);
@@ -307,8 +297,6 @@ AFRAME.registerComponent('timeline-viz', {
 
                     self.timeline_scale = d3.scale.linear().domain([self.max_ts, self.min_ts]).range([(self.data.margins/180)*Math.PI, ((self.data.degrees - self.data.margins)/180)*Math.PI]).clamp(true);
 
-//                    self.el.setAttribute("position", "0 " + self.data.height +" 0");
-
                     self.el.setAttribute("position", {x: self.el.getAttribute("position").x, y: self.data.y_position, z: self.el.getAttribute("position").z});
 
                     // Rotate user towards 'half' of the timeline
@@ -318,8 +306,6 @@ AFRAME.registerComponent('timeline-viz', {
                     var y_rotation = (rotation.y + ((-self.data.degrees/2) + 180)) % 360;
 
                     self.el.setAttribute("rotation", {x: rotation.x, y: y_rotation, z: rotation.z});
-
-                    console.log("Y ROTATION", y_rotation, self.el.getAttribute("rotation"));
 
                     self.update();
 
@@ -343,10 +329,8 @@ AFRAME.registerComponent('timeline-viz', {
         // If Display Date is not used in original data (spreadsheet or whatever)
 
         if(datum.original_datum['display_date'] == "") {
+
             var moment_date = moment(datum.dates.begin.date);
-
-            console.log("CALCULATING DATE EXPLAIN FOR ", datum, moment_date);
-
 
             // Select cases...
 
@@ -416,8 +400,6 @@ AFRAME.registerComponent('timeline-viz', {
 
         var theta = self.timeline_scale(date_stamp);
 
-        console.log("THETA FOR", date_stamp, theta);
-
         // Return coordinates
 
         return {
@@ -462,13 +444,7 @@ AFRAME.registerComponent('timeline-viz', {
 
         // Render milestone marks
 
-        console.log("MILESTONE MARKS", self);
-
         self.timeline_data.milestones.forEach(function(datum, i) {
-
-//        for(var i=0; i< self.timeline_data.milestones.length; i++) {
-
-            console.log("RENDERING MILESTONE");
 
             var datum = self.timeline_data.milestones[i];
 
@@ -493,17 +469,13 @@ AFRAME.registerComponent('timeline-viz', {
             explain_date.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.text_color);
             explain_date.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.text_font);
 
-
             self.el.appendChild(explain_date);
-
 
             // Render title
 
             var title = document.createElement("a-text");
 
             geom_data = self.get_coords_and_rotation("legends", "legend_title", timestamp, 0);
-
-            console.log("TITLE POSITION", geom_data);
 
             title.setAttribute("position", geom_data.position);
 
@@ -518,15 +490,11 @@ AFRAME.registerComponent('timeline-viz', {
             title.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].text_color : self.data.text_color);
             title.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.text_font);
 
-
             self.el.appendChild(title);
-
 
             // Render button
 
             var geom_data = self.get_coords_and_rotation("trigger", "trigger", timestamp, 0);
-
-            console.log("GEOM DATA", geom_data);
 
             var more_button = document.createElement("a-entity");
 
@@ -536,7 +504,6 @@ AFRAME.registerComponent('timeline-viz', {
             more_button.setAttribute("rotation", geom_data.rotation);
 
             self.el.appendChild(more_button);
-
 
             more_button.addEventListener("clicked", function (event) {
 
@@ -562,20 +529,12 @@ AFRAME.registerComponent('timeline-viz', {
 
                 var button_pos = this.getAttribute("position");
 
-//                var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
-
                 var new_yaw = DATAVERSE_VIZ_AUX.yaw_pointing_to_object(self.el.sceneEl.camera.el, this);
-
-//
-//                console.log("DIFF VECTOR", self.data, button_pos, cam_position, diff_vector, new_yaw, yaw);
 
                 var pitch = (self.el.sceneEl.camera.el.getAttribute("rotation").x) % 360;
 
-                console.log("MEDIA PANEL", self.el.sceneEl.media_panel);
-
                 if (self.el.sceneEl.media_panel) {
                     if (self.el.sceneEl.media_panel.parentNode) {
-                        console.log("MEDIA PANEL ABIERTO");
                         self.el.sceneEl.media_panel.parentNode.removeChild(self.el.sceneEl.media_panel);
                     }
                 }
@@ -588,20 +547,9 @@ AFRAME.registerComponent('timeline-viz', {
 
                 self.media_panel.setAttribute("position", {x: cam_position.x, y:cam_position.y, z: cam_position.z});
 
-
-//                var vertical_offset = distance*Math.tan(THREE.Math.degToRad(self.data.panel_height/2.0)) + self.data.panel_elevation;
-
-//                var vertical_offset = distance*Math.tan(THREE.Math.degToRad(self.data.panel_height/2.0));
-
                 self.media_panel.setAttribute("position", {x: cam_position.x, y:cam_position.y, z: cam_position.z});
 
-
-                // self.media_panel.setAttribute("position", self.el.sceneEl.camera.el.getAttribute("position"));
-
-
                 self.media_panel.setAttribute("shadow", {cast: true});
-
-                console.log("DATUM!", datum);
 
                 self.media_panel.classList.add("dataverse-added");
 
@@ -625,15 +573,8 @@ AFRAME.registerComponent('timeline-viz', {
                 });
 
                 self.media_panel.addEventListener("link", function(data){
-                    self.el.emit("link", {link: data.detail.link}, false);
                     console.log("LINKANDO A ", data.detail.link);
                 });
-
-//                self.media_panel.addEventListener("panel_closed", function(){
-//
-//                    console.log("PANEL CLOSED EVENT");
-//
-//                });
 
                 self.el.sceneEl.appendChild(self.media_panel);
 
@@ -657,20 +598,11 @@ AFRAME.registerComponent('timeline-viz', {
 
         if((self.timeline_data !== undefined) && (typeof(self.rendered) === "undefined")) {
 
-            // Iterate through objects and titles and delete them
-
-            console.log("DELETING OLD GEOMETRY ...");
-
-            // Regenerating new geometry
-
-            console.log("REGENERATING NEW GEOMETRY ...");
-
             // Assets pointer
 
             var assets = document.getElementsByTagName("a-assets")[0];
 
             self.render_timeline();
-
 
             // Render slide -1
 
@@ -685,11 +617,8 @@ AFRAME.registerComponent('timeline-viz', {
             var yaw = (self.el.sceneEl.camera.el.getAttribute("rotation").y) % 360;
             var pitch = (self.el.sceneEl.camera.el.getAttribute("rotation").x) % 360;
 
-            console.log("MEDIA PANEL", self.el.sceneEl.media_panel);
-
             if (self.el.sceneEl.media_panel) {
                 if (self.el.sceneEl.media_panel.parentNode) {
-                    console.log("MEDIA PANEL ABIERTO");
                     self.el.sceneEl.media_panel.parentNode.removeChild(self.el.sceneEl.media_panel);
                 }
             }
