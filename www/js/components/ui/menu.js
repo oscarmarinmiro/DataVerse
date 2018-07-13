@@ -16,8 +16,6 @@ AFRAME.registerComponent('uipack-menu', {
 
     var self = this;
 
-    console.log("INIT MENU", self.data);
-
     // Annotate pointer to camera on scene 'mounted' or on the fly it camera exists
 
     if(!('camera' in self.el.sceneEl)) {
@@ -124,8 +122,6 @@ AFRAME.registerComponent('uipack-menu', {
         self.button_parent.appendChild(my_button);
     }
 
-    console.log("BUTTON ROW", self.button_row);
-
     // Create player (if needed)
 
     if(self.data.media_id != ""){
@@ -178,11 +174,7 @@ AFRAME.registerComponent('uipack-menu', {
   remove: function(){
 
   },
-//
-//  /**
-//   * Called when component is attached and when component data changes.
-//   * Generally modifies the entity based on the data.
-//   */
+
   update: function (oldData) {
 
     var self = this;
@@ -192,7 +184,6 @@ AFRAME.registerComponent('uipack-menu', {
     var icon_row_half_width = ((self.icon_row.length-1)*(DATAVERSE.UIPACK_CONSTANTS.button_radius*2) + (self.icon_row.length - 1) * DATAVERSE.UIPACK_CONSTANTS.icon_spacing)/2.0;
 
     for(var i=0; i< self.icon_row.length; i++){
-      //          <!--<a-entity uipack-button="icon_name: interface/airplane; pitch:30.0; yaw:270.0" id="b"></a-entity>-->
 
       self.icon_row[i].setAttribute("uipack-button", {icon_name: self.data.icons[i]});
 
@@ -206,7 +197,6 @@ AFRAME.registerComponent('uipack-menu', {
     var button_row_half_width = ((self.button_row.length-1)*(DATAVERSE.UIPACK_CONSTANTS.menu_button_width) + (self.button_row.length - 1) * DATAVERSE.UIPACK_CONSTANTS.button_spacing)/2.0;
 
     for(i=0; i< self.button_row.length; i++){
-      //          <!--<a-entity uipack-button="icon_name: interface/airplane; pitch:30.0; yaw:270.0" id="b"></a-entity>-->
 
       self.button_row[i].setAttribute("uipack-textbutton", {text: self.data.buttons[i], width: DATAVERSE.UIPACK_CONSTANTS.menu_button_width, color: "#FFF", background: "#000"});
 
@@ -249,16 +239,7 @@ AFRAME.registerComponent('uipack-menu', {
 
 
   },
-//
-//  /**
-//   * Called when a component is removed (e.g., via removeAttribute).
-//   * Generally undoes all modifications to the entity.
-//   */
-//  remove: function () { },
-//
-//  /**
-//   * Called on each scene tick.
-//   */
+
   tick: function (t) {
 
       var self = this;
@@ -362,18 +343,6 @@ AFRAME.registerComponent('uipack-menu', {
 
       }
 
-  },
-
-  /**
-   * Called when entity pauses.
-   * Use to stop or remove any dynamic or background behavior such as events.
-   */
-  pause: function () { },
-
-  /**
-   * Called when entity resumes.
-   * Use to continue or add any dynamic or background behavior such as events.
-   */
-  play: function () { }
+  }
 });
 

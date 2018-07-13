@@ -28,9 +28,6 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
   },
 
-  /**
-   * Called once when component is attached. Generally for initial setup.
-   */
   init: function () {
 
     var self = this;
@@ -50,11 +47,6 @@ AFRAME.registerComponent('uipack-mediacontrols', {
     this.video_selector = this.data.src;
 
     this.video_el = document.querySelector(this.video_selector);
-
-
-//    console.log("CONTROLS INIT");
-//    console.log("VIDEO ELEMENT");
-//    console.log(this.video_el);
 
     self.icon = document.createElement("a-entity");
 
@@ -78,12 +70,9 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     });
 
-//    Change icon to 'pause' on start.
+    // Change icon to 'pause' on start.
 
     this.video_el.addEventListener("pause", function(e){
-
-        console.log(e);
-        console.log("ME LLEGA PAUSE");
 
         self.icon.setAttribute("uipack-button", "icon_name", DATAVERSE.UIPACK_CONSTANTS.play_icon);
 
@@ -93,10 +82,8 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     this.video_el.addEventListener("playing", function(e){
 
-        console.log(e);
-        console.log("ME LLEGA PLAY");
-
         self.icon.setAttribute("uipack-button", "icon_name", DATAVERSE.UIPACK_CONSTANTS.pause_icon);
+
     });
 
     this.bar_canvas = document.createElement("canvas");
@@ -173,43 +160,36 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     this.bar = document.createElement("a-plane");
 
-    console.log("BACKGROUND BACK ", self.data.theme, DATAVERSE.themes, DATAVERSE.themes[self.data.theme]);
     this.bar.setAttribute("color", self.data.theme ? DATAVERSE.themes[self.data.theme].player_background : self.data.backgroundColor);
 
     this.real_bar_width = this.data.width - ((this.data.button_radius*5));
 
-
     self.button_mode = (DATAVERSE && ('cursor_mode' in DATAVERSE)) ? DATAVERSE.cursor_mode : "desktop";
-
 
     if(self.button_mode === "desktop"){
 
         this.bar.addEventListener("mousedown", function (event){
 
-                // Get raycast intersection point, and from there, x_offset in bar
+            // Get raycast intersection point, and from there, x_offset in bar
 
-//                var point = document.querySelector("#cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
+            var point = event.detail.intersection.point;
 
-                var point = event.detail.intersection.point;
+            var x_offset = this.object3D.worldToLocal(point).x;
 
-                var x_offset = this.object3D.worldToLocal(point).x;
+            var unit_offset = (x_offset / self.real_bar_width) + 0.5;
 
-                var unit_offset = (x_offset / self.real_bar_width) + 0.5;
+            // Update current step for coherence between point+click and key methods
 
-                // Update current step for coherence between point+click and key methods
+            self.current_step = Math.round(unit_offset * self.bar_steps);
 
-                self.current_step = Math.round(unit_offset * self.bar_steps);
+            var timeout_function = function () {
+                if (self.video_el.readyState > 0) {
+                    self.video_el.currentTime = unit_offset * self.video_el.duration;
+                }
 
-                var timeout_function = function () {
-                    if (self.video_el.readyState > 0) {
-                        self.video_el.currentTime = unit_offset * self.video_el.duration;
-                    }
+            };
 
-                };
-
-                self.ray_timeout = setTimeout(timeout_function, 300);
-
-
+            self.ray_timeout = setTimeout(timeout_function, 300);
 
         });
 
@@ -237,18 +217,12 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
         this.bar.addEventListener('raycaster-intersected', function (event) {
 
-
-            console.log("INSERSECTED", event.detail.intersection.point);
-
             if (self.first_hover) {
 
 
                 self.first_hover = false;
 
-
                 // Get raycast intersection point, and from there, x_offset in bar
-
-//                var point = document.querySelector("#cursor").components.raycaster.raycaster.intersectObject(this.object3D, true)[0].point;
 
                 var point = event.detail.intersection.point;
 
@@ -266,7 +240,6 @@ AFRAME.registerComponent('uipack-mediacontrols', {
                     }
 
                 };
-
 
                 self.ray_timeout = setTimeout(timeout_function, 300);
 
@@ -293,7 +266,6 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
     this.back_plane.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].player_background : self.data.backgroundColor, shader: "flat"});
 
-
     // Append image icon + info text + bar to component root
 
     this.el.appendChild(this.bar_canvas);
@@ -303,10 +275,6 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
   },
 
-  /**
-   * Called when component is attached and when component data changes.
-   * Generally modifies the entity based on the data.
-   */
   update: function (oldData) {
 
     var self = this;
@@ -322,16 +290,6 @@ AFRAME.registerComponent('uipack-mediacontrols', {
     self.icon.setAttribute("position", {x: -((this.data.width/2)) + self.data.button_radius * 2, y: 0, z:0.01});
 
   },
-
-  /**
-   * Called when a component is removed (e.g., via removeAttribute).
-   * Generally undoes all modifications to the entity.
-   */
-  remove: function () { },
-
-  /**
-   * Called on each scene tick.
-   */
   tick: function (t) {
 
     var self = this;
@@ -383,15 +341,6 @@ AFRAME.registerComponent('uipack-mediacontrols', {
                 ctx.fillStyle = self.data.theme ? DATAVERSE.themes[self.data.theme].player_background : self.data.backgroundColor;
                 ctx.fillRect(0, 0, this.bar_canvas.width, this.bar_canvas.height);
 
-                // Uncomment to draw a single bar for loaded data instead of 'bins'
-
-                //                ctx.fillStyle = "grey";
-                //
-                //                ctx.fillRect(0, 0,
-                //                    (this.video_el.buffered.end(this.video_el.buffered.length - 1) / this.video_el.duration)*this.bar_canvas.width,
-                //                    this.bar_canvas.height/2);
-
-
 
                 // Display time info text
 
@@ -400,9 +349,6 @@ AFRAME.registerComponent('uipack-mediacontrols', {
                 ctx.textAlign = "center";
                 ctx.fillText(time_info_text, this.bar_canvas.width*0.45, this.bar_canvas.height* 1.0);
 
-                // DEBUG PURPOSES
-
-//                ctx.fillText(this.video_el.readyState, this.bar_canvas.width*0.1, this.bar_canvas.height* 0.65);
 
                 // If seeking to position, show
 
@@ -417,8 +363,8 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
                 else {
 
-                    var percent = (this.video_el.buffered.end(this.video_el.buffered.length - 1) / this.video_el.duration) * 100;
-
+//                    var percent = (this.video_el.buffered.end(this.video_el.buffered.length - 1) / this.video_el.duration) * 100;
+//
 //                    ctx.font = this.data.statusTextFont;
 //                    ctx.fillStyle = self.data.theme ? DATAVERSE.themes[self.data.theme].player_text_color : self.data.textColor;
 //                    ctx.textAlign = "end";
@@ -472,17 +418,5 @@ AFRAME.registerComponent('uipack-mediacontrols', {
 
         this.last_time = t;
     }
-  },
-
-  /**
-   * Called when entity pauses.
-   * Use to stop or remove any dynamic or background behavior such as events.
-   */
-  pause: function () { },
-
-  /**
-   * Called when entity resumes.
-   * Use to continue or add any dynamic or background behavior such as events.
-   */
-  play: function () { }
+  }
 });
