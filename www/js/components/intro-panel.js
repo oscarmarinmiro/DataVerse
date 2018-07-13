@@ -19,8 +19,6 @@ AFRAME.registerComponent('intro-panel', {
 
         var self = this;
 
-        console.log("RENDERING INTRO PANEL");
-
         self.is_loaded = false;
 
         self.constants = {
@@ -105,8 +103,6 @@ AFRAME.registerComponent('intro-panel', {
 
             var body_y = title_y - (height) * self.constants.separations.body - title_height;
 
-            console.log("LOADED TITLE FONT", self.title.components.geometry.data.height, self.title.components);
-
             // Text body
 
             self.text = document.createElement("a-entity");
@@ -130,8 +126,6 @@ AFRAME.registerComponent('intro-panel', {
             self.text_panel.appendChild(self.text);
 
             self.text.addEventListener("textfontset", function () {
-
-                console.log("DRAWING CREDITS");
 
                 var body_height = self.text.components.geometry.data.height + (height) * self.constants.separations.credits;
 
@@ -160,8 +154,6 @@ AFRAME.registerComponent('intro-panel', {
                 self.text_panel.appendChild(self.credits);
 
                 self.credits.addEventListener("textfontset", function () {
-
-                    console.log("DRAWING LOADING");
 
                     var credits_height = self.credits.components.geometry.data.height;
 
@@ -208,21 +200,15 @@ AFRAME.registerComponent('intro-panel', {
 
         self.old_height = self.height;
 
-//        self.new_height = self.total_height * (1 + (2 * (self.constants.margin)));
-
         self.new_height_margins = self.total_height * (1 + (2 * (self.constants.margin)));
 
         self.new_height_margins = self.total_height;
 
         self.new_height = self.total_height;
 
-        console.log("NEW HEIGHT", self.new_height);
-
         self.back_panel.setAttribute("height", self.new_height_margins);
 
         self.offset_y = (self.new_height - self.old_height);
-
-        console.log("OFFSET Y", self.offset_y);
 
         // Reposition text_panel
 
@@ -251,8 +237,6 @@ AFRAME.registerComponent('intro-panel', {
 
         var cam_position = self.el.sceneEl.camera.el.getAttribute("position");
 
-        console.log("USER POSITION", cam_position);
-
         self.el.setAttribute("position", {x:cam_position.x, y: DATAVERSE.height, z:cam_position.z});
 
 
@@ -260,7 +244,6 @@ AFRAME.registerComponent('intro-panel', {
         self.back_panel.setAttribute("width", self.width);
         self.back_panel.setAttribute("material", {shader: "flat", color: self.data.theme ? DATAVERSE.themes[self.data.theme].panel_background : self.data.background_color});
         self.back_panel.setAttribute("position", {x: 0, y: 0, z: -self.data.distance});
-
 
         self.el.appendChild(self.back_panel);
 

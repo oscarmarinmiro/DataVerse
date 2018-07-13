@@ -23,8 +23,6 @@ AFRAME.registerComponent('photo-viz', {
 
         var self = this;
 
-        console.log("INIT COMPONENT", self);
-
         self.panel_timestamp = Date.now();
 
         // Create a sky if there is none present
@@ -43,8 +41,6 @@ AFRAME.registerComponent('photo-viz', {
 
         document.getElementsByTagName("a-sky")[0].setAttribute("rotation", {x:0, y: self.el.getAttribute("rotation").y, z:0});
         document.getElementsByTagName("a-sky")[0].classList.add("skyspheres");
-//        document.getElementsByTagName("a-sky")[0].setAttribute("visible", false);
-
 
     },
 
@@ -124,7 +120,6 @@ AFRAME.registerComponent('photo-viz', {
 
                 self.media_panel.addEventListener("link", function (data) {
                     self.el.emit("link", {link: data.detail.link}, false);
-                    console.log("LINKANDO A ", data.detail.link);
                 });
 
 
@@ -148,10 +143,6 @@ AFRAME.registerComponent('photo-viz', {
 
         var self = this;
 
-        console.log("SCENE NUMBER", DATAVERSE.scene_number);
-
-        console.log("RENDERING TAB", self.prepared_data);
-
         self.prepared_data.forEach(function(datum, i){
 
                     // Insert label if it belongs to this scene
@@ -163,8 +154,6 @@ AFRAME.registerComponent('photo-viz', {
                         // TODO: CHANGE label_height to that of camera...
 
                         var arc = (datum.yaw + 180) * THREE.Math.DEG2RAD;
-
-                        console.log("ARC", arc);
 
                         object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: (('height' in datum) && (typeof(datum.height) === "number")) ? datum.height : self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
 
@@ -208,16 +197,6 @@ AFRAME.registerComponent('photo-viz', {
 
         var self = this;
 
-        console.log("UPDATING COMPONENT", self);
-
-        // Iterate through objects and titles and delete them
-
-        console.log("DELETING OLD GEOMETRY ...");
-
-        // Regenerating new geometry
-
-        console.log("REGENERATING NEW GEOMETRY ...");
-
         // Whatever needs to do to render...
 
         // Set sky src to data.source
@@ -230,15 +209,11 @@ AFRAME.registerComponent('photo-viz', {
 
         if (self.data.media_source.search(sv_re) !== -1) {
 
-            console.log("PHOTO TYPE: GSV");
-
             var params =  self.data.media_source.trim().split(",");
 
             var lat = parseFloat(params[0].trim());
 
             var lon = parseFloat(params[1].trim());
-
-            console.log("LATLONG", lat, lon);
 
             // Create a PanoLoader object
 
@@ -247,10 +222,6 @@ AFRAME.registerComponent('photo-viz', {
             loader.setZoom(DATAVERSE_VIZ_AUX.gsv_quality);
 
             loader.onPanoramaLoad = function() {
-
-                console.log("ON PANORAMA LOAD");
-
-                console.log(this.canvas);
 
                 var texture = new THREE.CanvasTexture(this.canvas);
 
@@ -279,17 +250,12 @@ AFRAME.registerComponent('photo-viz', {
         // Photosphere
         else {
 
-            console.log("PHOTO TYPE: Photosphere");
 
             document.getElementsByTagName("a-sky")[0].setAttribute("src", self.data.media_source);
-//            document.getElementsByTagName("a-sky")[0].setAttribute("opacity", self.data.debug ? 1.0 : 0.0);
-
 
             document.getElementsByTagName("a-sky")[0].removeAttribute("color");
 
             document.getElementsByTagName("a-sky")[0].addEventListener("materialtextureloaded", function(){
-
-                console.log("SKY CARGADO");
 
                 self.el.emit("dv_loaded", null, false);
 
@@ -305,8 +271,6 @@ AFRAME.registerComponent('photo-viz', {
                     self.prepared_data = my_data;
 
                     self.scene_data = scene_data;
-
-                    console.log("LOADED TAB ", self.prepared_data, self.scene_data);
 
                     self.render_tab();
                 }

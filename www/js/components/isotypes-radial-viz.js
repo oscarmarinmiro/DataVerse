@@ -75,9 +75,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                     self.isotype_data = self.system.parse_data(data, self.data);
 
-                    console.log("FINAL DATA");
-                    console.log(self.isotype_data);
-
                     self.color_scale = DATAVERSE_VIZ_AUX.get_color_scale_from_theme(self.data.theme);
 
                     // Call component update explicitly, since callback makes first update lag in data...
@@ -97,8 +94,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
     render_one : function(datum, arc, img_dict){
 
         var self = this;
-
-        console.log("RENDER ONE");
 
         var object = document.createElement("a-plane");
 
@@ -165,7 +160,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
         });
 
         if(loaded){
-            console.log("EMITO");
             self.el.emit("loaded_images", null, false);
         }
 
@@ -177,8 +171,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
     add_more_button: function(parent, datum, sequence, label_height){
 
         var self = this;
-
-        console.log("AAA", datum);
 
         // Check if there is 'more' information. Only for subgroups or groups with no subgroups
 
@@ -215,8 +207,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                     var yaw = (self.el.sceneEl.camera.el.getAttribute("rotation").y) % 360;
                     var pitch = (self.el.sceneEl.camera.el.getAttribute("rotation").x) % 360;
-
-                    console.log("MEDIA PANEL", self.el.sceneEl.media_panel);
 
                     if (self.el.sceneEl.media_panel) {
                         if (self.el.sceneEl.media_panel.parentNode) {
@@ -266,9 +256,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                     self.el.sceneEl.restore_clickable.classList.remove("clickable");
 
-
-
-
                 });
 
 
@@ -285,14 +272,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
         var self = this;
 
         if((self.isotype_data !== undefined) && (typeof(self.group_info) === "undefined")) {
-
-            // Iterate through objects and titles and delete them
-
-            console.log("DELETING OLD GEOMETRY ...");
-
-            // Regenerating new geometry
-
-            console.log("REGENERATING NEW GEOMETRY ...");
 
             // Initial counting variables
 
@@ -332,13 +311,7 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                 if(datum.subgroup_title.length > 0) {
 
-                    // Avoid group real_number since it's from this subgroup
-
-//                    self.group_info[datum.group].datum.real_number = null;
-
                     self.group_info[datum.group].subgroups = true;
-
-                    console.log("ANTES DE INSERTASR EL DATUM DEL SUBGROUP", datum);
 
                     self.subgroup_info[self.num_subgroups] = { 'group': datum.group, 'start_radians': THREE.Math.DEG2RAD*self.data.degrees, 'end_radians': 0, 'title': datum.subgroup_title, 'datum': datum};
 
@@ -350,20 +323,11 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
             }
 
-            console.log("END COUNTING");
-
-            console.log("Groups", self.num_groups, "Sub groups", self.num_subgroups, "Objects", self.num_objects);
-            console.log(self.group_info, self.subgroup_info);
-
             // Establish real (leaving out the gaps) radian length onto which distribute
 
             self.length = (THREE.Math.DEG2RAD*self.data.degrees) - ((self.num_groups) * (THREE.Math.DEG2RAD*self.data.group_gap)) - ((self.num_subgroups - 1) * (THREE.Math.DEG2RAD*self.data.subgroup_gap));
 
             self.object_separation = self.length / self.num_objects;
-
-            console.log("LENGTH", self.length);
-
-            console.log("SEPARATION", self.object_separation);
 
             // holds radians for painting every object
 
@@ -387,13 +351,9 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
             for(var i=0; i < self.isotype_data.length; i++){
 
-                console.log("VUELTA");
-
                 var datum = self.isotype_data[i];
 
                 var img = datum.image;
-
-                console.log("IMAGE", img);
 
                 if(!(datum.image in img_dict)){
 
@@ -413,8 +373,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
                 }
             }
 
-            console.log(assets);
-
             // Now wait until all images are loaded...
 
             self.images.forEach(function(entry){
@@ -425,8 +383,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                         entry.loaded = true;
 
-                        console.log("LOADED", entry);
-
                         self.check_images();
 
                     });
@@ -435,10 +391,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
 
             self.el.addEventListener("loaded_images", function(){
-
-                console.log("RECIBO");
-
-                console.log("LOADED!!!");
 
                 var rendered_number = 0;
 
@@ -479,8 +431,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                     // Paint objects
 
-                    console.log("DATUM GROUP AND SUBGROUP", datum, datum.group, subgroup_number, subgroup);
-
                     for (var j = 0; j < datum.count; j++) {
 
                         // Update max and min arcs for this group (and) subgroup
@@ -493,8 +443,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
                         }
 
                         if (subgroup) {
-
-                            console.log("PARA EL SUBGROUP", subgroup_number, arc, self.subgroup_info[subgroup_number].start_radians, self.subgroup_info[subgroup_number].end_radians);
 
                             if (arc < self.subgroup_info[subgroup_number].start_radians) {
                                 self.subgroup_info[subgroup_number].start_radians = arc;
@@ -521,10 +469,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                 // Paint texts...
 
-                console.log("FINAL GROUP DATA", self.group_info, self.subgroup_info);
-
-                console.log("ANTES DE GROUP TEXTS ", self.max_height);
-
                 var sequence = 0;
 
                 // Paint group texts
@@ -532,8 +476,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
                 for (var i = 0; i < Object.keys(self.group_info).length; i++) {
 
                     datum = self.group_info[Object.keys(self.group_info)[i]];
-
-                    console.log(datum);
 
                     var object = document.createElement("a-entity");
 
@@ -548,8 +490,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
                     object.setAttribute('rotation', {x: 0, y: (arc / Math.PI) * 180 > 180 ? (arc / Math.PI) * 180 - 180 : 180 + (arc / Math.PI) * 180, z: 0});
 
                     var title = (datum.datum.real_number && (!(datum.subgroups))) ? datum.title + " (" + datum.datum.real_number + ")": datum.title;
-
-                    console.log("TITLE DATUM", datum);
 
                     var text_width = (DATAVERSE.dmms.label * self.data.size * (title.length + 4)) / 1000;
 
@@ -568,10 +508,6 @@ AFRAME.registerComponent('isotypes-radial-viz', {
                     sequence++;
 
                 }
-
-                console.log("SUBGROUP INFO", self.subgroup_info);
-
-                console.log("PAINTING SUBGROUP LABELS");
 
                 for (i = 0; i < Object.keys(self.subgroup_info).length; i++) {
 
