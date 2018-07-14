@@ -169,15 +169,15 @@ DATAVERSE.main = function(options) {
         });
 
 
-        self.run_app();
+//        self.run_app();
 
-//        var scene = document.querySelector("a-scene");
-//
-//        if (scene.hasLoaded) {
-//          self.run_app();
-//        } else {
-//          scene.addEventListener('loaded', self.run_app());
-//        }
+        var scene = document.querySelector("a-scene");
+
+        if (scene.hasLoaded) {
+          self.run_app();
+        } else {
+          scene.addEventListener('loaded', self.run_app());
+        }
 
 
     });
