@@ -552,10 +552,12 @@ AFRAME.registerComponent('timeline-viz', {
 
                 self.media_panel.classList.add("dataverse-added");
 
+                var low_height = (self.data.height*0.5) + self.data.y_position + ((DATAVERSE.dmms.plus_button * self.data.size) / 1000)*(datum.original_datum.link ? 5 : 2);
+
                 self.media_panel.setAttribute("uipack-mediapanel", {
                     yaw: new_yaw,
                     // low height is y_position + half of timeline + two times the radius of the upper button
-                    low_height: (self.data.height*0.5) + self.data.y_position + ((DATAVERSE.dmms.plus_button * self.data.size) / 1000)*2,
+                    low_height: low_height,
                     theme: self.data.theme,
                     height: self.data.panel_height,
                     distance: distance,

@@ -257,6 +257,14 @@ DATAVERSE.renderer.prototype = {
 
         var self = this;
 
+        var img_asset = document.createElement("img");
+
+        img_asset.setAttribute("id", "loading_scene");
+        img_asset.setAttribute('crossorigin', 'anonymous');
+        img_asset.setAttribute("src", DATAVERSE.paths.loading_thumbnail_static);
+
+        self.assets.appendChild(img_asset);
+
         // Insert loading symbols
 
         var loading_defs = [
@@ -277,7 +285,7 @@ DATAVERSE.renderer.prototype = {
                 loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
                 loading.setAttribute("width", 1);
                 loading.setAttribute("height", 1);
-                loading.setAttribute("src", DATAVERSE.paths.loading_thumbnail_static);
+                loading.setAttribute("src", "#loading_scene");
 
                 document.querySelector("a-scene").appendChild(loading);
 
