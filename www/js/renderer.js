@@ -285,7 +285,7 @@ DATAVERSE.renderer.prototype = {
                 loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
                 loading.setAttribute("width", 1);
                 loading.setAttribute("height", 1);
-                loading.setAttribute("src", "#loading_scene");
+                loading.setAttribute("src", DATAVERSE.paths.loading_thumbnail_static);
 
                 document.querySelector("a-scene").appendChild(loading);
 
@@ -399,15 +399,8 @@ DATAVERSE.renderer.prototype = {
 
             if(self.actual_scene_data.floor.indexOf('.')!==-1){
 
-                self.floor_img = document.createElement("img");
-                self.floor_img.classList.add("dataverse-added");
-                self.floor_img.setAttribute("src", self.actual_scene_data.floor);
-                self.floor_img.setAttribute("id", "floor_img");
-
-                self.assets.appendChild(self.floor_img);
-
                 self.floor = document.createElement("a-plane");
-                self.floor.setAttribute("src", "#floor_img");
+                self.floor.setAttribute("src", self.actual_scene_data.floor);
                 self.floor.setAttribute("width", 100);
                 self.floor.setAttribute("height", 100);
                 self.floor.setAttribute("repeat", "100 100");
@@ -450,15 +443,8 @@ DATAVERSE.renderer.prototype = {
 
                         if(my_floor.indexOf(".") !== -1) {
 
-                            self.floor_img = document.createElement("img");
-                            self.floor_img.classList.add("dataverse-added");
-                            self.floor_img.setAttribute("src", my_floor);
-                            self.floor_img.setAttribute("id", "floor_img");
-
-                            self.assets.appendChild(self.floor_img);
-
                             self.floor = document.createElement("a-plane");
-                            self.floor.setAttribute("src", "#floor_img");
+                            self.floor.setAttribute("src", my_floor);
                             self.floor.setAttribute("width", 100);
                             self.floor.setAttribute("height", 100);
                             self.floor.setAttribute("repeat", "100 100");
@@ -501,17 +487,8 @@ DATAVERSE.renderer.prototype = {
 
             if(self.actual_scene_data.background.indexOf('.')!==-1){
 
-                self.sky_img = document.createElement("img");
-                self.sky_img.classList.add("dataverse-added");
-                self.sky_img.setAttribute("src", self.actual_scene_data.background);
-                self.sky_img.setAttribute("id", "sky_img");
-                self.sky_img.setAttribute('crossorigin', 'anonymous');
-
-
-                self.assets.appendChild(self.sky_img);
-
                 self.sky = document.createElement("a-sky");
-                self.sky.setAttribute("src", "#sky_img");
+                self.sky.setAttribute("src", self.actual_scene_data.background);
                 self.sky.classList.add("dataverse-added");
 
                 self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
@@ -546,16 +523,8 @@ DATAVERSE.renderer.prototype = {
 
                         if(my_sky.indexOf(".") !== -1) {
 
-                            self.sky_img = document.createElement("img");
-                            self.sky_img.classList.add("dataverse-added");
-                            self.sky_img.setAttribute("src", my_sky);
-                            self.sky_img.setAttribute("id", "sky_img");
-                            self.sky_img.setAttribute('crossorigin', 'anonymous');
-
-                            self.assets.appendChild(self.sky_img);
-
                             self.sky = document.createElement("a-sky");
-                            self.sky.setAttribute("src", "#sky_img");
+                            self.sky.setAttribute("src", my_sky);
                             self.sky.classList.add("dataverse-added");
 
                             self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
