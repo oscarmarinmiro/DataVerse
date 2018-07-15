@@ -357,7 +357,8 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                     var img_asset = document.createElement("img");
                     img_asset.setAttribute("id", id);
-                    img_asset.setAttribute("src", datum.image);
+                    // Trick to not 'draw' from previous cache and thus, croak with 'crossorigin' bug of aframe on img asset reload
+                    img_asset.setAttribute("src", datum.image +"?" + Date.now());
                     img_asset.setAttribute('crossorigin', 'anonymous');
 
                     assets.appendChild(img_asset);
