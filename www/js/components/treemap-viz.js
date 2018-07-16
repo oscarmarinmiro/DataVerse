@@ -311,14 +311,14 @@ AFRAME.registerComponent('treemap-viz', {
                         media_caption: datum.media_caption,
                         media_credit: datum.media_credit,
                         link: datum.link,
-                        link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.link, self.scene_data),
-                        link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.link, self.scene_data),
+                        link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.link, DATAVERSE_VIZ_AUX.treemap_scene_data),
+                        link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.link, DATAVERSE_VIZ_AUX.treemap_scene_data),
                         id: "treemap_" + self.data.id + "_" + self.panel_timestamp
 
                     });
 
                     self.media_panel.addEventListener("link", function(data){
-                        self.el.emit("link", {link: data.detail.link}, false);
+                        self.el.parentNode.emit("link", {link: data.detail.link}, false);
                     });
 
                     self.el.sceneEl.appendChild(self.media_panel);
@@ -637,6 +637,8 @@ AFRAME.registerComponent('small-treemap-viz', {
                 if (data !== null) {
 
                     self.scene_data = scene_data;
+
+                    DATAVERSE_VIZ_AUX.treemap_scene_data = scene_data;
 
                     self.parsed_data = self.system.parse_data(data, self.data);
 
