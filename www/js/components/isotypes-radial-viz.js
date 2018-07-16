@@ -505,6 +505,8 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                 }
 
+                var subseq = 0;
+
                 for (i = 0; i < Object.keys(self.subgroup_info).length; i++) {
 
                     datum = self.subgroup_info[Object.keys(self.subgroup_info)[i]];
@@ -533,9 +535,11 @@ AFRAME.registerComponent('isotypes-radial-viz', {
 
                     object.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.text_background, shader: "flat"});
 
-                    self.add_more_button(object, datum, sequence, label_height);
+                    self.add_more_button(object, datum, "sub" + subseq, label_height);
 
                     self.el.appendChild(object);
+
+                    subseq++;
 
                 }
 
