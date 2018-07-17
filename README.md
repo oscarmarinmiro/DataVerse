@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/wiki/oscarmarinmiro/DataVerse/images/dataverse-logo.png"/></p>
+<p align="center"><img src="dataverse-logo.png"/></p>
 
 ##
 
@@ -14,5 +14,5 @@ If you are a developer and want to install your own copy of the software on your
 
 
 <p align="center">Project funded by</p>
-<p align="center"><a href="https://medium.com/journalism360"><img src="wiki/images/journalism360.png"/></p></a>
+<p align="center"><a href="https://medium.com/journalism360"><img src="journalism360.png"/></p></a>
 
