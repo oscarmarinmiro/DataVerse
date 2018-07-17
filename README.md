@@ -1,4 +1,4 @@
-<p align="center"><img src="dataverse-logo.png"/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/wiki/oscarmarinmiro/DataVerse/images/dataverse-logo.png"/></p>
 
 ##
 
