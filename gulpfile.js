@@ -10,6 +10,7 @@ var minifycss = require('gulp-minify-css');
 // Define default destination folder
 
 var dest = 'dist/';
+var demo = 'demo/';
 
 
 
@@ -32,23 +33,11 @@ gulp.task('js', function() {
         .pipe(concat('dataverse.js'))
         .pipe(rename('dataverse.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest(dest));
+        .pipe(gulp.dest(dest)).pipe(gulp.dest(demo));
 
 
 });
 
-//gulp.task('demo', function(){
-//
-//   var sourceFiles = [ 'dist/*.css', 'dist/*.js' ];
-//   var destination = 'demo/';
-//
-//    gulp.src('dist/*.css')
-//        .pipe(gulp.dest('demo/'));
-//
-//    return gulp.src('dist/*.js')
-//           .pipe(gulp.dest('demo/'));
-//
-//});
 
 gulp.task('css', function() {
 
@@ -59,7 +48,7 @@ gulp.task('css', function() {
 		.pipe(concat('dataverse.css'))
         .pipe(rename('dataverse.min.css'))
 		.pipe(minifycss())
-		.pipe(gulp.dest(dest));
+		.pipe(gulp.dest(dest)).pipe(gulp.dest(demo));
 
 });
 
@@ -67,7 +56,6 @@ gulp.task('css', function() {
 gulp.task('default', ['clean'], function() {
     gulp.start('js');
     gulp.start('css');
-//    gulp.start('demo');
 });
 
 
