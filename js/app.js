@@ -6,11 +6,11 @@ DATAVERSE.main = function(options) {
 
    // This is to force reload on 'artificially inserted' history entries...
 
-//    window.onpopstate = function(event) {
-//        if(event && event.state) {
-//            location.reload();
-//        }
-//    };
+    window.onpopstate = function(event) {
+        if(event && event.state) {
+            location.reload();
+        }
+    };
 
     self.options = options ? options : {};
 
