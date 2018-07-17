@@ -12,7 +12,7 @@ To learn more about how to write your own Google Sheet to generate a story, [go 
 
 If you are a developer and want to install your own copy of the software on your host, or extend the tool in any way, including writing your own visualizations, visit [this page]().
 
-
-<p align="center">Project funded by</p>
+</br>
+<p align="center"><strong>Project funded by</strong></p>
 <p align="center"><a href="https://medium.com/journalism360"><img src="img/journalism360.png"/></p></a>
 
