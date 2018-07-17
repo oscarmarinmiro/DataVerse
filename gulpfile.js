@@ -4,6 +4,7 @@ var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var filter = require('gulp-filter');
 var del = require('del');
+var copy = require('gulp-copy');
 var minifycss = require('gulp-minify-css');
 
 // Define default destination folder
@@ -13,7 +14,7 @@ var dest = 'dist/';
 
 
 gulp.task('clean', function() {
-    return del(['dist/*.js','dist/*.css']);
+    return del(['dist/*.js','dist/*.css', 'demo/*.js', 'demo/*.css']);
 });
 
 gulp.task('js', function() {
@@ -33,13 +34,27 @@ gulp.task('js', function() {
         .pipe(uglify())
         .pipe(gulp.dest(dest));
 
+
 });
+
+//gulp.task('demo', function(){
+//
+//   var sourceFiles = [ 'dist/*.css', 'dist/*.js' ];
+//   var destination = 'demo/';
+//
+//    gulp.src('dist/*.css')
+//        .pipe(gulp.dest('demo/'));
+//
+//    return gulp.src('dist/*.js')
+//           .pipe(gulp.dest('demo/'));
+//
+//});
 
 gulp.task('css', function() {
 
 	var cssFiles = ['css/*', 'bower_components/leaflet/dist/leaflet.css'];
 
-	gulp.src(cssFiles)
+	return gulp.src(cssFiles)
 		.pipe(filter('**/*.css'))
 		.pipe(concat('dataverse.css'))
         .pipe(rename('dataverse.min.css'))
@@ -52,6 +67,7 @@ gulp.task('css', function() {
 gulp.task('default', ['clean'], function() {
     gulp.start('js');
     gulp.start('css');
+//    gulp.start('demo');
 });
 
 
