@@ -22,18 +22,7 @@ AFRAME.registerComponent('video-viz', {
 
         var self = this;
 
-        console.log("INIT COMPONENT", self);
-
         self.video_timestamp = Date.now();
-
-
-//        // Create a sky if there is none present
-//
-//        if(document.getElementsByTagName("a-sky").length == 0){
-//
-//            document.getElementsByTagName("a-scene")[0].appendChild(document.createElement("a-sky"));
-//
-//        }
 
         // Default types
 
@@ -46,8 +35,6 @@ AFRAME.registerComponent('video-viz', {
         if (self.data.type.includes('stereo')) self.video_type.stereo = true;
 
         if (self.data.type.includes('vertical')) self.video_type.split = 'vertical';
-
-        console.log("EL TIPO QUEDA", self.video_type);
 
         // Set camera to stereo left eye stereocam="eye:left;"
 
@@ -73,7 +60,6 @@ AFRAME.registerComponent('video-viz', {
         if((info.headline !== "") && (info.text !== "")) {
 
             var more_button = document.createElement("a-entity");
-
 
             var icon_radius = (DATAVERSE.dmms.plus_button * self.data.label_distance) / 1000;
 
@@ -141,14 +127,12 @@ AFRAME.registerComponent('video-viz', {
 
                 self.media_panel.addEventListener("link", function (data) {
                     self.el.emit("link", {link: data.detail.link}, false);
-                    console.log("LINKANDO A ", data.detail.link);
                 });
 
 
                 self.el.sceneEl.appendChild(self.media_panel);
 
                 self.el.sceneEl.media_panel = self.media_panel;
-
 
                 self.el.sceneEl.restore_clickable = this;
 
@@ -166,8 +150,6 @@ AFRAME.registerComponent('video-viz', {
 
         var self = this;
 
-        console.log("RENDERING TAB", self.prepared_data);
-
         self.prepared_data.forEach(function(datum, i){
 
                     if(datum.scene === DATAVERSE.scene_number) {
@@ -177,8 +159,6 @@ AFRAME.registerComponent('video-viz', {
                         // TODO: CHANGE label_height to that of camera...
 
                         var arc = datum.yaw * THREE.Math.DEG2RAD;
-
-                        console.log("ARC", arc);
 
                         object.setAttribute('position', {x: self.data.label_distance * Math.sin(arc), y: (('height' in datum) && (typeof(datum.height) === "number")) ? datum.height : self.data.label_height, z: self.data.label_distance * Math.cos(arc)});
 
@@ -202,17 +182,11 @@ AFRAME.registerComponent('video-viz', {
 
                         object.setAttribute("material", {color: self.data.theme ? DATAVERSE.themes[self.data.theme].text_background : self.data.label_background, shader: "flat"});
 
-
-                        // self.add_more_button(object, datum, sequence);
-
                         self.add_more_button(object, datum, i, label_height);
 
                         self.el.appendChild(object);
                     }
-
         });
-
-
 
     },
 
@@ -223,29 +197,13 @@ AFRAME.registerComponent('video-viz', {
 
         var self = this;
 
-        console.log("UPDATING COMPONENT", self);
-
-        // Iterate through objects and titles and delete them
-
-        console.log("DELETING OLD GEOMETRY ...");
-
-        // Regenerating new geometry
-
-        console.log("REGENERATING NEW GEOMETRY ...");
-
         // Whatever needs to do to render...
 
         // Set sky src to data.source
 
-//        document.getElementsByTagName("a-sky")[0].setAttribute("src", self.data.source);
-//
-//        document.getElementsByTagName("a-sky")[0].removeAttribute("color");
-
             // If stereo video
 
             if (self.video_type.stereo) {
-
-                console.log("DIBUJANDO ESTEREO");
 
                 var video_id = "stereo_video" + "_" + self.video_timestamp;
 
@@ -258,13 +216,7 @@ AFRAME.registerComponent('video-viz', {
                 self.video.setAttribute("id", video_id);
                 self.video.setAttribute("loop", false);
                 self.video.setAttribute("autoplay", "true");
-
-
-//                self.video.addEventListener("canplay", function(){
-//
-//                    console.log("El video se puede playear");
-//
-//                });
+                self.video.setAttribute("crossorigin", "anonymous");
 
                 assets.appendChild(self.video);
 
@@ -273,11 +225,8 @@ AFRAME.registerComponent('video-viz', {
                 self.el.emit("asset_added", {'id': video_id}, false);
 
                 self.stereo_left_sphere = document.createElement("a-entity");
-
                 self.stereo_left_sphere.setAttribute("class", "videospheres dataverse-added skyspheres");
-
                 self.stereo_left_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
-
                 self.stereo_left_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.stereo_left_sphere.setAttribute("scale", "-1 1 1");
                 self.stereo_left_sphere.setAttribute("visible", false);
@@ -285,9 +234,6 @@ AFRAME.registerComponent('video-viz', {
                 // Sync rotation with 'camera landing rotation'
 
                 self.stereo_left_sphere.setAttribute("rotation", {x:0, y: self.el.getAttribute("rotation").y, z:0});
-
-
-
 
                 AFRAME.utils.entity.setComponentProperty(self.stereo_left_sphere, "stereo", {'eye': 'left', 'mode': self.video_type.mode, 'split': self.video_type.split});
 
@@ -325,7 +271,6 @@ AFRAME.registerComponent('video-viz', {
 
             }
             else {
-                console.log("DIBUJANDO MONO");
 
                 var video_id = "mono_video" + "_" + self.video_timestamp;
 
@@ -338,13 +283,7 @@ AFRAME.registerComponent('video-viz', {
                 self.video.setAttribute("id", video_id);
                 self.video.setAttribute("loop", false);
                 self.video.setAttribute("autoplay", "true");
-
-
-//                self.video.addEventListener("canplay", function(){
-//
-//                    console.log("El video se puede playear");
-//
-//                });
+                self.video.setAttribute("crossorigin", "anonymous");
 
                 assets.appendChild(self.video);
 
@@ -357,7 +296,6 @@ AFRAME.registerComponent('video-viz', {
                 self.mono_sphere.setAttribute("geometry", "primitive:sphere; radius:100; segmentsWidth: 64; segmentsHeight:64");
                 self.mono_sphere.setAttribute("material", {shader: "flat", src: "#" + video_id, side: "back"});
                 self.mono_sphere.setAttribute("scale", "-1 1 1");
-
                 self.mono_sphere.setAttribute("visible", false);
 
                 // Sync rotation with 'camera landing rotation'
@@ -392,8 +330,6 @@ AFRAME.registerComponent('video-viz', {
                     self.prepared_data = my_data;
 
                     self.scene_data = scene_data;
-
-                    console.log("LOADED TAB ", self.prepared_data, self.scene_data);
 
                     self.render_tab();
                 }

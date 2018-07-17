@@ -86,8 +86,6 @@ AFRAME.registerComponent('photogrid-viz', {
 
         thumbnail_component.addEventListener("materialtextureloaded", function(){
 
-            console.log("LOADED");
-
             if(('material' in this.components.material) && ('material' in this.components.material) && (this.components.material.material.map) && ('image' in this.components.material.material.map)) {
 
                 var width = this.components.material.material.map.image.naturalWidth;
@@ -230,8 +228,6 @@ AFRAME.registerComponent('photogrid-viz', {
 
             if (self.el.children && self.el.children.length > 0) {
 
-                console.log(self.el.children);
-
                 for(var i=0; i < self.el.children.length; i++) {
 
                     self.el.removeChild(self.el.children[i]);
@@ -255,8 +251,6 @@ AFRAME.registerComponent('photogrid-viz', {
             // Get max length of treemap titles
 
             var max_title_length = (self.parsed_data.slice(0).sort(function(a,b) { return b.headline.length - a.headline.length;}))[0].headline.length;
-
-            console.log("MAX TITLE", max_title_length);
 
             var params = {};
 

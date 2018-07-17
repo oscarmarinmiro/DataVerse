@@ -13,9 +13,9 @@ DATAVERSE.cache = {
 DATAVERSE.paths = {
     click_sound: "https://cdn.dataverse.xyz/audio/click.mp3",
     hover_sound: "https://cdn.dataverse.xyz/audio/hover.mp3",
-    photo_thumbnail: "https://cdn.dataverse.xyz/img/thumbnail.png",
-    video_thumbnail: "https://cdn.dataverse.xyz/img/thumbnail.png",
-    viz_thumbnail: "https://cdn.dataverse.xyz/img/thumbnail.png",
+    photo_thumbnail: "https://cdn.dataverse.xyz/img/plaholder-image.png",
+    video_thumbnail: "https://cdn.dataverse.xyz/img/placeholder-video.png",
+    viz_thumbnail: "https://cdn.dataverse.xyz/img/placeholder-vis.png",
     loading_thumbnail_static: "https://cdn.dataverse.xyz/img/loading_static.jpg"
 };
 

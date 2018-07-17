@@ -285,9 +285,14 @@ DATAVERSE_VIZ_AUX = {
 
                   if (('cache' in DATAVERSE) && (path in DATAVERSE.cache)) {
 
-//                      console.log("DEVUELVO EL ELEMENTO CACHEADO");
+//                      console.log("CACHED ELEMENT RETURNED");
 
-                      callback(DATAVERSE.cache[path][tab]['elements'], DATAVERSE.cache[path])
+                      if(tab in DATAVERSE.cache[path]) {
+                          callback(DATAVERSE.cache[path][tab]['elements'], DATAVERSE.cache[path]);
+                      }
+                      else {
+                          callback(null, DATAVERSE.cache[path]);
+                      }
                   }
                   else {
 

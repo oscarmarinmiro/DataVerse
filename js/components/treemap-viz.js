@@ -3,8 +3,6 @@ AFRAME.registerComponent('treemap-viz', {
     schema: {
         treemap_data:{
             default: {}
-//            parse: function(value) {if(typeof value === 'string'){ return JSON.parse} else { return value;}},
-//            stringify: JSON.stringify
         },
         id: {type: 'int', default: 1},
         depth: {type: 'int', default: 1},
@@ -31,15 +29,15 @@ AFRAME.registerComponent('treemap-viz', {
 
         var self = this;
 
-        console.log("INIT TREEMAP", self.data);
-
         self.panel_timestamp = Date.now();
 
     },
     re_scale: function(value){
+
         var self = this;
 
         self.treemap_container.setAttribute("scale", {x:value, y:value, z:value});
+
     },
     draw_plank: function(datum, padding){
 
@@ -53,13 +51,9 @@ AFRAME.registerComponent('treemap-viz', {
 
                 var plank = document.createElement("a-plane");
 
-                //            console.log("DATUM", datum);
-
                 var width = (datum.dx - padding) / 1000;
                 var height = (datum.dy - padding) / 1000;
 
-//                var name_label = datum.depth == 1 ? datum.name : datum.name + "/" + datum.parent.name;
-//
                 var name_label = datum.name;
 
                 var number_label = self.data.show_numbers ? (" (" + DATAVERSE_VIZ_AUX.pretty_print_number(datum.value) + ")") : "";
@@ -68,10 +62,7 @@ AFRAME.registerComponent('treemap-viz', {
 
                 plank.setAttribute("width", width);
                 plank.setAttribute("height", height);
-                //            plank.setAttribute("color", "white");
                 plank.setAttribute("color", datum.depth == 1 ? self.color_scale([datum.name]) : self.color_scale([datum.parent.name]));
-                //v(d.x+ d.dx/2) - (width/2) + " " + ((d.y+ d.dy/2)-(height/2))
-                //            plank.setAttribute("position", {x: (datum.x+ (datum.dx + padding)/2)/1000 + self.data.width/2, y:  (datum.y + (datum.dy - padding) /2)/1000 + self.data.height/2, z: 0});
                 plank.setAttribute("position", {x: (datum.x + (datum.dx + padding) / 2) / 1000 - self.data.width / 2, y: (datum.y + (datum.dy - padding) / 2) / 1000 - self.data.height / 2, z: 0});
 
                 self.treemap_container.appendChild(plank);
@@ -94,8 +85,6 @@ AFRAME.registerComponent('treemap-viz', {
                         var dmms = ((width / (name_label.length + 4)) / (self.data.distance)) * 1000;
 
                         if (dmms > DATAVERSE.dmms.min_text) {
-
-                            console.log("DMMS", dmms);
 
                             label.setAttribute("width", width);
 
@@ -166,8 +155,6 @@ AFRAME.registerComponent('treemap-viz', {
 
                             if (dmms > DATAVERSE.dmms.min_text) {
 
-                                console.log("DMMS", dmms);
-
                                 label.setAttribute("width", width);
 
                                 label.setAttribute("wrap-count", name_label.length + 4);
@@ -210,8 +197,6 @@ AFRAME.registerComponent('treemap-viz', {
 
         if (self.el.children && self.el.children.length > 0) {
 
-            console.log(self.el.children);
-
             self.el.children.forEach(function (d) {
 
                 self.el.removeChild(d);
@@ -228,24 +213,15 @@ AFRAME.registerComponent('treemap-viz', {
 
         // D3 layout over data
 
-        console.log("TREEMAP DATA", self.data.treemap_data);
-
         self.color_scale = self.data.unique_color_scale ?  DATAVERSE_VIZ_AUX.color_scale : DATAVERSE_VIZ_AUX.get_color_scale_from_theme(self.data.theme);
 
         // Padding = 1%
 
         self.layout = d3.layout.treemap().size([self.data.width*1000,self.data.height*1000]).padding((self.data.width + self.data.height)*5);
-//        self.layout = d3.layout.treemap().size([self.data.width*1000,self.data.height*1000]);
-
         self.nodes = self.layout.nodes(self.data.treemap_data);
-
-//        self.layout({'name': "root", children:[{'name': "test", 'value': 5.0}]});
-
-        console.log("TREEMAP LAYOUT", self.nodes);
 
         self.nodes.forEach(function(d){
 
-//            self.draw_plank(d,(self.data.width + self.data.height)*2.5);
             self.draw_plank(d,(self.data.width + self.data.height)*2.5);
 
         });
@@ -257,9 +233,7 @@ AFRAME.registerComponent('treemap-viz', {
         self.label.setAttribute("value", self.data.title);
         self.label.setAttribute("align", "center");
         self.label.setAttribute("width", self.data.width * self.data.title_x_factor);
-//        self.label.setAttribute("scale", {x:2.0, y:2.0, z:2.0});
         self.label.setAttribute("wrap-count", self.data.title_max_chars);
-//        self.label.setAttribute("baseline", "center");
 
         self.label.setAttribute("position", {x: 0, y: -self.data.height*0.6, z:0});
 
@@ -267,8 +241,6 @@ AFRAME.registerComponent('treemap-viz', {
         self.label.setAttribute("font", self.data.theme ? DATAVERSE.themes[self.data.theme].text_font : self.data.text_font);
 
         self.el.appendChild(self.label);
-
-        console.log("nodes", self.treemap_data, self.layout);
 
         if(self.data.buttons) {
 
@@ -280,10 +252,9 @@ AFRAME.registerComponent('treemap-viz', {
 
             button_row.setAttribute("position", {x: 0, y: (self.data.height/2), z: 0.01});
 
-
             self.el.appendChild(button_row);
 
-            if (self.data.treemap_data.headline != "") {
+            if (('headline' in self.data.treemap_data) && (self.data.treemap_data.headline != "")) {
 
                 var more_button = document.createElement("a-entity");
 
@@ -292,7 +263,6 @@ AFRAME.registerComponent('treemap-viz', {
                 more_button.setAttribute("position", {x: -button_radius*1.1, y: 0, z: 0});
 
                 button_row.appendChild(more_button);
-
 
                 more_button.addEventListener("clicked", function () {
 
@@ -312,11 +282,8 @@ AFRAME.registerComponent('treemap-viz', {
                     var yaw = (self.el.sceneEl.camera.el.getAttribute("rotation").y) % 360;
                     var pitch = (self.el.sceneEl.camera.el.getAttribute("rotation").x) % 360;
 
-                    console.log("MEDIA PANEL", self.el.sceneEl.media_panel);
-
                     if (self.el.sceneEl.media_panel) {
                         if (self.el.sceneEl.media_panel.parentNode) {
-                            console.log("MEDIA PANEL ABIERTO");
                             self.el.sceneEl.media_panel.parentNode.removeChild(self.el.sceneEl.media_panel);
                         }
                     }
@@ -326,7 +293,6 @@ AFRAME.registerComponent('treemap-viz', {
                     self.media_panel = document.createElement("a-entity");
 
                     self.media_panel.setAttribute("position", self.el.sceneEl.camera.el.getAttribute("position"));
-
 
                     self.media_panel.setAttribute("shadow", {cast: true});
 
@@ -345,16 +311,14 @@ AFRAME.registerComponent('treemap-viz', {
                         media_caption: datum.media_caption,
                         media_credit: datum.media_credit,
                         link: datum.link,
-                        link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.link, self.scene_data),
-                        link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.link, self.scene_data),
+                        link_thumbnail: DATAVERSE_VIZ_AUX.get_scene_thumbnail(datum.link, DATAVERSE_VIZ_AUX.treemap_scene_data),
+                        link_type: DATAVERSE_VIZ_AUX.get_scene_type(datum.link, DATAVERSE_VIZ_AUX.treemap_scene_data),
                         id: "treemap_" + self.data.id + "_" + self.panel_timestamp
 
                     });
 
                     self.media_panel.addEventListener("link", function(data){
-                        self.el.emit("link", {link: data.detail.link}, false);
-
-                        console.log("LINKANDO A ", data.detail.link);
+                        self.el.parentNode.emit("link", {link: data.detail.link}, false);
                     });
 
                     self.el.sceneEl.appendChild(self.media_panel);
@@ -383,8 +347,6 @@ AFRAME.registerComponent('treemap-viz', {
 
                 d3.selectAll(".bigtreemap").remove();
 
-                console.log("ZOOM BUTTON CLICKED", self.el.parentNode.components["small-treemap-viz"]);
-
                 self.el.parentNode.components['small-treemap-viz'].draw_big_treemap(self.data.id);
 
             });
@@ -406,7 +368,6 @@ AFRAME.registerSystem('small-treemap-viz', {
 
         var self = this;
 
-
     },
      load_data: function(viz_name, path, tab, callback){
 
@@ -417,8 +378,6 @@ AFRAME.registerSystem('small-treemap-viz', {
     parse_data: function(data, component_data) {
 
         var self = this;
-
-        console.log("SYSTEM PREPARING DATA", data);
 
         // Traverse data structures and generate 'N' treemap structures, ready for D3
 
@@ -440,8 +399,6 @@ AFRAME.registerSystem('small-treemap-viz', {
                 // If root (Marked with value =0), take rest of the values
 
                 if(d.value == 0){
-
-                    console.log("ME LLEGA EL ROOT DE ", d.treemap, d);
 
                     var new_root = d;
 
@@ -468,13 +425,9 @@ AFRAME.registerSystem('small-treemap-viz', {
 
         });
 
-        console.log("QUEDAN LOS TREEMAPS", treemaps);
-
         // Sort by total value
 
         var sorted_treemaps = Object.keys(treemap_counts).sort(function(a,b){return treemap_counts[b] - treemap_counts[a];});
-
-        console.log("SORTED TREEMAPS", treemap_counts, sorted_treemaps, treemaps);
 
         var category_counts = {};
 
@@ -508,9 +461,6 @@ AFRAME.registerSystem('small-treemap-viz', {
                     var category = datum;
 
                     var final_children_category = {name: category, children: []};
-
-                    //                console.log("CATEGORY", treemaps[treemap], category);
-
 
                     treemaps[treemap].children[category].forEach(function (plank) {
 
@@ -561,10 +511,6 @@ AFRAME.registerSystem('small-treemap-viz', {
 
         });
 
-        console.log("CATEGORY COUNTS", category_counts);
-        console.log("TREEMAPS", treemaps);
-
-
         // Now take every category of every treemap and cap to 'max_items'
 
         Object.keys(treemaps).forEach(function(treemap){
@@ -574,8 +520,6 @@ AFRAME.registerSystem('small-treemap-viz', {
             var new_children = [];
 
             if(treemap !== 'Other'){
-
-                console.log("OBJECT KEYS", category_counts[treemap]);
 
                 var sorted_categories = Object.keys(category_counts[treemap]).sort(function(a,b){ return category_counts[treemap][b]  -  category_counts[treemap][a];});
 
@@ -589,23 +533,17 @@ AFRAME.registerSystem('small-treemap-viz', {
 
                         d.children.forEach(function(d,i){
 
-                            console.log("sumando a other", d.value, d);
-
                             other.children[0].value += d.value;
-
-                            console.log("other queda", other.children);
 
                         });
 
                     }
                     else {
                         new_children.push(d);
-                        console.log("PUSHING CHILDREN", d);
                     }
 
                 });
 
-                console.log("ANTES DE PUSH DE OTHER", other);
                 new_children.push(other);
                 treemaps[treemap].children = new_children;
 
@@ -629,7 +567,6 @@ AFRAME.registerSystem('small-treemap-viz', {
                     }
                     else {
                         var a_children = {'name':d , value: category_counts[treemap][d], children:{name: d, value: category_counts[treemap][d]}};
-                        console.log("A CHILDREN", a_children);
                         new_children.push({'name':d , value: category_counts[treemap][d], children:{name: d, value: category_counts[treemap][d]}});
                     }
 
@@ -637,23 +574,16 @@ AFRAME.registerSystem('small-treemap-viz', {
 
                 });
 
-                console.log("NEW CHILDREN", new_children);
-
                 new_children.push(other);
                 treemaps[treemap].children = new_children;
 
                 treemap_counts['Other'] = other_count;
-
-                console.log("OTHER COUNT", other_count);
 
             }
 
 
 
         });
-
-
-        console.log("LOS TREEMAPS QUEDAN", treemaps, treemap_counts);
 
         // Recalculate sorted_treemaps taking into account the 'Other' entry just creates
 
@@ -665,8 +595,6 @@ AFRAME.registerSystem('small-treemap-viz', {
             new_treemap_counts[name] = treemap_counts[name];
 
         });
-
-        console.log("TREEMAP COUNTS SORTED", sorted);
 
         return {data: treemaps, treemap_counts: new_treemap_counts};
 
@@ -702,8 +630,6 @@ AFRAME.registerComponent('small-treemap-viz', {
 
         var self = this;
 
-        console.log("INIT SMALL TREEMAP COMPONENT", self.data);
-
         if (self.data.source !== "") {
 
             this.system.load_data("treemap", self.data.source, self.data.tab, function (data, scene_data) {
@@ -712,13 +638,11 @@ AFRAME.registerComponent('small-treemap-viz', {
 
                     self.scene_data = scene_data;
 
+                    DATAVERSE_VIZ_AUX.treemap_scene_data = scene_data;
+
                     self.parsed_data = self.system.parse_data(data, self.data);
 
-//                    self.parsed_data_deepcopy = JSON.parse(JSON.stringify(self.parsed_data));
-
                     self.parsed_data_deepcopy = jQuery.extend(true, {}, self.parsed_data);
-
-                    console.log("PARSED DATA", self.parsed_data);
 
                     // Call explicitly since first update lags in data
 
@@ -754,16 +678,12 @@ AFRAME.registerComponent('small-treemap-viz', {
 
         self.el.appendChild(self.big_treemap_container);
 
-
-        console.log("DRAWING BIG TREEMAP FOR index ", index, name, self.parsed_data_deepcopy, treemap);
-
         self.big_treemap_background = document.createElement("a-plane");
 
         self.big_treemap_background.setAttribute("width", self.data.width/2);
         self.big_treemap_background.setAttribute("height", self.data.width/2);
         self.big_treemap_background.setAttribute("color", "black");
         self.big_treemap_background.setAttribute("position", {x:0, y:0, z: -(DATAVERSE.distances.close * 1.01)});
-
 
         self.big_treemap_container.appendChild(self.big_treemap_background);
 
@@ -808,35 +728,17 @@ AFRAME.registerComponent('small-treemap-viz', {
 
         var self = this;
 
-
-        console.log("EL ELEMENTO TIENE DE ROTACION", self.el.getAttribute("rotation"));
-
-
         if(self.parsed_data && self.parsed_data_deepcopy && typeof self.treemaps === "undefined") {
-
-            console.log("UPDATE SMALL TREEMAP COMPONENT", self.data);
-
-            console.log("REMOVING OLD GEOMETRY...");
 
             if (self.el.children && self.el.children.length > 0) {
 
-                console.log(self.el.children);
-
                 for(var i=0; i < self.el.children.length; i++) {
-
-//                    self.el.children.forEach(function (d) {
-//
-//                        self.el.removeChild(d);
-//
-//                    });
 
                     self.el.removeChild(self.el.children[i]);
                 }
             }
 
             // One treemap per keyword in self.prepared_data
-
-            console.log("PARSED DATA", self.parsed_data);
 
             // Move parent entity to eye level
 
@@ -852,13 +754,9 @@ AFRAME.registerComponent('small-treemap-viz', {
 
             // Get max length of treemap titles
 
-            console.log("TREEMAP COUNTS", self.parsed_data);
-
-            var max_title_length_index = Object.keys(self.parsed_data.treemap_counts).sort(function(a,b) { console.log(self.parsed_data.data[a].name); console.log(self.parsed_data.data[b].name); return self.parsed_data.data[b].name.length - self.parsed_data.data[a].name.length;})[0];
+            var max_title_length_index = Object.keys(self.parsed_data.treemap_counts).sort(function(a,b) { return self.parsed_data.data[b].name.length - self.parsed_data.data[a].name.length;})[0];
 
             var max_title_length = self.parsed_data.data[max_title_length_index].name.length;
-
-            console.log("MAX TITLE LENGTH", max_title_length);
 
             // Arrange treemaps and insert them
 
@@ -884,18 +782,11 @@ AFRAME.registerComponent('small-treemap-viz', {
             params.vertical_scale = d3.scale.linear().domain([0, self.data.rows-1]).range([params.vertical_span/2, -params.vertical_span/2]);
             params.last_horizontal_scale = d3.scale.linear().domain([0, params.last_row_cols -1]).range([-params.last_horizontal_span/2, params.last_horizontal_span/2]);
 
-
-            console.log("LAST HOR", params.last_horizontal_scale.range(), params.last_horizontal_scale.domain());
-
-            console.log("PARAMS", params);
-
             self.treemaps = [];
 
             self.value_treemaps = [];
 
             for(var i = 0; i < self.data.rows ; i++ ) {
-
-                console.log("ROW ", i);
 
                 // Not the last row
 
@@ -905,14 +796,8 @@ AFRAME.registerComponent('small-treemap-viz', {
 
                         var index = (i*params.number_cols) + j;
 
-                        console.log("COL ", j, index);
-
                         var name = params.treemap_list[index];
                         var treemap = self.parsed_data.data[name];
-
-                        console.log("TREEMAP NAME", params.treemap_list[index], treemap);
-
-//                        var theta = THREE.Math.mapLinear(j, 0, params.number_cols -1 , -self.data.angular_width/2, self.data.angular_width/2);
 
                         var position = {x: params.horizontal_scale(j), y: params.vertical_scale(i), z: -self.data.distance};
 
@@ -948,12 +833,8 @@ AFRAME.registerComponent('small-treemap-viz', {
 
                         var index = (i*params.number_cols) + j;
 
-                        console.log("COL ", j, index);
-
                         var name = params.treemap_list[index];
                         var treemap = self.parsed_data.data[name];
-
-//                        var theta = THREE.Math.mapLinear(j, 0, params.number_cols -1 , -self.data.angular_width/2, self.data.angular_width/2);
 
                         var position = {x: params.last_horizontal_scale(j), y: params.vertical_scale(i), z: -self.data.distance};
 
@@ -987,7 +868,6 @@ AFRAME.registerComponent('small-treemap-viz', {
 
                 var button_radius = (DATAVERSE.dmms.plus_button * self.data.distance) / 1000;
 
-
                 var propor_text = document.createElement("a-text");
 
                 var text = "See proportional sizes";
@@ -1017,8 +897,6 @@ AFRAME.registerComponent('small-treemap-viz', {
 
                 propor_button.addEventListener("clicked", function () {
 
-                    console.log("CLICK");
-
                     self.proportional = !self.proportional;
 
                     if (self.proportional) {
@@ -1027,8 +905,6 @@ AFRAME.registerComponent('small-treemap-viz', {
                         self.treemaps.forEach(function (d, i) {
 
                             var scale = Math.sqrt(d.components["treemap-viz"].data.treemap_data.value / d3.max(self.value_treemaps));
-
-//                        console.log(d.components["treemap-viz"], d.components["treemap-viz"].data.treemap_data, d.components["treemap-viz"].data.treemap_data.value, scale, self.value_treemaps, self.parsed_data.treemap_counts);
 
                             d.components["treemap-viz"].re_scale(scale);
 
@@ -1049,13 +925,9 @@ AFRAME.registerComponent('small-treemap-viz', {
                 });
             }
 
-
             self.el.emit("dv_loaded", null, false);
 
-
         }
-
-
 
     },
     remove: function () {

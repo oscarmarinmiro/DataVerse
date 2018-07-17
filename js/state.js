@@ -74,8 +74,6 @@ DATAVERSE.state.prototype = {
 
                     self.state.scenes.forEach(function(d,i){
 
-                        console.log("SCENE NUMBER ", d,i+2);
-
                         indexed_scenes[i+2] = d;
 
                     });

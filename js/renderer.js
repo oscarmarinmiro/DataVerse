@@ -257,6 +257,14 @@ DATAVERSE.renderer.prototype = {
 
         var self = this;
 
+        var img_asset = document.createElement("img");
+
+        img_asset.setAttribute("id", "loading_scene");
+        img_asset.setAttribute('crossorigin', 'anonymous');
+        img_asset.setAttribute("src", DATAVERSE.paths.loading_thumbnail_static);
+
+        self.assets.appendChild(img_asset);
+
         // Insert loading symbols
 
         var loading_defs = [
@@ -266,30 +274,34 @@ DATAVERSE.renderer.prototype = {
 
         for(var i=0; i< loading_defs[0].length; i++){
 
-            var loading = document.createElement("a-plane");
+            // Race condition here with removal on dv_loaded
 
-            loading.classList.add("dataverse-added", "loading_scene");
-            loading.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1], z: loading_defs[0][i][2]});
-            loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
-            loading.setAttribute("width", 1);
-            loading.setAttribute("height", 1);
-            loading.setAttribute("src", DATAVERSE.paths.loading_thumbnail_static);
+            if(!(self.loaded_scene)) {
 
-            document.querySelector("a-scene").appendChild(loading);
+                var loading = document.createElement("a-plane");
 
-            var text = document.createElement("a-text");
+                loading.classList.add("dataverse-added", "loading_scene");
+                loading.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1], z: loading_defs[0][i][2]});
+                loading.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
+                loading.setAttribute("width", 1);
+                loading.setAttribute("height", 1);
+                loading.setAttribute("src", DATAVERSE.paths.loading_thumbnail_static);
 
-            text.classList.add("dataverse-added", "loading_scene");
-            text.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1] - 0.75, z: loading_defs[0][i][2]});
-            text.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
-            text.setAttribute("width", 5);
-            text.setAttribute("font", "exo2bold");
-            text.setAttribute("anchor", "center");
-            text.setAttribute("align", "center");
-            text.setAttribute("value", "Loading scene");
+                document.querySelector("a-scene").appendChild(loading);
 
-            document.querySelector("a-scene").appendChild(text);
+                var text = document.createElement("a-text");
 
+                text.classList.add("dataverse-added", "loading_scene");
+                text.setAttribute("position", {x: loading_defs[0][i][0], y: loading_defs[0][i][1] - 0.75, z: loading_defs[0][i][2]});
+                text.setAttribute("rotation", {x: loading_defs[1][i][0], y: loading_defs[1][i][1], z: loading_defs[1][i][2]});
+                text.setAttribute("width", 5);
+                text.setAttribute("font", "exo2bold");
+                text.setAttribute("anchor", "center");
+                text.setAttribute("align", "center");
+                text.setAttribute("value", "Loading scene");
+
+                document.querySelector("a-scene").appendChild(text);
+            }
 
         }
 
@@ -301,6 +313,8 @@ DATAVERSE.renderer.prototype = {
     'render_scene': function(){
 
         var self = this;
+
+        self.loaded_scene = false;
 
         self.counter_cam_rotation = (self.scene.camera.el.getAttribute("rotation").y);
 
@@ -385,15 +399,8 @@ DATAVERSE.renderer.prototype = {
 
             if(self.actual_scene_data.floor.indexOf('.')!==-1){
 
-                self.floor_img = document.createElement("img");
-                self.floor_img.classList.add("dataverse-added");
-                self.floor_img.setAttribute("src", self.actual_scene_data.floor);
-                self.floor_img.setAttribute("id", "floor_img");
-
-                self.assets.appendChild(self.floor_img);
-
                 self.floor = document.createElement("a-plane");
-                self.floor.setAttribute("src", "#floor_img");
+                self.floor.setAttribute("src", self.actual_scene_data.floor);
                 self.floor.setAttribute("width", 100);
                 self.floor.setAttribute("height", 100);
                 self.floor.setAttribute("repeat", "100 100");
@@ -436,15 +443,8 @@ DATAVERSE.renderer.prototype = {
 
                         if(my_floor.indexOf(".") !== -1) {
 
-                            self.floor_img = document.createElement("img");
-                            self.floor_img.classList.add("dataverse-added");
-                            self.floor_img.setAttribute("src", my_floor);
-                            self.floor_img.setAttribute("id", "floor_img");
-
-                            self.assets.appendChild(self.floor_img);
-
                             self.floor = document.createElement("a-plane");
-                            self.floor.setAttribute("src", "#floor_img");
+                            self.floor.setAttribute("src", my_floor);
                             self.floor.setAttribute("width", 100);
                             self.floor.setAttribute("height", 100);
                             self.floor.setAttribute("repeat", "100 100");
@@ -487,17 +487,8 @@ DATAVERSE.renderer.prototype = {
 
             if(self.actual_scene_data.background.indexOf('.')!==-1){
 
-                self.sky_img = document.createElement("img");
-                self.sky_img.classList.add("dataverse-added");
-                self.sky_img.setAttribute("src", self.actual_scene_data.background);
-                self.sky_img.setAttribute("id", "sky_img");
-                self.sky_img.setAttribute('crossorigin', 'anonymous');
-
-
-                self.assets.appendChild(self.sky_img);
-
                 self.sky = document.createElement("a-sky");
-                self.sky.setAttribute("src", "#sky_img");
+                self.sky.setAttribute("src", self.actual_scene_data.background);
                 self.sky.classList.add("dataverse-added");
 
                 self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
@@ -532,16 +523,8 @@ DATAVERSE.renderer.prototype = {
 
                         if(my_sky.indexOf(".") !== -1) {
 
-                            self.sky_img = document.createElement("img");
-                            self.sky_img.classList.add("dataverse-added");
-                            self.sky_img.setAttribute("src", my_sky);
-                            self.sky_img.setAttribute("id", "sky_img");
-                            self.sky_img.setAttribute('crossorigin', 'anonymous');
-
-                            self.assets.appendChild(self.sky_img);
-
                             self.sky = document.createElement("a-sky");
-                            self.sky.setAttribute("src", "#sky_img");
+                            self.sky.setAttribute("src", my_sky);
                             self.sky.classList.add("dataverse-added");
 
                             self.sky.setAttribute("rotation", {x:0, y: self.counter_cam_rotation, z:0});
@@ -626,6 +609,8 @@ DATAVERSE.renderer.prototype = {
                     self.audio.setAttribute("src", self.actual_scene_data.audio);
                     self.audio.setAttribute("id", "audio");
                     self.audio.setAttribute("autoplay", true);
+                    self.audio.setAttribute("crossorigin", "anonymous");
+
 
                     self.assets.appendChild(self.audio);
 
@@ -644,7 +629,7 @@ DATAVERSE.renderer.prototype = {
 
             // Set scene
 
-            self.main.urls.set_params({scene: self.main.state.state.actual_scene});
+            self.main.urls.set_params({scene: self.main.state.state.actual_scene, source: self.main.state.state.scenes_data_source});
 
 
             // Loading effect: Back sphere and 'loading scene' texts
@@ -674,6 +659,8 @@ DATAVERSE.renderer.prototype = {
             });
 
             self.actual_scene_component.addEventListener("dv_loaded", function(evt){
+
+                self.loaded_scene = true;
 
                 // Set component visibility
 

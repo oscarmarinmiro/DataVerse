@@ -244,22 +244,38 @@ AFRAME.registerComponent('photo-viz', {
             loader.load(new google.maps.LatLng(lat,lon));
 
 
-
-
         }
+
         // Photosphere
+
         else {
 
 
-            document.getElementsByTagName("a-sky")[0].setAttribute("src", self.data.media_source);
+            var assets = document.querySelector("a-assets");
+
+            var img_asset = document.createElement("img");
+
+            var img_time_stamp = Date.now();
+
+            var img_id = "photosphere_" + img_time_stamp;
+
+            img_asset.setAttribute("id", img_id);
+            img_asset.setAttribute("src", self.data.media_source);
+            img_asset.setAttribute('crossorigin', 'anonymous');
+            img_asset.classList.add("dataverse-added");
+
+            assets.appendChild(img_asset);
+
+
+            document.getElementsByTagName("a-sky")[0].setAttribute("src", "#" + img_id);
 
             document.getElementsByTagName("a-sky")[0].removeAttribute("color");
 
-            document.getElementsByTagName("a-sky")[0].addEventListener("materialtextureloaded", function(){
+            img_asset.onload = function(){
 
                 self.el.emit("dv_loaded", null, false);
 
-            });
+            }
         }
 
         if((self.data.tab) && (self.data.source)){
