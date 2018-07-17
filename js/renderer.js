@@ -629,7 +629,7 @@ DATAVERSE.renderer.prototype = {
 
             // Set scene
 
-            self.main.urls.set_params({scene: self.main.state.state.actual_scene});
+            self.main.urls.set_params({scene: self.main.state.state.actual_scene, source: self.main.state.state.scenes_data_source});
 
 
             // Loading effect: Back sphere and 'loading scene' texts
