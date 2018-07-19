@@ -925,7 +925,15 @@ AFRAME.registerComponent('uipack-mediapanel', {
 
         self.panel_video = document.createElement("a-plane");
 
-        self.panel_video.setAttribute("src", "#" + asset_id);
+            self.panel_video.setAttribute("material", {"src": "#" + asset_id, shader: "flat", repeat: {x: 1, y: 1}, offset: {x: 0, y: 0}});
+
+            self.panel_video.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
+
+            self.panel_video.setAttribute("class", "panel_media");
+
+
+
+//        self.panel_video.setAttribute("material", {src: "#" + asset_id});
 
         DATAVERSE_VIZ_AUX.global_tracking.last_media = video_asset;
 
@@ -944,18 +952,15 @@ AFRAME.registerComponent('uipack-mediapanel', {
             self.panel_video.setAttribute("height", plane_height);
 
 
-            self.panel_video.setAttribute("material", {src: "#" + asset_id});
+            console.log("NEW DEAL");
 
-            self.panel_video.setAttribute("position", {x: 0, y: 0, z: -(self.data.distance*self.constants.overlap_factor)});
-
-            self.panel_video.setAttribute("class", "panel_media");
-
+//            self.panel_video.setAttribute("src", "#" + asset_id);
 
             self.el.appendChild(self.panel_video);
 
-            self.render_media_controls();
+//            self.render_media_controls();
 
-            self.render_media_texts(true);
+//            self.render_media_texts(true);
 
             video_asset.play();
 
