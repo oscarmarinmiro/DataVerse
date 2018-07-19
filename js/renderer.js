@@ -79,7 +79,7 @@ DATAVERSE.renderer.prototype = {
         var self = this;
 
 
-        console.log("HEADSET", AFRAME.utils.checkHeadsetConnected(), AFRAME.utils.isMobile());
+        console.log("HEADSET", AFRAME.utils.checkHeadsetConnected(), AFRAME.utils.isMobile(), AFRAME.utils.isGearVR(), navigator.userAgent);
 
         var mobile = AFRAME.utils.isMobile();
         var headset = AFRAME.utils.checkHeadsetConnected();
@@ -100,11 +100,20 @@ DATAVERSE.renderer.prototype = {
         self.cursor.setAttribute("material", {color: self.theme_data.cursor_color, shader: "flat"});
         self.cursor.setAttribute("visible", !desktop);
 
+        // Oculus Go or GearVR;
+
+        if(AFRAME.utils.isMobile() && AFRAME.utils.isGearVR()){
+            headset = true;
+            mobile = false;
+        }
+
         // To avoid clicks while loading and intro panel is present
 
         self.cursor.setAttribute("raycaster", {near: 0.0, objects: ".non_click_while_loading"});
 
         if((headset) && (!(mobile))){
+
+            console.log("INSERTING LASER CONTROLS");
 
             self.laser_controls = document.createElement("a-entity");
 
