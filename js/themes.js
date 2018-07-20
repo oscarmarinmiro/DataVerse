@@ -3,7 +3,7 @@ var DATAVERSE = DATAVERSE || {};
 DATAVERSE.themes =
 {
     'dark': {
-        'color_scale': 'category20b',
+        'color_scale': 'category20c',
         'default_color': '#CCCCCC',
         'cursor_color': '#F91100',
         'arc_color': '#F91100',
