@@ -1,4 +1,4 @@
-<p align="center"><img src="wiki/images/dataverse-logo.png"/></p>
+<p align="center"><img src="img/dataverse-logo.png"/></p>
 
 ##
 
