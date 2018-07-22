@@ -1,5 +1,5 @@
 <p align="center"><img src="https://dataverse.xyz/images/examples/example_bowie_new.jpg"/></p>
-<p align="center"><img src="img/dataverse-logo.png"/></p>
+<p align="center"><img width="200" src="img/dataverse-logo.png"/></p>
 
 ##
 
