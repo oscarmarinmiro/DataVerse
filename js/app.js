@@ -124,20 +124,38 @@ DATAVERSE.main = function(options) {
 
         // Insert interstitial
 
-        var body = document.querySelector("body");
+        var scene = document.querySelector("a-scene");
+
+        // Is this embedded?
+
+        console.log("SCENE", scene.getAttribute("embedded"), $("a-scene").css("width"), $("a-scene").css("height"));
+
+
 
         self.interstitial = document.createElement("div");
         self.interstitial.setAttribute("id", "dataverse-interstitial");
         self.interstitial.classList.add("dataverse-added");
 
-        body.appendChild(self.interstitial);
+        if(scene.getAttribute("embedded")!==null){
+            self.interstitial.style.width = $("a-scene").css("width");
+            self.interstitial.style.height = $("a-scene").css("height");
+
+        }
+
+        scene.appendChild(self.interstitial);
 
         self.interstitial_image = document.createElement("div");
 
         self.interstitial_image.setAttribute("id", "dataverse-interstitial-image");
         self.interstitial_image.classList.add("dataverse-added");
 
-        body.appendChild(self.interstitial_image);
+        if(scene.getAttribute("embedded")!==null){
+            self.interstitial_image.style.width = $("a-scene").css("width");
+            self.interstitial_image.style.height = $("a-scene").css("height");
+        }
+
+
+        scene.appendChild(self.interstitial_image);
 
         document.getElementById("dataverse-interstitial").addEventListener("click", function (e) {
 
@@ -169,15 +187,15 @@ DATAVERSE.main = function(options) {
         });
 
 
-//        self.run_app();
+        self.run_app();
 
-        var scene = document.querySelector("a-scene");
-
-        if (scene.hasLoaded) {
-          self.run_app();
-        } else {
-          scene.addEventListener('loaded', self.run_app());
-        }
+//        var scene = document.querySelector("a-scene");
+//
+//        if (scene.hasLoaded) {
+//          self.run_app();
+//        } else {
+//          scene.addEventListener('loaded', self.run_app());
+//        }
 
 
     });

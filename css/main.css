@@ -2,12 +2,12 @@ html {
 }
 
 body{
-    background-color: black;
+
 }
 
 #dataverse-interstitial {
-    width: 100%!important;
-    height: 100%!important;
+    /*width: 100%!important;*/
+    /*height: 100%!important;*/
     top: 0!important;
     left: 0!important;
     right: 0!important;
@@ -22,8 +22,8 @@ body{
 
 
 #dataverse-interstitial-image {
-    width: 100%!important;
-    height: 100%!important;
+    /*width: 100%!important;*/
+    /*height: 100%!important;*/
     top: 0!important;
     left: 0!important;
     right: 0!important;
@@ -37,7 +37,7 @@ body{
 }
 
 #dataverse-interstitial-message {
-    width: 100% !important;
+    /*width: 100% !important;*/
     text-align: center;
     top: 66% !important;
     left: 0 !important;
